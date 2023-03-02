@@ -1,6 +1,7 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model;
 
 
+import java.time.Period;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -52,6 +53,9 @@ public class Instituicao {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="periodoAtual_fk", referencedColumnName = "id")
     private PeriodoLetivo periodoAtual;
+
+    @OneToMany(mappedBy = "instituicao", cascade = CascadeType.ALL)
+    private Set<PeriodoLetivo> periodos;
 
     @OneToOne(mappedBy = "instituicaoAtual")
     private Estudante estudante;
