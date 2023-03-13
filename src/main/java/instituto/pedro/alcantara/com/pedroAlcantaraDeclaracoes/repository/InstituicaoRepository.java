@@ -15,7 +15,7 @@ public interface InstituicaoRepository extends JpaRepository<Instituicao, Intege
 
     List<Instituicao> findAll();
 
-    @Query(" select i from instituicoes i left join fetch i.alunos where i.id = :id ")
+    @Query(value = " select i from instituicoes i left join fetch i.alunos where i.id = %:id% " , nativeQuery = true)
     Instituicao findInstituicaoFetchAlunos(@Param("id") Integer id);
 
 }

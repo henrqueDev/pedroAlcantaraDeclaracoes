@@ -12,11 +12,13 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Data
 @Getter
 @Setter
 @NoArgsConstructor
@@ -38,11 +40,8 @@ public class Estudante {
     @JoinColumn(name = "declaracao_fk", referencedColumnName = "id")
     private Declaracao declaracaoAtual;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="instituicao_fk", referencedColumnName = "id")
     private Instituicao instituicaoAtual;
-
-    @ManyToOne
-    private Instituicao instituicao;
 
 }

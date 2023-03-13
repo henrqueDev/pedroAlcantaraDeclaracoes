@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -57,10 +58,7 @@ public class Instituicao {
     @OneToMany(mappedBy = "instituicao", cascade = CascadeType.ALL)
     private Set<PeriodoLetivo> periodos;
 
-    @OneToOne(mappedBy = "instituicaoAtual")
-    private Estudante estudante;
-
-    @OneToMany(mappedBy = "instituicao", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "instituicaoAtual", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Estudante> alunos;
 
 
