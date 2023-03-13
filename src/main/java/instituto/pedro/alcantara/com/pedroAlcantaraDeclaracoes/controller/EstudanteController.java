@@ -12,29 +12,29 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 
-import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
-import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
-import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.InstituicaoService;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.EstudanteService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/instituicoes")
+@RequestMapping("/estudantes")
 @RequiredArgsConstructor
 
-public class InstituicaoController {
-    
-    private final InstituicaoService instituicaoService;
+public class EstudanteController {
+
+    private final EstudanteService estudanteService;
 
     @GetMapping
-    public List<Instituicao> getAll(){
-        return this.instituicaoService.getAll();
+    public List<Estudante> getAll(){
+        return this.estudanteService.getAll();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Integer salvar(@RequestBody @Valid InstituicaoDTO i) {
-        Instituicao instituicao = this.instituicaoService.save(i);
-        return instituicao.getId();
+    public Integer saveEstudante(@RequestBody @Valid EstudanteDTO estudante) throws Exception{
+        Estudante estudanteCadastrado = this.estudanteService.cadastrar(estudante);
+        return estudanteCadastrado.getMatricula();
     }
 
 }

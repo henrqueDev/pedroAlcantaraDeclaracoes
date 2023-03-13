@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.InstituicaoRepository;
 
@@ -22,7 +23,12 @@ public class InstituicaoService{
     }
 
     @Transactional
-    public Instituicao save(Instituicao i) {
-        return this.instituicaoRepository.save(i);
+    public Instituicao save(InstituicaoDTO i) {
+        Instituicao novaInstituicao = new Instituicao();
+        novaInstituicao.setNome(i.getNome());
+        novaInstituicao.setSigla(i.getSigla());
+        novaInstituicao.setFone(i.getFone());
+        novaInstituicao.setAlunos(i.getAlunos());
+        return this.instituicaoRepository.save(novaInstituicao);
     }
 }

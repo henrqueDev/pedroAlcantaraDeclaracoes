@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -38,10 +40,11 @@ public class Estudante {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "declaracao_fk", referencedColumnName = "id")
+    @JsonIgnore
     private Declaracao declaracaoAtual;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="instituicao_fk", referencedColumnName = "id")
+    @JoinColumn(name="instituicao_id")
     private Instituicao instituicaoAtual;
 
 }
