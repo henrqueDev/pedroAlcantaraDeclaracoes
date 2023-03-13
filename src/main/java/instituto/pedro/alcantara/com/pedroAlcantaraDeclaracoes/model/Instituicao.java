@@ -1,7 +1,6 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model;
 
 
-import java.time.Period;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
