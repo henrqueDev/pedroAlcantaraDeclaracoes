@@ -1,6 +1,7 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model;
 
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -15,6 +16,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -58,7 +61,7 @@ public class Instituicao {
     private Set<PeriodoLetivo> periodos;
 
     @OneToMany(mappedBy = "instituicaoAtual", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Estudante> alunos;
+    private List<Estudante> alunos;
 
 
 }
