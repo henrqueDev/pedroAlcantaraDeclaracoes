@@ -32,7 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class InstituicaoController {
     
     private final InstituicaoService instituicaoService;
-    // private final EstudanteService estudanteService;
+    private final EstudanteService estudanteService;
 
     @GetMapping
     public List<Instituicao> getAll(){

@@ -17,6 +17,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
@@ -57,9 +58,11 @@ public class Instituicao {
     @JoinColumn(name="periodoAtual_fk", referencedColumnName = "id")
     private PeriodoLetivo periodoAtual;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "instituicao", cascade = CascadeType.ALL)
     private Set<PeriodoLetivo> periodos;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "instituicaoAtual", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Estudante> alunos;
 
