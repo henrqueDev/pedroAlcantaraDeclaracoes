@@ -1,8 +1,6 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -15,13 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.CollectionUtils;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
-import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.EstudanteService;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.InstituicaoService;
 import lombok.RequiredArgsConstructor;
 
@@ -32,11 +28,15 @@ import lombok.RequiredArgsConstructor;
 public class InstituicaoController {
     
     private final InstituicaoService instituicaoService;
-    private final EstudanteService estudanteService;
+    // private final EstudanteService estudanteService;
 
     @GetMapping
-    public List<Instituicao> getAll(){
-        return this.instituicaoService.getAll();
+    public List<InstituicaoDTO> getAll(){
+
+        return this.instituicaoService.getAll()
+            .stream().map(i -> {
+                return this.converter(i);
+            }).collect(Collectors.toList());
     }
 
     @GetMapping

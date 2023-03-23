@@ -13,7 +13,6 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.Es
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
-import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.EstudanteRepository;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.InstituicaoRepository;
 
 @Service
@@ -22,9 +21,6 @@ public class InstituicaoService{
     
     @Autowired
     private InstituicaoRepository instituicaoRepository;
-
-    @Autowired
-    private EstudanteRepository estudanteRepository;
 
     public List<Instituicao> getAll() {
         return this.instituicaoRepository.findAll();

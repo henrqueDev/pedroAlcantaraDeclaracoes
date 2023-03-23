@@ -2,7 +2,6 @@ package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model;
 
 
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,7 +17,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -58,9 +56,9 @@ public class Instituicao {
     @JoinColumn(name="periodoAtual_fk", referencedColumnName = "id")
     private PeriodoLetivo periodoAtual;
 
-    @JsonIgnore
+    
     @OneToMany(mappedBy = "instituicao", cascade = CascadeType.ALL)
-    private Set<PeriodoLetivo> periodos;
+    private List<PeriodoLetivo> periodos;
 
     @JsonIgnore
     @OneToMany(mappedBy = "instituicaoAtual", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

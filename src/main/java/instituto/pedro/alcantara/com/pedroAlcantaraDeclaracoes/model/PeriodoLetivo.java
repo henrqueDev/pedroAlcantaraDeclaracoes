@@ -1,7 +1,7 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -52,7 +52,7 @@ public class PeriodoLetivo {
     private LocalDateTime dataFinal;
 
     @OneToMany(mappedBy = "periodo")
-    private Set<Declaracao> declaracao;
+    private List<Declaracao> declaracao;
 
     @ManyToOne
     private Instituicao instituicao;
