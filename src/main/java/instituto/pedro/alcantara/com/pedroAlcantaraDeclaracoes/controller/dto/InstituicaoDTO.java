@@ -1,9 +1,6 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto;
 
 import java.util.List;
-import java.util.Set;
-
-import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

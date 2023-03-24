@@ -1,6 +1,5 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto;
 
-import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -2,6 +2,7 @@ package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +24,18 @@ public class EstudanteService {
     @Autowired
     private InstituicaoRepository instituicaoRepository;
 
+    @Transactional
     public Estudante cadastrar( @Valid EstudanteDTO estudante) throws Exception{
         Estudante student = new Estudante();
         Instituicao instituicao = this.instituicaoRepository.findById(estudante.getInstituicaoAtual())
             .orElseThrow(() -> new Exception("Deu ruim"));
+        List<Estudante> alunos = instituicao.getAlunos();
+        
         student.setNome(estudante.getNome());
-
         student.setInstituicaoAtual(instituicao);
-        this.estudanteRepository.save(student);
-        return student;
+        alunos.add(student);
+        instituicao.setAlunos(alunos);
+        return this.estudanteRepository.save(student);
     }
 
     public List<Estudante> getAll(){
