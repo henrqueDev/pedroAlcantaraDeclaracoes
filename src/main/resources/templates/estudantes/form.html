@@ -1,0 +1,31 @@
+<html xmlns:th="www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Estudantes</title>
+</head>
+
+<body>
+    <h1>Cadastro de Estudantes</h1>
+<!-- 
+    <div th:text="${mensagem}"
+        style="color: red"></div> -->
+
+    <form th:action="@{/estudantes/store}"
+        method="POST"
+        th:object="${estudante}">
+        Matricula: <input type="number"
+            th:field="*{matricula}" /><br /><br />
+        Nome: <input type="text"
+            th:field="*{nome}" /><br /><br />
+        <!-- Criar Select com IDS de Instituições -->
+        Instituição: <select name="instituicao" id="instituicao" th:field="*{instituicaoAtual}">
+            <option value="0">Selecione</option>
+            <option th:each="instituicao : ${instituicoes}" th:value="${instituicao.id}" th:text="${instituicao.nome}"></option>
+        </select>
+        <input type="submit"
+            value="Salvar" />
+    </form>
+</body>
+
+</html>
