@@ -40,7 +40,6 @@ public class Estudante {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "declaracao_fk", referencedColumnName = "id")
-    @JsonIgnore
     private Declaracao declaracaoAtual;
 
     @ManyToOne(cascade = CascadeType.ALL)

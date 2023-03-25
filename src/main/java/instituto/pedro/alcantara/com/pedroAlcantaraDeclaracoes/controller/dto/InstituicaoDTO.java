@@ -1,6 +1,9 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto;
 
 import java.util.List;
+
+import javax.validation.constraints.NotBlank;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,8 +15,13 @@ import lombok.NoArgsConstructor;
 @Builder
 
 public class InstituicaoDTO {
+    @NotBlank
     private String nome;
+
+    @NotBlank
     private String sigla;
+
+    @NotBlank
     private String fone;
     private List<EstudanteDTO> alunos;
 }
