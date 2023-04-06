@@ -30,6 +30,12 @@ import lombok.Setter;
 
 public class Estudante {
 
+    public Estudante(Instituicao instituicao, String nome, Declaracao declaracao){
+        this.instituicaoAtual = instituicao;
+        this.nome = nome;
+        this.declaracaoAtual = declaracao;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="matricula")

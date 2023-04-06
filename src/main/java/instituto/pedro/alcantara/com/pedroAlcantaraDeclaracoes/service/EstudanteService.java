@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Declaracao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.EstudanteRepository;
@@ -26,13 +27,15 @@ public class EstudanteService {
 
     @Transactional
     public Estudante cadastrar( @Valid EstudanteDTO estudante) throws Exception{
-        Estudante student = new Estudante();
+        
         Instituicao instituicao = this.instituicaoRepository.findById(estudante.getInstituicaoAtual())
             .orElseThrow(() -> new Exception("Deu ruim"));
         List<Estudante> alunos = instituicao.getAlunos();
         
-        student.setNome(estudante.getNome());
-        student.setInstituicaoAtual(instituicao);
+        // student.setDeclaracaoAtual();
+        // student.setNome(estudante.getNome());
+        // student.setInstituicaoAtual(instituicao);
+        Estudante student = new Estudante(instituicao, estudante.getNome(), new Declaracao());
         alunos.add(student);
         instituicao.setAlunos(alunos);
         return this.estudanteRepository.save(student);

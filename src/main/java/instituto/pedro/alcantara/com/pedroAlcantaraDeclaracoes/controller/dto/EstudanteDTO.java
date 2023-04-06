@@ -14,4 +14,5 @@ public class EstudanteDTO {
     private Integer matricula;
     private String nome;
     private Integer instituicaoAtual;
+    private Integer declaracaoAtual;
 }

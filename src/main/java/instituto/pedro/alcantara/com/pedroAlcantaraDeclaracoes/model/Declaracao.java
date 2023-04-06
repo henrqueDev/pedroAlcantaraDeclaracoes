@@ -1,5 +1,6 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.CascadeType;
@@ -40,7 +41,7 @@ public class Declaracao {
 
     @Column(name="dataRecebimento")
     @NotNull
-    private LocalDateTime dataRecebimento;
+    private LocalDate dataRecebimento;
 
     @OneToOne(mappedBy = "declaracaoAtual")
     private Estudante estudante;
