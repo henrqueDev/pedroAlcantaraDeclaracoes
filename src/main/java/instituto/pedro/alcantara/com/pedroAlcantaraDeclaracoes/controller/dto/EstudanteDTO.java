@@ -1,5 +1,6 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

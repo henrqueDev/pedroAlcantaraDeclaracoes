@@ -1,0 +1,28 @@
+<html xmlns:th="www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Instituições</title>
+</head>
+
+<body>
+    <h1>Cadastro de Instituições</h1>
+
+    <div th:text="${mensagem}"
+        style="color: red"></div>
+
+    <form th:action="@{/instituicoes/store}"
+        method="POST"
+        th:object="${instituicao}">
+        Nome: <input type="text"
+            th:field="*{nome}" /><br /><br />
+        Sigla: <input type="text"
+            th:field="*{sigla}" /><br /><br />
+        Fone: <input type="text"
+            th:field="*{fone}" /><br /><br />
+        <input type="submit"
+            value="Salvar" />
+    </form>
+</body>
+
+</html>

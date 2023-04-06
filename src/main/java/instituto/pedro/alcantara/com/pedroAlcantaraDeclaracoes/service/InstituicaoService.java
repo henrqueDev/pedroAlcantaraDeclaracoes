@@ -1,5 +1,6 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,12 +38,12 @@ public class InstituicaoService{
         novaInstituicao.setSigla(i.getSigla());
         novaInstituicao.setFone(i.getFone());
         novaInstituicao.setAlunos(this.converterA(i.getAlunos()));
+        
         return this.instituicaoRepository.save(novaInstituicao);
     }
 
     private List<Estudante> converterA(List<EstudanteDTO> alunos){
-
-        return alunos.stream().map(
+        return alunos == null ? new ArrayList<Estudante>() : alunos.stream().map(
             item -> {
                 Estudante e = new Estudante();
                 Instituicao i = null;

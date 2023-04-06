@@ -8,11 +8,10 @@ import javax.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.HttpStatus;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
@@ -21,7 +20,7 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.InstituicaoService;
 import lombok.RequiredArgsConstructor;
 
-@RestController
+@Controller
 @RequestMapping("/instituicoes")
 @RequiredArgsConstructor
 
@@ -29,6 +28,22 @@ public class InstituicaoController {
     
     private final InstituicaoService instituicaoService;
     // private final EstudanteService estudanteService;
+
+    @GetMapping
+    @RequestMapping("/list")
+    public String index(Model model) {
+
+        model.addAttribute("instituicoes", getAll());
+        return "instituicoes/list";
+    }
+
+    @GetMapping
+    @RequestMapping("/create")
+    public String create(InstituicaoDTO instituicao, Model model) {
+
+        model.addAttribute("instituicao", instituicao);
+        return "instituicoes/form";
+    }
 
     @GetMapping
     public List<InstituicaoDTO> getAll(){
@@ -48,10 +63,13 @@ public class InstituicaoController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Integer salvar(@RequestBody @Valid InstituicaoDTO i) {
-        Instituicao instituicao = this.instituicaoService.save(i);
-        return instituicao.getId();
+    @RequestMapping("/store")
+
+    public String salvar(@Valid InstituicaoDTO i, Model model) {
+        this.instituicaoService.save(i);
+
+        model.addAttribute("instituicoes", getAll());
+        return "instituicoes/list";
     }
 
     private List<EstudanteDTO> converterEstudanteDTO(List<Estudante> e){

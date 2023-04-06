@@ -1,0 +1,32 @@
+<html xmlns:th="www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Instituições</title>
+</head>
+
+<body>
+    <h1>Lista de Instituições</h1>
+<!-- 
+    <div th:text="${mensagem}"
+        style="color: red"></div> -->
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Sigla</th>
+                <th>Fone</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="instituicao : ${instituicoes}">
+                <td th:text="${instituicao.nome}"></td>
+                <td th:text="${instituicao.sigla}"></td>
+                <td th:text="${instituicao.fone}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>
