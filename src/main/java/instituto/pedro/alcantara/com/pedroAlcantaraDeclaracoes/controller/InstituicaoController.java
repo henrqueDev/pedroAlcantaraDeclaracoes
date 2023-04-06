@@ -8,8 +8,10 @@ import javax.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
@@ -31,18 +33,20 @@ public class InstituicaoController {
 
     @GetMapping
     @RequestMapping("/list")
-    public String index(Model model) {
+    public ModelAndView index(ModelAndView model) {
 
-        model.addAttribute("instituicoes", getAll());
-        return "instituicoes/list";
+        model.setViewName("instituicoes/list");
+        model.addObject("instituicoes", getAll());
+        return model;
     }
 
     @GetMapping
     @RequestMapping("/create")
-    public String create(InstituicaoDTO instituicao, Model model) {
+    public ModelAndView create(InstituicaoDTO instituicao, ModelAndView model) {
 
-        model.addAttribute("instituicao", instituicao);
-        return "instituicoes/form";
+        model.setViewName("instituicoes/form");
+        model.addObject("instituicao", instituicao);
+        return model;
     }
 
     @GetMapping
@@ -64,12 +68,12 @@ public class InstituicaoController {
 
     @PostMapping
     @RequestMapping("/store")
-
-    public String salvar(@Valid InstituicaoDTO i, Model model) {
+    public String salvar(@Valid InstituicaoDTO i, Model model, RedirectAttributes ra) {
         this.instituicaoService.save(i);
 
+        ra.addFlashAttribute("mensagem", "A instituição foi Cadastrada com Sucesso!");
         model.addAttribute("instituicoes", getAll());
-        return "instituicoes/list";
+        return "redirect:list";
     }
 
     private List<EstudanteDTO> converterEstudanteDTO(List<Estudante> e){

@@ -6,10 +6,9 @@ import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
@@ -30,9 +29,11 @@ public class EstudanteController {
 
     @GetMapping
     @RequestMapping("/list")
-    public String list(Model model) {
-        model.addAttribute("estudantes", estudanteService.getAll());
-        return "estudantes/list";
+    public ModelAndView list(ModelAndView model) {
+        model.setViewName("estudantes/list");
+        model.addObject("estudantes", estudanteService.getAll());
+        
+        return model;
     }
 
     @GetMapping
@@ -42,20 +43,22 @@ public class EstudanteController {
 
     @GetMapping
     @RequestMapping("/create")
-    public String create(Estudante estudante, Model model) {
-
-        model.addAttribute("estudante", estudante);
-        model.addAttribute("instituicoes", instituicaoService.getAll());
-        return "estudantes/form";
+    public ModelAndView create(Estudante estudante, ModelAndView model) {
+        model.setViewName("estudantes/form");
+        model.addObject("estudante", estudante);
+        model.addObject("instituicoes", instituicaoService.getAll());
+        
+        return model;
     }
 
     @PostMapping
     @RequestMapping("/store")
-    public String saveEstudante(@Valid EstudanteDTO estudante, Model model) throws Exception{
+    public String saveEstudante(@Valid EstudanteDTO estudante, Model model, RedirectAttributes ra) throws Exception{
         this.estudanteService.cadastrar(estudante);
 
         model.addAttribute("estudantes", estudanteService.getAll());
-        return "estudantes/list";
+        ra.addFlashAttribute("mensagem", "Estudante Cadastrado com Sucesso!");
+        return "redirect:list";
     }
 
 }
