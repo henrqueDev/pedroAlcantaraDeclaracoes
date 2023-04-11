@@ -1,6 +1,7 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -9,12 +10,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.DeclaracaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Declaracao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.EstudanteService;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.InstituicaoService;
 import lombok.RequiredArgsConstructor;
@@ -40,22 +46,25 @@ public class EstudanteController {
         return this.estudanteService.getAll();
     }
 
-    @GetMapping
-    @RequestMapping("/create")
-    public String create(Estudante estudante, Model model) {
+    private DeclaracaoDTO converterDeclaracaoDTO(Declaracao declaracao){
+           return DeclaracaoDTO
+                .builder()
+                    .id(declaracao.getId())
+                    .observacao(declaracao.getObservacao())
+                    .dataRecebimento(declaracao.getDataRecebimento())
+                    .estudante(declaracao.getEstudante().getMatricula())
+                .build();
+        }
 
-        model.addAttribute("estudante", estudante);
-        model.addAttribute("instituicoes", instituicaoService.getAll());
-        return "estudantes/form";
-    }
-
-    @PostMapping
-    @RequestMapping("/store")
-    public String saveEstudante(@Valid EstudanteDTO estudante, Model model) throws Exception{
-        this.estudanteService.cadastrar(estudante);
-
-        model.addAttribute("estudantes", estudanteService.getAll());
-        return "estudantes/list";
+    private EstudanteDTO converter(Estudante i){
+        
+        return EstudanteDTO.builder()
+        .matricula(i.getMatricula())
+        .nome(i.getNome())
+        .instituicaoAtual(i.getInstituicaoAtual().getId())
+        .declaracaoAtual(this.converterDeclaracaoDTO(i.getDeclaracaoAtual()))
+        .build();
+            
     }
 
 }

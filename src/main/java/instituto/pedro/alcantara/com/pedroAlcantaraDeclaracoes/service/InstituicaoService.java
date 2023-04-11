@@ -27,10 +27,6 @@ public class InstituicaoService{
         return this.instituicaoRepository.findAll();
     }
 
-    public Optional<Instituicao> getAllAlunosByInstituicao(Integer id){
-        return this.instituicaoRepository.findInstituicaoFetchAlunos(id);
-    }
-
     @Transactional
     public Instituicao save(InstituicaoDTO i) {
         Instituicao novaInstituicao = new Instituicao();

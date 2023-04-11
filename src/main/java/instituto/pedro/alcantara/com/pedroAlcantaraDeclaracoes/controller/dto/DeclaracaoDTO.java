@@ -1,6 +1,8 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto;
 
 
+import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,9 +13,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 
-public class EstudanteDTO {
-    private Integer matricula;
-    private String nome;
-    private Integer instituicaoAtual;
-    private DeclaracaoDTO declaracaoAtual;
+public class DeclaracaoDTO {
+    private Integer id;
+    private String observacao;
+    private LocalDate dataRecebimento;
+    private Integer estudante;
 }

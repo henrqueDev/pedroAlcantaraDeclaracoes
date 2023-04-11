@@ -1,5 +1,6 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -45,11 +46,11 @@ public class PeriodoLetivo {
 
     @Column(name="dataInicio")
     @NotNull
-    private LocalDateTime dataInicio;
+    private LocalDate dataInicio;
 
     @Column(name="dataFinal")
     @NotNull
-    private LocalDateTime dataFinal;
+    private LocalDate dataFinal;
 
     @OneToMany(mappedBy = "periodo")
     private List<Declaracao> declaracao;

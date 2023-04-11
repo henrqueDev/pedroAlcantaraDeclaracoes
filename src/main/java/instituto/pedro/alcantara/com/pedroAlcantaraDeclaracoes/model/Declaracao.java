@@ -31,6 +31,12 @@ import lombok.NoArgsConstructor;
 
 public class Declaracao {
 
+    public Declaracao(String observacao, LocalDate dataRecebimento, Estudante estudante ){
+        this.observacao = observacao;
+        this.dataRecebimento = dataRecebimento;
+        this.estudante = estudante;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id")
@@ -43,12 +49,9 @@ public class Declaracao {
     @NotNull
     private LocalDate dataRecebimento;
 
-    @OneToOne(mappedBy = "declaracaoAtual")
-    private Estudante estudante;
-
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="estudante_fk", referencedColumnName = "matricula")
-    private Estudante estudanteId;
+    private Estudante estudante;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="periodo_fk", referencedColumnName = "id")

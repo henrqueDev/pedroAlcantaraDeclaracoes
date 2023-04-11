@@ -8,11 +8,13 @@ import javax.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-
+import org.springframework.http.HttpStatus;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
@@ -20,7 +22,7 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.InstituicaoService;
 import lombok.RequiredArgsConstructor;
 
-@Controller
+@RestController
 @RequestMapping("/instituicoes")
 @RequiredArgsConstructor
 
@@ -54,13 +56,6 @@ public class InstituicaoController {
             }).collect(Collectors.toList());
     }
 
-    @GetMapping
-    @RequestMapping("/{id}/alunos")
-    public InstituicaoDTO getEstudanteByInstituicao(@PathVariable("id") Integer id) throws Exception{   
-        return this.instituicaoService.getAllAlunosByInstituicao(id)
-        .map(e -> converter(e))
-        .orElseThrow(() -> new Exception("Exception"));
-    }
 
     @PostMapping
     @RequestMapping("/store")
