@@ -22,7 +22,7 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.InstituicaoService;
 import lombok.RequiredArgsConstructor;
 
-@RestController
+@Controller
 @RequestMapping("/instituicoes")
 @RequiredArgsConstructor
 
