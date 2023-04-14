@@ -27,8 +27,8 @@ public class EstudanteService {
     @Autowired
     private InstituicaoRepository instituicaoRepository;
 
-    // @Autowired 
-    // private DeclaracaoRepository declaracaoRepository;
+    @Autowired 
+    private DeclaracaoRepository declaracaoRepository;
 
     @Transactional
     public Estudante cadastrar( @Valid EstudanteDTO estudante) throws Exception{
@@ -47,6 +47,19 @@ public class EstudanteService {
         alunos.add(student);
         instituicao.setAlunos(alunos);
         return this.estudanteRepository.save(student);
+    }
+
+
+    @Transactional
+    public Declaracao emitirDeclaracao (@Valid EstudanteDTO estudante) throws Exception{
+        Instituicao instituicao = this.instituicaoRepository.findById(estudante.getInstituicaoAtual())
+        .orElseThrow(() -> new Exception("Deu ruim"));
+        LocalDate data = LocalDate.now();
+        Estudante e = this.estudanteRepository.findById(estudante.getMatricula())
+        .orElseThrow(() -> new Exception("Deu ruim"));
+        Declaracao declaracao = new Declaracao("macacoooorrrr", data, e );
+        e.setDeclaracaoAtual(declaracao);
+        return this.declaracaoRepository.save(declaracao);
     }
 
     public List<Estudante> getAll(){
