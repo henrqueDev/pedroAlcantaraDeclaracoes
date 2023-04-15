@@ -3,6 +3,7 @@ package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service;
 import java.util.Collection;
 import java.util.List;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ public class PeriodoLetivoService {
     @Autowired
     private InstituicaoRepository instituicaoRepository;
 
+    @Transactional
     public void save(@Valid PeriodoLetivo p) {
         periodoLetivoRepository.save(p);
         instituicaoRepository.findAll().forEach(i -> {

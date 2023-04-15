@@ -36,24 +36,20 @@ public class EstudanteService {
         Instituicao instituicao = this.instituicaoRepository.findById(estudante.getInstituicaoAtual())
             .orElseThrow(() -> new Exception("Deu ruim"));
         List<Estudante> alunos = instituicao.getAlunos();
-        // LocalDate data = LocalDate.now();
-        // Declaracao declaracao = new Declaracao("macacoooorrrr", data, student );
-        // this.declaracaoRepository.save(declaracao);
-        // student.setDeclaracaoAtual();
-         student.setNome(estudante.getNome());
-         student.setInstituicaoAtual(instituicao);
-        // student.setDeclaracaoAtual(declaracao);
-        //Estudante student = new Estudante(instituicao, estudante.getNome(), new Declaracao());
+        student.setNome(estudante.getNome());
+        student.setInstituicaoAtual(instituicao);
         alunos.add(student);
         instituicao.setAlunos(alunos);
         return this.estudanteRepository.save(student);
     }
 
 
+
+
     @Transactional
     public Declaracao emitirDeclaracao (@Valid EstudanteDTO estudante) throws Exception{
-        Instituicao instituicao = this.instituicaoRepository.findById(estudante.getInstituicaoAtual())
-        .orElseThrow(() -> new Exception("Deu ruim"));
+        // Instituicao instituicao = this.instituicaoRepository.findById(estudante.getInstituicaoAtual())
+        // .orElseThrow(() -> new Exception("Deu ruim"));
         LocalDate data = LocalDate.now();
         Estudante e = this.estudanteRepository.findById(estudante.getMatricula())
         .orElseThrow(() -> new Exception("Deu ruim"));
