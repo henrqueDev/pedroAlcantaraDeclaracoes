@@ -35,7 +35,8 @@
                 <td th:text="${estudante.matricula}"></td>
                 <td th:text="${estudante.nome}"></td>
                 <td th:text="${estudante.instituicaoAtual.nome}"></td>
-                <td><a th:href="@{'/declaracoes/list/'(${estudante.matricula})}"><button type="button" class="btn btn-primary" th:text="${estudante.declaracaoAtual.id}"></button></a></td>
+                <td th:if="${estudante.declaracaoAtual != null}"><a th:href="@{'/declaracoes/list/'(${estudante.matricula})}"><button type="button" class="btn btn-primary" th:text="${estudante.declaracaoAtual.id}"></button></a></td>
+                <td th:unless="${estudante.declaracaoAtual != null}"><a><button id="matricular" type="button" class="btn btn-primary" th:text="Criar"></button></a></td>
               </tr>
             </tbody>
           </table>

@@ -44,7 +44,8 @@ public class Estudante {
     @Column(name="nome")
     private String nome;
 
-    @OneToOne(mappedBy = "estudante")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="declaracao_fk")
     private Declaracao declaracaoAtual;
 
     @ManyToOne(cascade = CascadeType.ALL)

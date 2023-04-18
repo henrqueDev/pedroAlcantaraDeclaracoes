@@ -49,7 +49,12 @@ public class Declaracao {
     @NotNull
     private LocalDate dataRecebimento;
 
-    @OneToOne(cascade = CascadeType.ALL)
+
+
+    @OneToOne(mappedBy = "declaracaoAtual")
+    private Estudante estudanteDeclarado;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="estudante_fk", referencedColumnName = "matricula")
     private Estudante estudante;
 
