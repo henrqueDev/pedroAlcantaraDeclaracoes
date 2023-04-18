@@ -1,0 +1,30 @@
+<html xmlns:th="www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Periodos letivos</title>
+</head>
+
+<body>
+    <h1>Cadastro de Periodos letivos</h1>
+
+    <div th:text="${mensagem}"
+        style="color: red"></div>
+
+    <form th:action="@{/periodosLetivos/store}"
+        method="POST"
+        th:object="${periodoLetivo}">
+        Ano: <input type="text"
+            th:field="*{ano}" /><br /><br />
+        Periodo: <input type="text"
+            th:field="*{periodo}" /><br /><br />
+        DataInicio: <input type="text"
+            th:field="*{dataInicio}" /><br /><br />
+        DataFinal: <input type="text"
+            th:field="*{dataFinal}" /><br /><br />
+        <input type="submit"
+            value="Salvar" />
+    </form>
+</body>
+
+</html>

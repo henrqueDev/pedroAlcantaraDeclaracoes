@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.PeriodoLetivoDTO;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.PeriodoLetivo;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.InstituicaoRepository;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.PeriodoLetivoRepository;
@@ -23,15 +24,14 @@ public class PeriodoLetivoService {
     @Autowired
     private InstituicaoRepository instituicaoRepository;
 
-    @Transactional
-    public void save(@Valid PeriodoLetivo p) {
+    public void save(@Valid PeriodoLetivo p) throws Exception {
         periodoLetivoRepository.save(p);
-        instituicaoRepository.findAll().forEach(i -> {
-            List<PeriodoLetivo> periodosInstituicao = i.getPeriodos();
-            periodosInstituicao.add(p);
-            i.setPeriodos(periodosInstituicao);
-            i.setPeriodoAtual(p);
-        });
+        Instituicao i = instituicaoRepository.findById(p.getInstituicao().getId())
+            .orElseThrow(() -> new Exception("Deu ruim asoidasnoiads"));
+        List<PeriodoLetivo> periodosInstituicao = i.getPeriodos();
+        periodosInstituicao.add(p);
+        i.setPeriodos(periodosInstituicao);
+        i.setPeriodoAtual(p);
     }
 
     public Collection<PeriodoLetivoDTO> getAll() {

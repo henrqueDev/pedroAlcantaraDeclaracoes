@@ -35,7 +35,7 @@
                 <td th:text="${estudante.matricula}"></td>
                 <td th:text="${estudante.nome}"></td>
                 <td th:text="${estudante.instituicaoAtual.nome}"></td>
-                <td></td>
+                <td><a th:href="@{'/declaracoes/list/'(${estudante.matricula})}"><button type="button" class="btn btn-primary" th:text="${estudante.declaracaoAtual.id}"></button></a></td>
               </tr>
             </tbody>
           </table>

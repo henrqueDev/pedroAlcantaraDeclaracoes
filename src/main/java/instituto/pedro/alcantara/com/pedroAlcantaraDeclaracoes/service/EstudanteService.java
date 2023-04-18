@@ -58,6 +58,10 @@ public class EstudanteService {
         return this.declaracaoRepository.save(declaracao);
     }
 
+    // public Estudante estudantesSemDeclaracao(){
+    //     List<Estudante> estudantes = this.estudanteRepository.findAll();
+    // }
+
     public List<Estudante> getAll(){
         return this.estudanteRepository.findAll();
     }
