@@ -28,15 +28,15 @@ public class PeriodoLetivoController {
     @RequestMapping("/list")
     public String index(Model model) {
 
-        model.addAttribute("instituicoes", new Object());
-        return "instituicoes/list";
+        model.addAttribute("periodoLetivo", new Object());
+        return "periodoLetivo/list";
     }
 
     @GetMapping
     @RequestMapping("/create")
     public String create(PeriodoLetivoDTO PeriodoLetivo, Model model) {
 
-        model.addAttribute("PeriodoLetivo", PeriodoLetivo);
+        model.addAttribute("periodoLetivo", PeriodoLetivo);
         return "periodoLetivo/form";
     }
 
