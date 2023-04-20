@@ -1,11 +1,13 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -47,6 +49,22 @@ public class EstudanteController {
     @GetMapping
     public List<Estudante> getAll(){
         return this.estudanteService.getAll();
+    }
+
+    @RequestMapping("/{id}")
+    public ModelAndView queryEstudante (@PathVariable(value = "id") Integer id, ModelAndView model){
+        Optional<Estudante> estudante  = estudanteService.getById(id);
+        
+        if (estudante.isPresent()) {
+            model.setViewName("estudantes/form");
+            model.addObject("estudante", estudante.get());
+            model.addObject("instituicoes", instituicaoService.getAll());
+        } else {
+            model.setViewName("estudantes/list");
+            model.addObject("estudantes", estudante);
+        }
+
+        return model;
     }
 
     private DeclaracaoDTO converterDeclaracaoDTO(Declaracao declaracao){

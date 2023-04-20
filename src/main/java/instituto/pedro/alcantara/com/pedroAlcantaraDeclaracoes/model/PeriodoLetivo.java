@@ -53,7 +53,7 @@ public class PeriodoLetivo {
     private LocalDate dataFinal;
 
     @OneToMany(mappedBy = "periodo")
-    private List<Declaracao> declaracao;
+    private List<Declaracao> declaracoes;
 
     @ManyToOne
     private Instituicao instituicao;

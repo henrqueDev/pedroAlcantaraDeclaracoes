@@ -2,6 +2,7 @@ package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -64,6 +65,10 @@ public class EstudanteService {
 
     public List<Estudante> getAll(){
         return this.estudanteRepository.findAll();
+    }
+
+    public Optional<Estudante> getById(Integer id){
+        return this.estudanteRepository.findById(id);
     }
     
 }

@@ -64,5 +64,8 @@ public class Instituicao {
     @OneToMany(mappedBy = "instituicaoAtual", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Estudante> alunos;
 
+    public String toString(){
+        return this.nome;
+    }
 
 }
