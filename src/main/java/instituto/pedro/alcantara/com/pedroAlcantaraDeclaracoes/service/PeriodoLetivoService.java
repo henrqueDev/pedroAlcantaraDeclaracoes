@@ -24,14 +24,14 @@ public class PeriodoLetivoService {
     @Autowired
     private InstituicaoRepository instituicaoRepository;
 
-    public void save(@Valid PeriodoLetivo p) throws Exception {
-        periodoLetivoRepository.save(p);
+    public PeriodoLetivo save(@Valid PeriodoLetivo p) throws Exception {
         Instituicao i = instituicaoRepository.findById(p.getInstituicao().getId())
             .orElseThrow(() -> new Exception("Deu ruim asoidasnoiads"));
         List<PeriodoLetivo> periodosInstituicao = i.getPeriodos();
         periodosInstituicao.add(p);
         i.setPeriodos(periodosInstituicao);
         i.setPeriodoAtual(p);
+        return periodoLetivoRepository.save(p);
     }
 
     public Collection<PeriodoLetivoDTO> getAll() {

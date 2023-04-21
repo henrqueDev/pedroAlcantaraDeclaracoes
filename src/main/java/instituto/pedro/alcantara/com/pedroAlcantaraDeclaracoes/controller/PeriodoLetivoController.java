@@ -34,9 +34,9 @@ public class PeriodoLetivoController {
 
     @GetMapping
     @RequestMapping("/create")
-    public String create(PeriodoLetivoDTO PeriodoLetivo, Model model) {
+    public String create(PeriodoLetivo periodoLetivo, Model model) {
 
-        model.addAttribute("periodoLetivo", PeriodoLetivo);
+        model.addAttribute("periodoLetivo", periodoLetivo);
         return "periodoLetivo/form";
     }
 

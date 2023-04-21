@@ -14,6 +14,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -52,6 +54,7 @@ public class PeriodoLetivo {
     @NotNull
     private LocalDate dataFinal;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "periodo")
     private List<Declaracao> declaracoes;
 
