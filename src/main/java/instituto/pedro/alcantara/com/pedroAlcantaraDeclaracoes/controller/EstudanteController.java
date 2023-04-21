@@ -41,6 +41,7 @@ public class EstudanteController {
     @RequestMapping("/list")
     public ModelAndView list(ModelAndView model) {
         model.setViewName("estudantes/list");
+        model.addObject("menu", "estudantes");
         model.addObject("estudantes", estudanteService.getAll());
         
         return model;

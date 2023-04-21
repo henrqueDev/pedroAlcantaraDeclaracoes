@@ -40,6 +40,7 @@ public class InstituicaoController {
     public ModelAndView index(ModelAndView model) {
 
         model.setViewName("instituicoes/list");
+        model.addObject("menu", "instituicoes");
         model.addObject("instituicoes", getAll());
         return model;
     }
