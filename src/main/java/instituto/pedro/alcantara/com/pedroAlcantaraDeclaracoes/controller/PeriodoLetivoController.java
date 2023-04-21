@@ -8,10 +8,12 @@ import javax.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.PeriodoLetivoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.PeriodoLetivo;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.InstituicaoService;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.PeriodoLetivoService;
 import lombok.RequiredArgsConstructor;
 
@@ -21,7 +23,9 @@ import lombok.RequiredArgsConstructor;
 
 public class PeriodoLetivoController {
     
-    private final PeriodoLetivoService PeriodoLetivoService;
+    private final PeriodoLetivoService periodoLetivoService;
+    
+    private final InstituicaoService instituicaoService;
     // private final EstudanteService estudanteService;
 
     @GetMapping
@@ -37,6 +41,7 @@ public class PeriodoLetivoController {
     public String create(PeriodoLetivo periodoLetivo, Model model) {
 
         model.addAttribute("periodoLetivo", periodoLetivo);
+        model.addAttribute("instituicoes", instituicaoService.getAll());
         return "periodoLetivo/form";
     }
 
@@ -52,12 +57,13 @@ public class PeriodoLetivoController {
 
     @PostMapping
     @RequestMapping("/store")
-
-    public String salvar(@Valid PeriodoLetivoDTO i, Model model) {
+    public String salvar(@Valid PeriodoLetivoDTO p, Model model, RedirectAttributes ra) throws Exception {
         // this.PeriodoLetivoService.save(i);
+        this.periodoLetivoService.save(p);
 
-        model.addAttribute("periodoLetivo", new Object());
-        return "periodoLetivo/list";
+        model.addAttribute("periodos", periodoLetivoService.getAll());
+        ra.addFlashAttribute("mensagem", "Periodo Cadastrado com Sucesso!");
+        return "redirect:list";
     }
 
     /* 

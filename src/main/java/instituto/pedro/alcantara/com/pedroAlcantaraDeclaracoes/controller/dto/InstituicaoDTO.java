@@ -2,6 +2,9 @@ package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto;
 
 import java.util.List;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 
 import lombok.AllArgsConstructor;
@@ -15,6 +18,11 @@ import lombok.NoArgsConstructor;
 @Builder
 
 public class InstituicaoDTO {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+
     @NotBlank
     private String nome;
 
