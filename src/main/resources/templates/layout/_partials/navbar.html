@@ -1,0 +1,10 @@
+<div th:fragment="navbar">
+    <nav class="navbar navbar-expand navbar-light d-flex justify-content-between nav-font">
+        <div class="navbar-nav">
+            <a th:classappend="${menu == null} ? 'active'" class="nav-item nav-link" th:href="@{/}">Início</a>
+            <a th:classappend="${menu == 'estudantes'} ? 'active'" class="nav-item nav-link" th:href="@{/estudantes/list}">Estudantes</a>
+            <a th:classappend="${menu == 'instituicoes'} ? 'active'" class="nav-item nav-link" th:href="@{/instituicoes/list}">Instituicoes</a>
+        </div>
+        <!-- <div style="margin-right: 5px;"><a href="#"><button class="btn btn-outline-secondary my-2 my-sm-0">Sair</button></a></div> -->
+    </nav>
+</div>

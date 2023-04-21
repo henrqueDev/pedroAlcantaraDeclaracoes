@@ -1,0 +1,5 @@
+<div class="logo-background mb-0 p-3" th:fragment="header" style="display: flex; justify-content: space-between;">
+    <span class="logo-font"><img th:src="@{/logo/logo.png}" style="height: 4rem;" />Porta</span>
+
+    <div th:replace="~{/layout/_partials/navbar :: navbar}" />
+</div>
