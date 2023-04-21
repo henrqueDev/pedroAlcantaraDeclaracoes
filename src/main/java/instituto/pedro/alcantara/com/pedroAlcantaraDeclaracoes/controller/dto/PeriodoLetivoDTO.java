@@ -25,9 +25,9 @@ public class PeriodoLetivoDTO {
 
     private int ano;
     private int periodo;
-    private LocalDate dataInicio;
-    private LocalDate dataFinal;
+    private String dataInicio;
+    private String dataFinal;
     private List<DeclaracaoDTO> declaracoes;
-    private InstituicaoDTO instituicao;
+    private Integer instituicao;
 
 }

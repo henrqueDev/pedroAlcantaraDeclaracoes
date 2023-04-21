@@ -1,5 +1,7 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 
@@ -24,20 +26,28 @@ public class PeriodoLetivoService {
     @Autowired
     private InstituicaoRepository instituicaoRepository;
 
-    public PeriodoLetivo save(@Valid PeriodoLetivo p) throws Exception {
-        Instituicao i = instituicaoRepository.findById(p.getInstituicao().getId())
+    public PeriodoLetivo save(@Valid PeriodoLetivoDTO p) throws Exception {
+        PeriodoLetivo periodo = new PeriodoLetivo();
+        Instituicao i = instituicaoRepository.findById(p.getInstituicao())
             .orElseThrow(() -> new Exception("Deu ruim asoidasnoiads"));
         List<PeriodoLetivo> periodosInstituicao = i.getPeriodos();
-        periodosInstituicao.add(p);
+        LocalDate dataInicio = LocalDate.parse(p.getDataInicio(), DateTimeFormatter.ISO_LOCAL_DATE);
+        LocalDate dataFinal = LocalDate.parse(p.getDataFinal(), DateTimeFormatter.ISO_LOCAL_DATE);
+        periodo.setAno(p.getAno());
+        periodo.setPeriodo(p.getPeriodo());
+        periodo.setDataInicio(dataInicio);
+        periodo.setDataFinal(dataFinal);
+        periodo.setInstituicao(i);
+        periodosInstituicao.add(periodo);
         i.setPeriodos(periodosInstituicao);
-        i.setPeriodoAtual(p);
-        return periodoLetivoRepository.save(p);
+        i.setPeriodoAtual(periodo);
+        return periodoLetivoRepository.save(periodo);
     }
 
-    public Collection<PeriodoLetivoDTO> getAll() {
-        return null;
+
+    public List<PeriodoLetivo> getAll(){
+        return this.periodoLetivoRepository.findAll();
     }
-   
 
 
 }
