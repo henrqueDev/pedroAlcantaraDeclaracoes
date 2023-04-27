@@ -1,6 +1,5 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto;
 
-
 import java.time.LocalDate;
 
 import javax.persistence.GeneratedValue;
@@ -19,10 +18,10 @@ import lombok.NoArgsConstructor;
 
 public class DeclaracaoDTO {
     @Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    
+
     private String observacao;
-    private LocalDate dataRecebimento;
-    private Integer estudante;
+    private String dataRecebimento;
+    private EstudanteDTO estudante;
 }

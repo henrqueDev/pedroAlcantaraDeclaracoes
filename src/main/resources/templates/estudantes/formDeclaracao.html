@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:insert="~{layout/layout}" th:with="titulo='Cadastrar Estudante'">
+
+<body>
+    <section id="declaracoes-form" layout:fragment="content">
+        
+        <div class="card p-4 mt-4">
+            
+            <h1>Emissão de declaração</h1>
+
+            <form th:action="@{/estudantes/storeDeclaracao}"
+            method="POST"
+            th:object="${declaracao}"
+            class="p-2"
+            style="border-radius: 16px;">
+                <div class="form-group m-2">
+                    <label for="Matricula">Matricula:</label>
+                    <input th:if="declaracao.estudante != null" readonly type="number" id="Matricula" class="form-control" th:field="*{estudante.matricula}" />
+                    <input th:unless="declaracao.estudante != null" type="number" id="Matricula" class="form-control" th:field="*{estudante.matricula}" />
+                </div>
+                <div class="form-group m-2">
+                    <label for="Observacao">Observacao:</label>
+                    <input type="text" id="Observacao" class="form-control" th:field="*{observacao}" />
+                </div>
+                <div id="ActionButtons" class="mx-2 mt-4" style="display: flex; justify-content: end; gap: 0 6px;">
+                    <a th:href="@{list}">
+                        <button type="button" class="btn btn-secondary">Cancelar</button>
+                    </a>
+                    
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+
+            </form>
+        </div>
+    </section>
+
+</body>
+
+<script>
+     document.getElementById('estudante').readOnly = true;
+</script>
+
+</html>

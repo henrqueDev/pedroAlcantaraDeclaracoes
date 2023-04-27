@@ -1,5 +1,7 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,19 +45,19 @@ public class EstudanteController {
         model.setViewName("estudantes/list");
         model.addObject("menu", "estudantes");
         model.addObject("estudantes", estudanteService.getAll());
-        
+
         return model;
     }
 
     @GetMapping
-    public List<Estudante> getAll(){
+    public List<Estudante> getAll() {
         return this.estudanteService.getAll();
     }
 
     @RequestMapping("/{id}")
-    public ModelAndView queryEstudante (@PathVariable(value = "id") Integer id, ModelAndView model){
-        Optional<Estudante> estudante  = estudanteService.getById(id);
-        
+    public ModelAndView queryEstudante(@PathVariable(value = "id") Integer id, ModelAndView model) {
+        Optional<Estudante> estudante = estudanteService.getById(id);
+
         if (estudante.isPresent()) {
             model.setViewName("estudantes/form");
             model.addObject("estudante", estudante.get());
@@ -68,38 +70,64 @@ public class EstudanteController {
         return model;
     }
 
-    private DeclaracaoDTO converterDeclaracaoDTO(Declaracao declaracao){
-           return DeclaracaoDTO
-                .builder()
-                    .id(declaracao.getId())
-                    .observacao(declaracao.getObservacao())
-                    .dataRecebimento(declaracao.getDataRecebimento())
-                    .estudante(declaracao.getEstudante().getMatricula())
-                .build();
-        }
+    // LocalDate dataInicio = LocalDate.parse(p.getDataInicio(),
+    // DateTimeFormatter.ISO_LOCAL_DATE);
+    private DeclaracaoDTO converterDeclaracaoDTO(Declaracao declaracao) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
 
-    private EstudanteDTO converter(Estudante i){
-        
-        return EstudanteDTO.builder()
-        .matricula(i.getMatricula())
-        .nome(i.getNome())
-        .instituicaoAtual(i.getInstituicaoAtual().getId())
-        .declaracaoAtual(this.converterDeclaracaoDTO(i.getDeclaracaoAtual()))
-        .build();
+        return DeclaracaoDTO
+                .builder()
+                .id(declaracao.getId())
+                .observacao(declaracao.getObservacao())
+                .dataRecebimento(declaracao.getDataRecebimento().format(formatter))
+                .estudante(this.converterEstudanteDTO(declaracao.getEstudante()))
+                .build();
     }
+
+    private EstudanteDTO converterEstudanteDTO(Estudante i) {
+
+        return EstudanteDTO.builder()
+                .matricula(i.getMatricula())
+                .nome(i.getNome())
+                .instituicaoAtual(i.getInstituicaoAtual().getId())
+                .declaracaoAtual(this.converterDeclaracaoDTO(i.getDeclaracaoAtual()))
+                .build();
+    }
+
     @GetMapping
     @RequestMapping("/create")
     public ModelAndView create(Estudante estudante, ModelAndView model) {
         model.setViewName("estudantes/form");
         model.addObject("estudante", estudante);
         model.addObject("instituicoes", instituicaoService.getAll());
-        
+
+        return model;
+    }
+
+    @GetMapping
+    @RequestMapping("/createDeclaracao/{id}")
+    public ModelAndView createDeclaracao(@PathVariable(name = "id") Integer id, Declaracao declaracao,
+            ModelAndView model) {
+        Optional<Estudante> e = this.estudanteService.getById(id);
+        declaracao.setEstudante(e.get());
+        model.setViewName("estudantes/formDeclaracao");
+        model.addObject("declaracao", declaracao);
         return model;
     }
 
     @PostMapping
+    @RequestMapping("/storeDeclaracao")
+    public String saveDeclaracao(@Valid DeclaracaoDTO declaracao, Model model, RedirectAttributes ra) throws Exception {
+        this.estudanteService.emitirDeclaracao(declaracao);
+
+        model.addAttribute("estudantes", estudanteService.getAll());
+        ra.addFlashAttribute("mensagem", "Estudante Cadastrado com Sucesso!");
+        return "redirect:list";
+    }
+
+    @PostMapping
     @RequestMapping("/store")
-    public String saveEstudante(@Valid EstudanteDTO estudante, Model model, RedirectAttributes ra) throws Exception{
+    public String saveEstudante(@Valid EstudanteDTO estudante, Model model, RedirectAttributes ra) throws Exception {
         this.estudanteService.cadastrar(estudante);
 
         model.addAttribute("estudantes", estudanteService.getAll());

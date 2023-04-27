@@ -26,40 +26,34 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 
-@Table(name="declaracoes")
-
+@Table(name = "declaracoes")
 
 public class Declaracao {
 
-    public Declaracao(String observacao, LocalDate dataRecebimento, Estudante estudante ){
+    public Declaracao(String observacao, LocalDate dataRecebimento, Estudante estudante) {
         this.observacao = observacao;
         this.dataRecebimento = dataRecebimento;
         this.estudante = estudante;
+        this.periodo = estudante.getInstituicaoAtual().getPeriodoAtual();
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="id")
+    @Column(name = "id")
     private Integer id;
 
-    @Column(name="observacao")
+    @Column(name = "observacao")
     private String observacao;
 
-    @Column(name="dataRecebimento")
+    @Column(name = "dataRecebimento")
     @NotNull
     private LocalDate dataRecebimento;
 
-
-
     @OneToOne(mappedBy = "declaracaoAtual")
-    private Estudante estudanteDeclarado;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="estudante_fk", referencedColumnName = "matricula")
     private Estudante estudante;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="periodo_fk", referencedColumnName = "id")
+    @JoinColumn(name = "periodo_fk", referencedColumnName = "id")
     private PeriodoLetivo periodo;
 
 }
