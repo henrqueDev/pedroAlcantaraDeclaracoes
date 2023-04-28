@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.PeriodoLetivoDTO;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.PeriodoLetivo;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.InstituicaoRepository;
@@ -19,7 +20,7 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.Period
 
 @Service
 public class PeriodoLetivoService {
-    
+
     @Autowired
     private PeriodoLetivoRepository periodoLetivoRepository;
 
@@ -29,7 +30,7 @@ public class PeriodoLetivoService {
     public PeriodoLetivo save(@Valid PeriodoLetivoDTO p) throws Exception {
         PeriodoLetivo periodo = new PeriodoLetivo();
         Instituicao i = instituicaoRepository.findById(p.getInstituicao())
-            .orElseThrow(() -> new Exception("Deu ruim asoidasnoiads"));
+                .orElseThrow(() -> new InstituicaoNotFoundException());
         List<PeriodoLetivo> periodosInstituicao = i.getPeriodos();
         LocalDate dataInicio = LocalDate.parse(p.getDataInicio(), DateTimeFormatter.ISO_LOCAL_DATE);
         LocalDate dataFinal = LocalDate.parse(p.getDataFinal(), DateTimeFormatter.ISO_LOCAL_DATE);
@@ -44,10 +45,8 @@ public class PeriodoLetivoService {
         return periodoLetivoRepository.save(periodo);
     }
 
-
-    public List<PeriodoLetivo> getAll(){
+    public List<PeriodoLetivo> getAll() {
         return this.periodoLetivoRepository.findAll();
     }
-
 
 }

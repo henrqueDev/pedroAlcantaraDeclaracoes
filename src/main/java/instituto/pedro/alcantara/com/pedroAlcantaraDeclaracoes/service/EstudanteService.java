@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.DeclaracaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoNotFoundException;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoWithoutPeriodoException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Declaracao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
@@ -36,7 +38,7 @@ public class EstudanteService {
     public Estudante cadastrar(@Valid EstudanteDTO estudante) throws Exception {
         Estudante student = new Estudante();
         Instituicao instituicao = this.instituicaoRepository.findById(estudante.getInstituicaoAtual())
-                .orElseThrow(() -> new Exception("Deu ruim"));
+                .orElseThrow(() -> new InstituicaoNotFoundException());
         List<Estudante> alunos = instituicao.getAlunos();
         student.setNome(estudante.getNome());
         student.setInstituicaoAtual(instituicao);
@@ -49,14 +51,14 @@ public class EstudanteService {
     public void emitirDeclaracao(@Valid DeclaracaoDTO d) throws Exception {
         LocalDate dataRecebimento = LocalDate.now();
         Estudante e = this.estudanteRepository.findById(d.getEstudante().getMatricula())
-                .orElseThrow(() -> new Exception("Deu ruim"));
+                .orElseThrow(() -> new InstituicaoNotFoundException());
         try {
             if (e.getInstituicaoAtual().getPeriodoAtual() != null) {
                 Declaracao declaracao = new Declaracao(d.getObservacao(), dataRecebimento, e);
                 e.setDeclaracaoAtual(declaracao);
                 this.declaracaoRepository.save(declaracao);
             } else {
-                new Exception("aaaabbbbb");
+                new InstituicaoWithoutPeriodoException();
             }
         } catch (Exception exception) {
             System.out.println(exception);

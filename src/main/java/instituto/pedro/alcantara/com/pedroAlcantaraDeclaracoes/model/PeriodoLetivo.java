@@ -2,6 +2,7 @@ package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -12,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -29,36 +31,42 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 
-@Table(name="periodoLetivo")
+@Table(name = "periodoLetivo")
 
 public class PeriodoLetivo {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="id")
+    @Column(name = "id")
     private Integer id;
 
-    @Column(name="ano")
+    @Column(name = "ano")
     @NotNull
     private int ano;
 
-    @Column(name="periodo")
+    @Column(name = "periodo")
     @NotNull
     private int periodo;
 
-    @Column(name="dataInicio")
+    @Column(name = "dataInicio")
     @NotNull
     private LocalDate dataInicio;
 
-    @Column(name="dataFinal")
+    @Column(name = "dataFinal")
     @NotNull
+    @Future(message = "A data necessita ser futura")
     private LocalDate dataFinal;
-
+    // 1 - 30/1 to 30/06 2- 01/07 to 31/12
+    // 31/1 to 30/07
     @JsonIgnore
     @OneToMany(mappedBy = "periodo")
     private List<Declaracao> declaracoes;
 
     @ManyToOne
     private Instituicao instituicao;
+
+    public boolean checkLastPeriodoData(PeriodoLetivo p) {
+        return this.dataInicio.isAfter(p.dataInicio) && this.dataFinal.isAfter(dataFinal) ? true : false;
+    }
 
 }

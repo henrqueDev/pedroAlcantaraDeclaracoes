@@ -22,9 +22,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 
 public class PeriodoLetivoController {
-    
+
     private final PeriodoLetivoService periodoLetivoService;
-    
+
     private final InstituicaoService instituicaoService;
     // private final EstudanteService estudanteService;
 
@@ -32,7 +32,7 @@ public class PeriodoLetivoController {
     @RequestMapping("/list")
     public String index(Model model) {
 
-        model.addAttribute("periodoLetivo", new Object());
+        model.addAttribute("periodosLetivos", this.periodoLetivoService.getAll());
         return "periodoLetivo/list";
     }
 
@@ -45,15 +45,16 @@ public class PeriodoLetivoController {
         return "periodoLetivo/form";
     }
 
-    /*@GetMapping
-    public List<PeriodoLetivoDTO> getAll(){
-
-        return this.PeriodoLetivoService.getAll()
-            .stream().map(i -> {
-                return this.converter(i);
-            }).collect(Collectors.toList());
-    }*/
-
+    /*
+     * @GetMapping
+     * public List<PeriodoLetivoDTO> getAll(){
+     * 
+     * return this.PeriodoLetivoService.getAll()
+     * .stream().map(i -> {
+     * return this.converter(i);
+     * }).collect(Collectors.toList());
+     * }
+     */
 
     @PostMapping
     @RequestMapping("/store")
@@ -66,18 +67,18 @@ public class PeriodoLetivoController {
         return "redirect:list";
     }
 
-    /* 
-    private PeriodoLetivoDTO converter(PeriodoLetivo i){
-        
-        return PeriodoLetivoDTO.builder()
-        .nome(i.getNome())
-        .sigla(i.getSigla())
-        .fone(i.getFone())
-        .alunos(this.converterEstudanteDTO(i.getAlunos()))
-        .build();
-            
-    }
-    */
+    /*
+     * private PeriodoLetivoDTO converter(PeriodoLetivo i){
+     * 
+     * return PeriodoLetivoDTO.builder()
+     * .nome(i.getNome())
+     * .sigla(i.getSigla())
+     * .fone(i.getFone())
+     * .alunos(this.converterEstudanteDTO(i.getAlunos()))
+     * .build();
+     * 
+     * }
+     */
 
 }
-//a
+// a

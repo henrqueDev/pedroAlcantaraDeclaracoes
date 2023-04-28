@@ -1,32 +1,40 @@
-<html xmlns:th="www.thymeleaf.org">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Periodos letivos</title>
-</head>
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:insert="~{layout/layout}" th:with="titulo='Instituições'">
 
 <body>
-    <h1>Lista de Periodos letivos</h1>
-<!-- 
-    <div th:text="${mensagem}"
-        style="color: red"></div> -->
+  <section id="periodosLetivos-table" layout:fragment="content">
+  
+    <div class="container mt-4">
 
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Sigla</th>
-                <th>Fone</th>
-            </tr>
-        </thead>
-        <tbody>
+        <div style="display: flex; justify-content: space-between;">
+            <h1>Lista de PeriodosLetivos</h1>
+            <a th:href="@{create}" style="margin: 6px;">
+                <button type="button" class="btn btn-info text-light" style="padding: 8px;">Cadastrar</button>
+            </a>
+        </div>
+        
+        <div th:if="${mensagem}" th:text="${mensagem}" class="alert alert-success"></div>
+    
+        <table class="table">
+            <thead class="bg-info">
+              <tr>
+                <th scope="col"><span class="text-light">Ano</span></th>
+                <th scope="col"><span class="text-light">Periodo</span></th>
+                <th scope="col"><span class="text-light">Instituicao</span></th>
+              </tr>
+            </thead>
+            <tbody>
+             
             <tr th:each="periodoLetivo : ${periodosLetivos}">
                 <td th:text="${periodoLetivo.ano}"></td>
-                <td th:text="${periodoLetivo.}"></td>
-                <td th:text="${periodoLetivo.fone}"></td>
+                <td th:text="${periodoLetivo.periodo}"></td>
+                <td th:text="${periodoLetivo.instituicao.nome}"></td>
             </tr>
-        </tbody>
-    </table>
+            </tbody>
+          </table>
+    </div>
+  </section>
 </body>
 
 </html>
+        
