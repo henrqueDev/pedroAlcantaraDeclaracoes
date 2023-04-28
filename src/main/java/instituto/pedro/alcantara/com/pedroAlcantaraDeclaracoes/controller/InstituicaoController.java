@@ -67,6 +67,7 @@ public class InstituicaoController {
     @PostMapping
     @RequestMapping("/store")
     public String salvar(@Valid InstituicaoDTO i, Model model, RedirectAttributes ra) {
+        
         this.instituicaoService.save(i);
 
         ra.addFlashAttribute("mensagem", "A instituição foi Cadastrada com Sucesso!");

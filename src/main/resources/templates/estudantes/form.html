@@ -15,13 +15,14 @@
             style="border-radius: 16px;">
 
                 <div class="form-group m-2">
-                    <label for="Nome">Nome:</label>
-                    <input type="text" id="Nome" class="form-control" th:field="*{nome}" />
+                    <label for="nome">Nome:</label>
+                    <input type="text" id="nome" class="form-control" th:field="*{nome}" />
+                    <p th:if="${#fields.hasErrors('nome')}" th:errorclass="error" th:errors="*{nome}" class="alert alert-danger" />
                 </div>
 
                 <div class="form-group m-2">
-                    <label for="Instituicao">Instituição:</label>
-                    <select class="form-control" id="Instituicao" name="instituicao" th:field="*{instituicaoAtual}">
+                    <label for="instituicao">Instituição:</label>
+                    <select class="form-control" id="instituicao" name="instituicao" th:field="*{instituicaoAtual}">
                         <option value="0">Selecione</option>
                         <option th:each="instituicao : ${instituicoes}" th:value="${instituicao.id}" th:text="${instituicao.nome}"></option>
                     </select>

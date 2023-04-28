@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.InstituicaoRepository;
@@ -46,7 +47,7 @@ public class InstituicaoService{
                 try {
                     i = this.instituicaoRepository
                         .findById(item.getInstituicaoAtual())
-                        .orElseThrow(() -> new Exception("asjisadji"));
+                        .orElseThrow(() -> new InstituicaoNotFoundException());
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }

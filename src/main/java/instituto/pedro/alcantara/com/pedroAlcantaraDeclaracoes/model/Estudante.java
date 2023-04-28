@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -41,7 +42,9 @@ public class Estudante {
     @Column(name="matricula")
     private Integer matricula;
 
+
     @Column(name="nome")
+    @NotBlank(message = "Campo obrigatório!")
     private String nome;
 
     @OneToOne(cascade = CascadeType.ALL)

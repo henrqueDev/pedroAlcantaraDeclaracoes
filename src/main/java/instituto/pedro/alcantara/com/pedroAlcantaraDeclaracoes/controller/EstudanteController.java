@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.DeclaracaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
@@ -127,12 +128,17 @@ public class EstudanteController {
 
     @PostMapping
     @RequestMapping("/store")
-    public String saveEstudante(@Valid EstudanteDTO estudante, Model model, RedirectAttributes ra) throws Exception {
+    public ModelAndView saveEstudante(@Valid EstudanteDTO estudante, BindingResult validation, ModelAndView model, RedirectAttributes ra) throws Exception {
+        if(validation.hasErrors()){
+            model.setViewName("estudantes/form");
+            model.addObject("estudante", estudante);
+            model.addObject("instituicoes", instituicaoService.getAll());
+            return model;
+        }
         this.estudanteService.cadastrar(estudante);
-
-        model.addAttribute("estudantes", estudanteService.getAll());
+        model.setViewName("redirect:list");
         ra.addFlashAttribute("mensagem", "Estudante Cadastrado com Sucesso!");
-        return "redirect:list";
+        return model;
     }
 
 }

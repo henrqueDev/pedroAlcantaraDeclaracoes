@@ -50,6 +50,7 @@ public class EstudanteService {
     @Transactional
     public void emitirDeclaracao(@Valid DeclaracaoDTO d) throws Exception {
         LocalDate dataRecebimento = LocalDate.now();
+        
         Estudante e = this.estudanteRepository.findById(d.getEstudante().getMatricula())
                 .orElseThrow(() -> new InstituicaoNotFoundException());
         try {

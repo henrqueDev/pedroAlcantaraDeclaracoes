@@ -1,11 +1,13 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Declaracao;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,4 +26,5 @@ public class DeclaracaoDTO {
     private String observacao;
     private String dataRecebimento;
     private EstudanteDTO estudante;
+
 }
