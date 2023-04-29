@@ -9,12 +9,10 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.stereotype.Controller;
@@ -40,19 +38,13 @@ public class EstudanteController {
     private final EstudanteService estudanteService;
     private final InstituicaoService instituicaoService;
 
-    @GetMapping
-    @RequestMapping("/list")
+    @GetMapping(value = "/list")
     public ModelAndView list(ModelAndView model) {
         model.setViewName("estudantes/list");
         model.addObject("menu", "estudantes");
         model.addObject("estudantes", estudanteService.getAll());
 
         return model;
-    }
-
-    @GetMapping
-    public List<Estudante> getAll() {
-        return this.estudanteService.getAll();
     }
 
     @RequestMapping("/{id}")
@@ -95,9 +87,8 @@ public class EstudanteController {
                 .build();
     }
 
-    @GetMapping
-    @RequestMapping("/create")
-    public ModelAndView create(Estudante estudante, ModelAndView model) {
+    @GetMapping(value = "/create")
+    public ModelAndView create(EstudanteDTO estudante, ModelAndView model) {
         model.setViewName("estudantes/form");
         model.addObject("estudante", estudante);
         model.addObject("instituicoes", instituicaoService.getAll());
@@ -126,13 +117,14 @@ public class EstudanteController {
         return "redirect:list";
     }
 
-    @PostMapping
-    @RequestMapping("/store")
-    public ModelAndView saveEstudante(@Valid EstudanteDTO estudante, BindingResult validation, ModelAndView model, RedirectAttributes ra) throws Exception {
-        if(validation.hasErrors()){
-            model.setViewName("estudantes/form");
+    @PostMapping(value = "/create")
+    public ModelAndView saveEstudante(@Valid @ModelAttribute("estudante") EstudanteDTO estudante,
+            BindingResult validation, ModelAndView model,
+            RedirectAttributes ra) throws Exception {
+        if (validation.hasErrors()) {
             model.addObject("estudante", estudante);
             model.addObject("instituicoes", instituicaoService.getAll());
+            model.setViewName("estudantes/form");
             return model;
         }
         this.estudanteService.cadastrar(estudante);

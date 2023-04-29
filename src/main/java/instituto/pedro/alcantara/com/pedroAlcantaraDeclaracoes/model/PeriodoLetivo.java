@@ -66,7 +66,7 @@ public class PeriodoLetivo {
     private Instituicao instituicao;
 
     public boolean checkLastPeriodoData(PeriodoLetivo p) {
-        return this.dataInicio.isAfter(p.dataInicio) && this.dataFinal.isAfter(dataFinal) ? true : false;
+        return this.dataInicio.isAfter(p.getDataFinal()) && this.dataFinal.isAfter(p.getDataFinal()) ? true : false;
     }
 
 }

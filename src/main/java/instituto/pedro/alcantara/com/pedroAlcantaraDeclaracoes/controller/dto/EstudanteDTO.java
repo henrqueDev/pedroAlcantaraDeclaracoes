@@ -1,13 +1,14 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto;
 
-
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 
 import org.springframework.data.repository.NoRepositoryBean;
 
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,11 +21,15 @@ import lombok.NoArgsConstructor;
 
 public class EstudanteDTO {
     @Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer matricula;
-    
+
     @NotBlank(message = "Campo é obrigatório!")
+    @NotNull
+    @NotEmpty(message = "obrigatorio")
     private String nome;
+
     private Integer instituicaoAtual;
     private DeclaracaoDTO declaracaoAtual;
+
 }
