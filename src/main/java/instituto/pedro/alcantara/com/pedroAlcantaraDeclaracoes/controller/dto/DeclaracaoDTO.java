@@ -19,8 +19,6 @@ import lombok.NoArgsConstructor;
 @Builder
 
 public class DeclaracaoDTO {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     private String observacao;

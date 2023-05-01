@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -47,13 +48,13 @@ public class EstudanteController {
         return model;
     }
 
-    @RequestMapping("/{id}")
+    @RequestMapping("/create/{id}")
     public ModelAndView queryEstudante(@PathVariable(value = "id") Integer id, ModelAndView model) {
         Optional<Estudante> estudante = estudanteService.getById(id);
-
         if (estudante.isPresent()) {
             model.setViewName("estudantes/form");
-            model.addObject("estudante", estudante.get());
+            model.addObject("method", "PUT");
+            model.addObject("estudante", this.converterEstudanteDTO(estudante.get()));
             model.addObject("instituicoes", instituicaoService.getAll());
         } else {
             model.setViewName("estudantes/list");
@@ -78,12 +79,13 @@ public class EstudanteController {
     }
 
     private EstudanteDTO converterEstudanteDTO(Estudante i) {
-
+        Integer instituicao = i.getInstituicaoAtual() != null ? i.getInstituicaoAtual().getId() : null;
+        Integer declaracao = i.getDeclaracaoAtual() != null ? i.getDeclaracaoAtual().getId() : null;
         return EstudanteDTO.builder()
                 .matricula(i.getMatricula())
                 .nome(i.getNome())
-                .instituicaoAtual(i.getInstituicaoAtual().getId())
-                .declaracaoAtual(this.converterDeclaracaoDTO(i.getDeclaracaoAtual()))
+                .instituicaoAtual(instituicao)
+                .declaracaoAtual(declaracao)
                 .build();
     }
 
@@ -92,7 +94,16 @@ public class EstudanteController {
         model.setViewName("estudantes/form");
         model.addObject("estudante", estudante);
         model.addObject("instituicoes", instituicaoService.getAll());
+        model.addObject("method", "POST");
+        return model;
+    }
 
+    @GetMapping
+    @RequestMapping("/createDeclaracao")
+    public ModelAndView createDeclaracao(Declaracao declaracao,
+            ModelAndView model) {
+        model.setViewName("estudantes/formDeclaracao");
+        model.addObject("declaracao", declaracao);
         return model;
     }
 
@@ -128,6 +139,22 @@ public class EstudanteController {
             return model;
         }
         this.estudanteService.cadastrar(estudante);
+        model.setViewName("redirect:list");
+        ra.addFlashAttribute("mensagem", "Estudante Cadastrado com Sucesso!");
+        return model;
+    }
+
+    @PutMapping(value = "/create")
+    public ModelAndView updateEstudante(@Valid @ModelAttribute("estudante") EstudanteDTO estudante,
+            BindingResult validation, ModelAndView model,
+            RedirectAttributes ra) throws Exception {
+        if (validation.hasErrors()) {
+            model.addObject("estudante", estudante);
+            model.addObject("instituicoes", instituicaoService.getAll());
+            model.setViewName("estudantes/form");
+            return model;
+        }
+        this.estudanteService.update(estudante);
         model.setViewName("redirect:list");
         ra.addFlashAttribute("mensagem", "Estudante Cadastrado com Sucesso!");
         return model;

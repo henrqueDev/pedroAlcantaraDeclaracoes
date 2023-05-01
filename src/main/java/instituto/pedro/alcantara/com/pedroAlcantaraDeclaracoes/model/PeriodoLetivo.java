@@ -54,10 +54,10 @@ public class PeriodoLetivo {
 
     @Column(name = "dataFinal")
     @NotNull
-    @Future(message = "A data necessita ser futura")
     private LocalDate dataFinal;
     // 1 - 30/1 to 30/06 2- 01/07 to 31/12
     // 31/1 to 30/07
+
     @JsonIgnore
     @OneToMany(mappedBy = "periodo")
     private List<Declaracao> declaracoes;

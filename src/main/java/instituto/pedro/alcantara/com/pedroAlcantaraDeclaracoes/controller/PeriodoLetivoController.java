@@ -6,11 +6,15 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.PeriodoLetivoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.PeriodoLetivo;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.InstituicaoService;
@@ -58,13 +62,22 @@ public class PeriodoLetivoController {
 
     @PostMapping
     @RequestMapping("/store")
-    public String salvar(@Valid PeriodoLetivoDTO p, Model model, RedirectAttributes ra) throws Exception {
+    public ModelAndView salvar(@Valid @ModelAttribute("periodoLetivo") PeriodoLetivoDTO p, BindingResult validation,
+            ModelAndView model, RedirectAttributes ra)
+            throws Exception {
         // this.PeriodoLetivoService.save(i);
+        if (validation.hasErrors()) {
+            model.addObject("periodoLetivo", p);
+            model.addObject("instituicoes", instituicaoService.getAll());
+            model.setViewName("periodoLetivo/form");
+            return model;
+        }
         this.periodoLetivoService.save(p);
 
-        model.addAttribute("periodos", periodoLetivoService.getAll());
+        model.addObject("periodos", periodoLetivoService.getAll());
+        model.setViewName("redirect:list");
         ra.addFlashAttribute("mensagem", "Periodo Cadastrado com Sucesso!");
-        return "redirect:list";
+        return model;
     }
 
     /*

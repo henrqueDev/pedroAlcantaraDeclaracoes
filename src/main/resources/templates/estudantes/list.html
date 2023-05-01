@@ -22,15 +22,25 @@
                 <th scope="col"><span class="text-light">Nome</span></th>
                 <th scope="col"><span class="text-light mx-1">Instituição</span><i data-toggle="popover" title="Instituição Atual" data-content="Nome da Instituição Atual" class="bi bi-question-circle text-light"></i></th>
                 <th scope="col"><span class="text-light mx-1">Declaração</span><i data-toggle="popover" title="Declaração Atual" data-content="Nome e Data da Declaração Atual" class="bi bi-question-circle text-light"></i></th>
+                <th scope="col"><span class="text-light mx-1">Ações</span><i data-toggle="popover" title="Ações" data-content="Tooltips" class="bi bi-question-circle text-light"></i></th>
               </tr>
             </thead>
             <tbody>
               <tr th:each="estudante : ${estudantes}">
                 <td th:text="${estudante.matricula}"></td>
                 <td th:text="${estudante.nome}"></td>
-                <td th:text="${estudante.instituicaoAtual.nome}"></td>
+                <td th:text="${estudante.instituicaoAtual != null ? estudante.instituicaoAtual.nome : ''}"></td>
                 <td th:if="${estudante.declaracaoAtual != null}"><a th:href="@{'/declaracoes/list/'(${estudante.matricula})}"><button type="button" class="btn btn-primary" th:text="${estudante.declaracaoAtual.id}"></button></a></td>
                 <td th:unless="${estudante.declaracaoAtual != null}"><a th:href="@{createDeclaracao/{id}(id = ${estudante.matricula})}"><button id="matricular" type="button" class="btn btn-primary" th:text="Criar"></button></a></td>
+                <td>
+                  <a th:href="@{/estudantes/create/{id}(id = ${estudante.matricula})}">
+                    <button type="button" class="btn btn-primary" th:text="Editar"></button>
+                  
+                  </a>
+                  <a th:href="@{/estudantes/create/{id}(id = ${estudante.matricula})}">
+                    <button type="button" class="btn btn-primary" th:text="Excluir"></button>
+                  </a>
+                </td>
               </tr>
             </tbody>
           </table>

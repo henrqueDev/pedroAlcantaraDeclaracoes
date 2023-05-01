@@ -35,15 +35,37 @@ public class EstudanteService {
     private DeclaracaoRepository declaracaoRepository;
 
     @Transactional
+    public void update(@Valid EstudanteDTO estudante) throws Exception {
+        Estudante student = estudante.getMatricula() != null
+                ? this.estudanteRepository.findById(estudante.getMatricula()).get()
+                : null;
+        if (estudante.getInstituicaoAtual() != null) {
+            Instituicao instituicao = this.instituicaoRepository.findById(estudante.getInstituicaoAtual())
+                    .orElseThrow(() -> new InstituicaoNotFoundException());
+
+            List<Estudante> alunos = instituicao.getAlunos();
+            student.setInstituicaoAtual(instituicao);
+            alunos.add(student);
+            instituicao.setAlunos(alunos);
+        }
+        student.setNome(estudante.getNome());
+        this.estudanteRepository.updateEstudante(student.getMatricula(), student.getNome(),
+                student.getInstituicaoAtual());
+    }
+
+    @Transactional
     public Estudante cadastrar(@Valid EstudanteDTO estudante) throws Exception {
         Estudante student = new Estudante();
-        Instituicao instituicao = this.instituicaoRepository.findById(estudante.getInstituicaoAtual())
-                .orElseThrow(() -> new InstituicaoNotFoundException());
-        List<Estudante> alunos = instituicao.getAlunos();
+        if (estudante.getInstituicaoAtual() != null) {
+            Instituicao instituicao = this.instituicaoRepository.findById(estudante.getInstituicaoAtual())
+                    .orElseThrow(() -> new InstituicaoNotFoundException());
+
+            List<Estudante> alunos = instituicao.getAlunos();
+            student.setInstituicaoAtual(instituicao);
+            alunos.add(student);
+            instituicao.setAlunos(alunos);
+        }
         student.setNome(estudante.getNome());
-        student.setInstituicaoAtual(instituicao);
-        alunos.add(student);
-        instituicao.setAlunos(alunos);
         return this.estudanteRepository.save(student);
     }
 

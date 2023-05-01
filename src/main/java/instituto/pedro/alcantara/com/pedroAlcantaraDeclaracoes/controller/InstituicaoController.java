@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.http.HttpStatus;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
@@ -31,7 +33,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 
 public class InstituicaoController {
-    
+
     private final InstituicaoService instituicaoService;
     // private final EstudanteService estudanteService;
 
@@ -41,7 +43,7 @@ public class InstituicaoController {
 
         model.setViewName("instituicoes/list");
         model.addObject("menu", "instituicoes");
-        model.addObject("instituicoes", getAll());
+        model.addObject("instituicoes", instituicaoService.getAll());
         return model;
     }
 
@@ -54,49 +56,56 @@ public class InstituicaoController {
         return model;
     }
 
-    @GetMapping
-    public List<InstituicaoDTO> getAll(){
+    public List<InstituicaoDTO> getAll() {
 
         return this.instituicaoService.getAll()
-            .stream().map(i -> {
-                return this.converter(i);
-            }).collect(Collectors.toList());
+                .stream().map(i -> {
+                    return this.converter(i);
+                }).collect(Collectors.toList());
     }
-
 
     @PostMapping
     @RequestMapping("/store")
-    public String salvar(@Valid InstituicaoDTO i, Model model, RedirectAttributes ra) {
-        
+    public ModelAndView salvar(@Valid @ModelAttribute("instituicao") InstituicaoDTO i, BindingResult validation,
+            ModelAndView model, RedirectAttributes ra) {
+
+        if (validation.hasErrors()) {
+            model.addObject("instituicao", i);
+            model.addObject("instituicoes", instituicaoService.getAll());
+            model.setViewName("estudantes/form");
+            return model;
+        }
+
         this.instituicaoService.save(i);
 
         ra.addFlashAttribute("mensagem", "A instituição foi Cadastrada com Sucesso!");
-        model.addAttribute("instituicoes", getAll());
-        return "redirect:list";
+        model.addObject("instituicoes", instituicaoService.getAll());
+        model.setViewName("redirect:list");
+        return model;
     }
 
-    private List<EstudanteDTO> converterEstudanteDTO(List<Estudante> e){
+    private List<EstudanteDTO> converterEstudanteDTO(List<Estudante> e) {
         return e.stream().map(estudante -> {
-           return EstudanteDTO
-                .builder()
+            return EstudanteDTO
+                    .builder()
                     .matricula(estudante.getMatricula())
                     .nome(estudante.getNome())
                     .instituicaoAtual(estudante.getInstituicaoAtual().getId())
-                .build();
+                    .build();
         }).collect(Collectors.toList());
-          
+
     }
 
-    private InstituicaoDTO converter(Instituicao i){
-        
+    private InstituicaoDTO converter(Instituicao i) {
+
         return InstituicaoDTO.builder()
-        .nome(i.getNome())
-        .sigla(i.getSigla())
-        .fone(i.getFone())
-        .alunos(this.converterEstudanteDTO(i.getAlunos()))
-        .build();
-            
+                .nome(i.getNome())
+                .sigla(i.getSigla())
+                .fone(i.getFone())
+                .alunos(this.converterEstudanteDTO(i.getAlunos()))
+                .build();
+
     }
 
 }
-//a
+// a

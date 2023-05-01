@@ -20,8 +20,6 @@ import lombok.NoArgsConstructor;
 @Builder
 
 public class EstudanteDTO {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer matricula;
 
     @NotBlank(message = "Campo é obrigatório!")
@@ -30,6 +28,6 @@ public class EstudanteDTO {
     private String nome;
 
     private Integer instituicaoAtual;
-    private DeclaracaoDTO declaracaoAtual;
+    private Integer declaracaoAtual;
 
 }

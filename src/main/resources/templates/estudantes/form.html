@@ -9,20 +9,21 @@
             <h1>Cadastro de Estudantes</h1>
 
             <form th:action="@{/estudantes/create}"
-            method="POST"
+            th:method="${method}"
             th:object="${estudante}"
             class="p-2"
             style="border-radius: 16px;">
+            <input type="hidden" th:field="*{matricula}"/>
                 <div class="form-group m-2">
                         <label for="nome">Nome:</label>
-                        <input type="text" id="nome"class="form-control" th:field="*{nome}" />
+                        <input type="text" id="nome" class="form-control" th:value="${estudante.nome}" th:field="*{nome}" />
                         <div th:if="${#fields.hasErrors('nome')}"  th:errors="*{nome}"></div>
                 </div>
 
                 <div class="form-group m-2">
                     <label for="instituicao">Instituição:</label>
                     <select class="form-control" id="instituicao" name="instituicao" th:field="*{instituicaoAtual}">
-                        <option value="0">Selecione</option>
+                        <option value="">Selecione</option>
                         <option th:each="instituicao : ${instituicoes}" th:value="${instituicao.id}" th:text="${instituicao.nome}"></option>
                     </select>
                 </div>

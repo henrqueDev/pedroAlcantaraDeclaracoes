@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.PeriodoLetivoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoNotFoundException;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.periodo.PeriodoInvalidoException;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.periodo.PeriodoNotMatchLastException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.PeriodoLetivo;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.InstituicaoRepository;
@@ -32,12 +34,22 @@ public class PeriodoLetivoService {
         Instituicao i = instituicaoRepository.findById(p.getInstituicao())
                 .orElseThrow(() -> new InstituicaoNotFoundException());
         List<PeriodoLetivo> periodosInstituicao = i.getPeriodos();
+
         LocalDate dataInicio = LocalDate.parse(p.getDataInicio(), DateTimeFormatter.ISO_LOCAL_DATE);
         LocalDate dataFinal = LocalDate.parse(p.getDataFinal(), DateTimeFormatter.ISO_LOCAL_DATE);
-        periodo.setAno(p.getAno());
         periodo.setPeriodo(p.getPeriodo());
         periodo.setDataInicio(dataInicio);
         periodo.setDataFinal(dataFinal);
+        if (dataInicio.isAfter(dataFinal) || dataInicio.isEqual(dataFinal)
+                || dataInicio.getYear() != dataFinal.getYear()) {
+            throw new PeriodoInvalidoException();
+        }
+        for (PeriodoLetivo periodoLetivo : periodosInstituicao) {
+            if (!periodo.checkLastPeriodoData(periodoLetivo)) {
+                throw new PeriodoNotMatchLastException();
+            }
+        }
+        periodo.setAno(p.getAno());
         periodo.setInstituicao(i);
         periodosInstituicao.add(periodo);
         i.setPeriodos(periodosInstituicao);

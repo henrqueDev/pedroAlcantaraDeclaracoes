@@ -19,8 +19,6 @@ import lombok.NoArgsConstructor;
 
 public class InstituicaoDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     @NotBlank
@@ -31,5 +29,6 @@ public class InstituicaoDTO {
 
     @NotBlank
     private String fone;
+
     private List<EstudanteDTO> alunos;
 }
