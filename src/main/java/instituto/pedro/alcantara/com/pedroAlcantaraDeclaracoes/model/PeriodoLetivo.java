@@ -69,4 +69,8 @@ public class PeriodoLetivo {
         return this.dataInicio.isAfter(p.getDataFinal()) && this.dataFinal.isAfter(p.getDataFinal()) ? true : false;
     }
 
+    public String toString() {
+        return this.dataInicio.getYear() + "." + this.getPeriodo();
+    }
+
 }

@@ -31,5 +31,7 @@ public class InstituicaoDTO {
     @NotBlank(message = "Campo obrigatório!")
     private String fone;
 
+    private Integer periodoAtual;
+
     private List<EstudanteDTO> alunos;
 }

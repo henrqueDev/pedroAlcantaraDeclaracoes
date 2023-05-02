@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.DeclaracaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.estudante.EstudanteInstituicaoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoWithoutPeriodoException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Declaracao;
@@ -36,19 +37,36 @@ public class EstudanteService {
 
     @Transactional
     public void update(@Valid EstudanteDTO estudante) throws Exception {
-        Estudante student = estudante.getMatricula() != null
-                ? this.estudanteRepository.findById(estudante.getMatricula()).get()
-                : null;
-        if (estudante.getInstituicaoAtual() != null) {
-            Instituicao instituicao = this.instituicaoRepository.findById(estudante.getInstituicaoAtual())
-                    .orElseThrow(() -> new InstituicaoNotFoundException());
+        Estudante student = this.estudanteRepository.findById(estudante.getMatricula())
+                .orElseThrow(() -> new Exception());
 
-            List<Estudante> alunos = instituicao.getAlunos();
+        Instituicao instituicao = estudante.getInstituicaoAtual() != null
+                ? this.instituicaoRepository.findById(estudante.getInstituicaoAtual())
+                        .orElseThrow(() -> new InstituicaoNotFoundException())
+                : null;
+
+        /*
+         * Instituicao instituicao2 = student.getInstituicaoAtual() != null
+         * ? this.instituicaoRepository.findById(estudante.getInstituicaoAtual())
+         * .orElseThrow(() -> new InstituicaoNotFoundException())
+         * : null;
+         */
+
+        if (instituicao != null && student != null) {
+            // List<Estudante> alunos = instituicao.getAlunos();
+            // List<Estudante> alunosAntigo = student.getInstituicaoAtual().getAlunos();
+            // slunosAntigo.remove(student);
             student.setInstituicaoAtual(instituicao);
-            alunos.add(student);
-            instituicao.setAlunos(alunos);
+            student.setNome(estudante.getNome());
+            student.setDeclaracaoAtual(null);
+            // alunos.add(student);
+            // instituicao.setAlunos(alunos);
+
+        } else {
+            student.setInstituicaoAtual(null);
+            student.setNome(estudante.getNome());
+            student.setDeclaracaoAtual(null);
         }
-        student.setNome(estudante.getNome());
         this.estudanteRepository.updateEstudante(student.getMatricula(), student.getNome(),
                 student.getInstituicaoAtual());
     }
@@ -62,8 +80,8 @@ public class EstudanteService {
 
             List<Estudante> alunos = instituicao.getAlunos();
             student.setInstituicaoAtual(instituicao);
-            alunos.add(student);
-            instituicao.setAlunos(alunos);
+            // alunos.add(student);
+            // instituicao.setAlunos(alunos);
         }
         student.setNome(estudante.getNome());
         return this.estudanteRepository.save(student);
@@ -75,15 +93,18 @@ public class EstudanteService {
 
         Estudante e = this.estudanteRepository.findById(d.getEstudante())
                 .orElseThrow(() -> new InstituicaoNotFoundException());
-        if (e.getInstituicaoAtual().getPeriodoAtual() != null) {
-            Declaracao declaracao = new Declaracao(d.getObservacao(), dataRecebimento, e);
-            e.setDeclaracaoAtual(declaracao);
-            this.estudanteRepository.save(e);
-            this.declaracaoRepository.save(declaracao);
+        if (e.getInstituicaoAtual() != null) {
+            if (e.getInstituicaoAtual().getPeriodoAtual() != null) {
+                Declaracao declaracao = new Declaracao(d.getObservacao(), dataRecebimento, e);
+                e.setDeclaracaoAtual(declaracao);
+                this.estudanteRepository.save(e);
+                this.declaracaoRepository.save(declaracao);
+            } else {
+                throw new InstituicaoWithoutPeriodoException();
+            }
         } else {
-            throw new InstituicaoWithoutPeriodoException();
+            throw new EstudanteInstituicaoNotFoundException();
         }
-
     }
 
     public List<Estudante> getAll() {

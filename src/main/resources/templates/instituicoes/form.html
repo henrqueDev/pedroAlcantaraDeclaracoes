@@ -32,8 +32,16 @@
                     <div th:if="${#fields.hasErrors('fone')}"  th:errors="*{fone}" class="alert alert-danger"></div>
                 </div>
 
+                <div class="form-group m-2" th:if="${method == 'PUT'}">
+                    <label for="periodo">Periodos:</label>
+                    <select class="form-control" id="periodo" name="periodo" th:field="*{periodoAtual}">
+                        <option value="">Selecione</option>
+                        <option th:each="periodo : ${periodos}" th:value="${periodo.id}" th:text="${periodo}"></option>
+                    </select>
+                </div>
+
                 <div id="ActionButtons" class="mx-2 mt-4" style="display: flex; justify-content: end; gap: 0 6px;">
-                    <a th:href="@{list}">
+                    <a th:href="@{/instituicoes/list}">
                         <button type="button" class="btn btn-secondary">Cancelar</button>
                     </a>
                     

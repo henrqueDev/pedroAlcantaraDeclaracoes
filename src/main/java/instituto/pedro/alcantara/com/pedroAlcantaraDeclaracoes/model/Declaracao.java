@@ -49,8 +49,8 @@ public class Declaracao {
     @NotNull
     private LocalDate dataRecebimento;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "estudante_fk")
+    @ManyToOne
+    @JoinColumn(name = "estudante_fk", referencedColumnName = "matricula")
     private Estudante estudante;
 
     @ManyToOne(cascade = CascadeType.ALL)

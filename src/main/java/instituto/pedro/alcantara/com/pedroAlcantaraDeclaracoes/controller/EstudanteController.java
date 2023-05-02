@@ -18,6 +18,7 @@ import org.springframework.validation.BindingResult;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.DeclaracaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.estudante.EstudanteNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Declaracao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.EstudanteService;
@@ -42,8 +43,17 @@ public class EstudanteController {
         return model;
     }
 
+    @GetMapping(value = "/list/instituicao/{id}")
+    public ModelAndView listByInstituicao(@PathVariable(value = "id") Integer id, ModelAndView model) {
+        model.setViewName("estudantes/list");
+        model.addObject("menu", "estudantes");
+        model.addObject("estudantes", instituicaoService.getAllEstudantesById(id));
+
+        return model;
+    }
+
     @GetMapping(value = "/create/{id}")
-    public ModelAndView queryEstudante(@PathVariable(value = "id") Integer id, ModelAndView model) {
+    public ModelAndView updateEstudanteForm(@PathVariable(value = "id") Integer id, ModelAndView model) {
         Optional<Estudante> estudante = estudanteService.getById(id);
         if (estudante.isPresent()) {
             model.setViewName("estudantes/form");
@@ -51,7 +61,10 @@ public class EstudanteController {
             model.addObject("estudante", this.converterEstudanteDTO(estudante.get()));
             model.addObject("instituicoes", instituicaoService.getAll());
         } else {
-            model.setViewName("estudantes/list");
+            model.setViewName("estudantes/form");
+            model.addObject("estudante", this.converterEstudanteDTO(new Estudante()));
+            model.addObject("method", "POST");
+            model.addObject("instituicoes", instituicaoService.getAll());
             model.addObject("estudantes", estudanteService.getAll());
         }
 
@@ -103,10 +116,16 @@ public class EstudanteController {
     @GetMapping(value = "/createDeclaracao/{id}")
     public ModelAndView createDeclaracao(@PathVariable(name = "id") Integer id, DeclaracaoDTO declaracao,
             ModelAndView model) {
-        Estudante e = this.estudanteService.getById(id).orElseThrow();
-        declaracao.setEstudante(e.getMatricula());
-        model.setViewName("estudantes/formDeclaracao");
-        model.addObject("declaracao", declaracao);
+        try {
+            Estudante e = this.estudanteService.getById(id).orElseThrow(() -> new EstudanteNotFoundException());
+            declaracao.setEstudante(e.getMatricula());
+            model.setViewName("estudantes/formDeclaracao");
+            model.addObject("declaracao", declaracao);
+        } catch (Exception e) {
+            model.setViewName("estudantes/formDeclaracao");
+            model.addObject("exception", e.getMessage());
+            model.addObject("declaracao", declaracao);
+        }
         return model;
     }
 

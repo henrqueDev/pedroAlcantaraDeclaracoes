@@ -1,6 +1,7 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -55,6 +57,23 @@ public class InstituicaoController {
         return model;
     }
 
+    @GetMapping(value = "/create/{id}")
+    public ModelAndView updateInstituicaoForm(@PathVariable(value = "id") Integer id, ModelAndView model) {
+        try {
+            Instituicao instituicao = instituicaoService.getById(id);
+            model.setViewName("instituicoes/form");
+            model.addObject("instituicao", this.converter(instituicao));
+            model.addObject("method", "PUT");
+            model.addObject("periodos", instituicao.getPeriodos());
+        } catch (Exception e) {
+            model.setViewName("instituicoes/form");
+            model.addObject("exception", e.getMessage());
+            model.addObject("instituicao", new Instituicao());
+            model.addObject("method", "POST");
+        }
+        return model;
+    }
+
     public List<InstituicaoDTO> getAll() {
 
         return this.instituicaoService.getAll()
@@ -79,6 +98,35 @@ public class InstituicaoController {
         } catch (Exception e) {
             model.addObject("instituicao", i);
             model.addObject("exception", e.getMessage());
+            model.addObject("method", "POST");
+            model.setViewName("instituicoes/form");
+            return model;
+        }
+
+        ra.addFlashAttribute("mensagem", "A instituição foi Cadastrada com Sucesso!");
+        model.addObject("instituicoes", instituicaoService.getAll());
+        model.setViewName("redirect:list");
+        return model;
+    }
+
+    @PutMapping(value = "/create")
+    public ModelAndView updateInstituicao(@Valid @ModelAttribute("instituicao") InstituicaoDTO i,
+            BindingResult validation,
+            ModelAndView model, RedirectAttributes ra) {
+
+        if (validation.hasErrors()) {
+            model.addObject("instituicao", i);
+            model.addObject("method", "PUT");
+            model.setViewName("instituicoes/form");
+            return model;
+        }
+
+        try {
+            this.instituicaoService.update(i);
+        } catch (Exception e) {
+            model.addObject("instituicao", i);
+            model.addObject("exception", e.getMessage());
+            model.addObject("method", "POST");
             model.setViewName("instituicoes/form");
             return model;
         }
@@ -103,11 +151,15 @@ public class InstituicaoController {
 
     private InstituicaoDTO converter(Instituicao i) {
 
+        Integer periodo = i.getPeriodoAtual() != null ? i.getPeriodoAtual().getId() : null;
+
         return InstituicaoDTO.builder()
+                .id(i.getId())
                 .nome(i.getNome())
                 .sigla(i.getSigla())
                 .fone(i.getFone())
                 .alunos(this.converterEstudanteDTO(i.getAlunos()))
+                .periodoAtual(periodo)
                 .build();
 
     }

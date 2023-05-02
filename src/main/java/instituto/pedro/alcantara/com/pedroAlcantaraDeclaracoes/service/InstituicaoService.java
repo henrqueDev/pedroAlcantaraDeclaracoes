@@ -13,9 +13,12 @@ import org.springframework.stereotype.Service;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoNotFoundException;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.periodo.PeriodoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.PeriodoLetivo;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.InstituicaoRepository;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.PeriodoLetivoRepository;
 
 @Service
 
@@ -24,8 +27,20 @@ public class InstituicaoService {
     @Autowired
     private InstituicaoRepository instituicaoRepository;
 
+    @Autowired
+    private PeriodoLetivoRepository periodoLetivoRepository;
+
     public List<Instituicao> getAll() {
         return this.instituicaoRepository.findAll();
+    }
+
+    public Instituicao getById(Integer id) throws Exception {
+        return this.instituicaoRepository.findById(id).orElseThrow(() -> new InstituicaoNotFoundException());
+    }
+
+    public List<Estudante> getAllEstudantesById(Integer id) {
+        Instituicao i = this.instituicaoRepository.findById(id).orElseThrow(() -> new InstituicaoNotFoundException());
+        return i.getAlunos();
     }
 
     @Transactional
@@ -37,6 +52,24 @@ public class InstituicaoService {
         novaInstituicao.setAlunos(this.converterA(i.getAlunos()));
 
         return this.instituicaoRepository.save(novaInstituicao);
+    }
+
+    @Transactional
+    public void update(InstituicaoDTO i) {
+        Instituicao instituicaoAtualizada = i.getId() != null ? this.instituicaoRepository.findById(i.getId())
+                .orElseThrow(() -> new InstituicaoNotFoundException()) : null;
+        PeriodoLetivo newPeriodo = i.getPeriodoAtual() != null
+                ? this.periodoLetivoRepository.findById(i.getPeriodoAtual())
+                        .orElseThrow(() -> new PeriodoNotFoundException())
+                : null;
+
+        instituicaoAtualizada.setNome(i.getNome());
+        instituicaoAtualizada.setSigla(i.getSigla());
+        instituicaoAtualizada.setFone(i.getFone());
+        instituicaoAtualizada.setPeriodoAtual(newPeriodo);
+        this.instituicaoRepository.updateInstituicao(instituicaoAtualizada.getId(), instituicaoAtualizada.getNome(),
+                instituicaoAtualizada.getSigla(),
+                instituicaoAtualizada.getFone(), instituicaoAtualizada.getPeriodoAtual());
     }
 
     private List<Estudante> converterA(List<EstudanteDTO> alunos) {
