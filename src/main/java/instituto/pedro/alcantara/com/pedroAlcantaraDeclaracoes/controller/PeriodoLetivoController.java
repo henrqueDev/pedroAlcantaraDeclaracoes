@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -32,16 +33,14 @@ public class PeriodoLetivoController {
     private final InstituicaoService instituicaoService;
     // private final EstudanteService estudanteService;
 
-    @GetMapping
-    @RequestMapping("/list")
+    @GetMapping(value = "/list")
     public String index(Model model) {
 
         model.addAttribute("periodosLetivos", this.periodoLetivoService.getAll());
         return "periodoLetivo/list";
     }
 
-    @GetMapping
-    @RequestMapping("/create")
+    @GetMapping(value = "/create")
     public String create(PeriodoLetivo periodoLetivo, Model model) {
 
         model.addAttribute("periodoLetivo", periodoLetivo);
@@ -60,19 +59,26 @@ public class PeriodoLetivoController {
      * }
      */
 
-    @PostMapping
-    @RequestMapping("/store")
+    @PostMapping(value = "/create")
     public ModelAndView salvar(@Valid @ModelAttribute("periodoLetivo") PeriodoLetivoDTO p, BindingResult validation,
             ModelAndView model, RedirectAttributes ra)
             throws Exception {
-        // this.PeriodoLetivoService.save(i);
+
         if (validation.hasErrors()) {
             model.addObject("periodoLetivo", p);
             model.addObject("instituicoes", instituicaoService.getAll());
             model.setViewName("periodoLetivo/form");
             return model;
         }
-        this.periodoLetivoService.save(p);
+        try {
+            this.periodoLetivoService.save(p);
+        } catch (Exception e) {
+            model.addObject("periodoLetivo", p);
+            model.addObject("exception", e.getMessage());
+            model.addObject("instituicoes", instituicaoService.getAll());
+            model.setViewName("periodoLetivo/form");
+            return model;
+        }
 
         model.addObject("periodos", periodoLetivoService.getAll());
         model.setViewName("redirect:list");

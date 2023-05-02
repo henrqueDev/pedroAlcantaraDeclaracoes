@@ -19,8 +19,8 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.Instit
 
 @Service
 
-public class InstituicaoService{
-    
+public class InstituicaoService {
+
     @Autowired
     private InstituicaoRepository instituicaoRepository;
 
@@ -35,30 +35,30 @@ public class InstituicaoService{
         novaInstituicao.setSigla(i.getSigla());
         novaInstituicao.setFone(i.getFone());
         novaInstituicao.setAlunos(this.converterA(i.getAlunos()));
-        
+
         return this.instituicaoRepository.save(novaInstituicao);
     }
 
-    private List<Estudante> converterA(List<EstudanteDTO> alunos){
-        return alunos == null ? new ArrayList<Estudante>() : alunos.stream().map(
-            item -> {
-                Estudante e = new Estudante();
-                Instituicao i = null;
-                try {
-                    i = this.instituicaoRepository
-                        .findById(item.getInstituicaoAtual())
-                        .orElseThrow(() -> new InstituicaoNotFoundException());
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-                e.setMatricula(item.getMatricula());
-                e.setNome(item.getNome());
-                e.setInstituicaoAtual(i);
-                
-                return e;
-                
-            }).collect(Collectors.toList());
-    }
+    private List<Estudante> converterA(List<EstudanteDTO> alunos) {
+        return alunos == null ? new ArrayList<Estudante>()
+                : alunos.stream().map(
+                        item -> {
+                            Estudante e = new Estudante();
+                            Instituicao i = null;
+                            try {
+                                i = this.instituicaoRepository
+                                        .findById(item.getInstituicaoAtual())
+                                        .orElseThrow(() -> new InstituicaoNotFoundException());
+                            } catch (Exception e1) {
+                                e1.printStackTrace();
+                            }
+                            e.setMatricula(item.getMatricula());
+                            e.setNome(item.getNome());
+                            e.setInstituicaoAtual(i);
 
+                            return e;
+
+                        }).collect(Collectors.toList());
+    }
 
 }

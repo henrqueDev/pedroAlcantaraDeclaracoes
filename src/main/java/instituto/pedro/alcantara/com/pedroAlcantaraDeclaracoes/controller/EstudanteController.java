@@ -1,10 +1,7 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -17,15 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.DeclaracaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
-import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Declaracao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
-import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.EstudanteService;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.InstituicaoService;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +42,7 @@ public class EstudanteController {
         return model;
     }
 
-    @RequestMapping("/create/{id}")
+    @GetMapping(value = "/create/{id}")
     public ModelAndView queryEstudante(@PathVariable(value = "id") Integer id, ModelAndView model) {
         Optional<Estudante> estudante = estudanteService.getById(id);
         if (estudante.isPresent()) {
@@ -58,7 +52,7 @@ public class EstudanteController {
             model.addObject("instituicoes", instituicaoService.getAll());
         } else {
             model.setViewName("estudantes/list");
-            model.addObject("estudantes", estudante);
+            model.addObject("estudantes", estudanteService.getAll());
         }
 
         return model;
@@ -74,7 +68,7 @@ public class EstudanteController {
                 .id(declaracao.getId())
                 .observacao(declaracao.getObservacao())
                 .dataRecebimento(declaracao.getDataRecebimento().format(formatter))
-                .estudante(this.converterEstudanteDTO(declaracao.getEstudante()))
+                .estudante(declaracao.getEstudante().getMatricula())
                 .build();
     }
 
@@ -98,8 +92,7 @@ public class EstudanteController {
         return model;
     }
 
-    @GetMapping
-    @RequestMapping("/createDeclaracao")
+    @GetMapping(value = "/createDeclaracao")
     public ModelAndView createDeclaracao(Declaracao declaracao,
             ModelAndView model) {
         model.setViewName("estudantes/formDeclaracao");
@@ -107,25 +100,43 @@ public class EstudanteController {
         return model;
     }
 
-    @GetMapping
-    @RequestMapping("/createDeclaracao/{id}")
-    public ModelAndView createDeclaracao(@PathVariable(name = "id") Integer id, Declaracao declaracao,
+    @GetMapping(value = "/createDeclaracao/{id}")
+    public ModelAndView createDeclaracao(@PathVariable(name = "id") Integer id, DeclaracaoDTO declaracao,
             ModelAndView model) {
-        Optional<Estudante> e = this.estudanteService.getById(id);
-        declaracao.setEstudante(e.get());
+        Estudante e = this.estudanteService.getById(id).orElseThrow();
+        declaracao.setEstudante(e.getMatricula());
         model.setViewName("estudantes/formDeclaracao");
         model.addObject("declaracao", declaracao);
         return model;
     }
 
-    @PostMapping
-    @RequestMapping("/storeDeclaracao")
-    public String saveDeclaracao(@Valid DeclaracaoDTO declaracao, Model model, RedirectAttributes ra) throws Exception {
-        this.estudanteService.emitirDeclaracao(declaracao);
+    @PostMapping(value = "/createDeclaracao")
+    public ModelAndView saveDeclaracao(@Valid @ModelAttribute("declaracao") DeclaracaoDTO declaracao,
+            BindingResult validation,
+            ModelAndView model,
+            RedirectAttributes ra) throws Exception {
 
-        model.addAttribute("estudantes", estudanteService.getAll());
-        ra.addFlashAttribute("mensagem", "Estudante Cadastrado com Sucesso!");
-        return "redirect:list";
+        if (validation.hasErrors()) {
+            model.addObject("declaracao", declaracao);
+            model.addObject("method", "POST");
+            model.setViewName("estudantes/formDeclaracao");
+            return model;
+        }
+
+        try {
+            this.estudanteService.emitirDeclaracao(declaracao);
+        } catch (Exception e) {
+            model.addObject("declaracao", declaracao);
+            model.addObject("exception", e.getMessage());
+            model.addObject("method", "POST");
+            model.setViewName("estudantes/formDeclaracao");
+            return model;
+        }
+
+        model.addObject("estudantes", estudanteService.getAll());
+        model.setViewName("redirect:list");
+        ra.addFlashAttribute("mensagem", "Declaração gerada com Sucesso!");
+        return model;
     }
 
     @PostMapping(value = "/create")
@@ -135,10 +146,20 @@ public class EstudanteController {
         if (validation.hasErrors()) {
             model.addObject("estudante", estudante);
             model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("method", "POST");
             model.setViewName("estudantes/form");
             return model;
         }
-        this.estudanteService.cadastrar(estudante);
+        try {
+            this.estudanteService.cadastrar(estudante);
+        } catch (Exception e) {
+            model.addObject("estudante", estudante);
+            model.addObject("exception", e.getMessage());
+            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("method", "POST");
+            model.setViewName("estudantes/form");
+            return model;
+        }
         model.setViewName("redirect:list");
         ra.addFlashAttribute("mensagem", "Estudante Cadastrado com Sucesso!");
         return model;
@@ -151,10 +172,20 @@ public class EstudanteController {
         if (validation.hasErrors()) {
             model.addObject("estudante", estudante);
             model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("method", "PUT");
             model.setViewName("estudantes/form");
             return model;
         }
-        this.estudanteService.update(estudante);
+        try {
+            this.estudanteService.update(estudante);
+        } catch (Exception e) {
+            model.addObject("estudante", estudante);
+            model.addObject("exception", e.getMessage());
+            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("method", "PUT");
+            model.setViewName("estudantes/form");
+            return model;
+        }
         model.setViewName("redirect:list");
         ra.addFlashAttribute("mensagem", "Estudante Cadastrado com Sucesso!");
         return model;

@@ -12,11 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.PeriodoLetivoDTO;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.ExceptionList;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.periodo.PeriodoInvalidoException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.periodo.PeriodoNotMatchLastException;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.PeriodoLetivo;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.DeclaracaoRepository;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.EstudanteRepository;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.InstituicaoRepository;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.PeriodoLetivoRepository;
 
@@ -29,6 +33,13 @@ public class PeriodoLetivoService {
     @Autowired
     private InstituicaoRepository instituicaoRepository;
 
+    @Autowired
+    private EstudanteRepository estudanteRepository;
+
+    @Autowired
+    private DeclaracaoRepository declaracaoRepository;
+
+    @Transactional
     public PeriodoLetivo save(@Valid PeriodoLetivoDTO p) throws Exception {
         PeriodoLetivo periodo = new PeriodoLetivo();
         Instituicao i = instituicaoRepository.findById(p.getInstituicao())
@@ -40,6 +51,7 @@ public class PeriodoLetivoService {
         periodo.setPeriodo(p.getPeriodo());
         periodo.setDataInicio(dataInicio);
         periodo.setDataFinal(dataFinal);
+
         if (dataInicio.isAfter(dataFinal) || dataInicio.isEqual(dataFinal)
                 || dataInicio.getYear() != dataFinal.getYear()) {
             throw new PeriodoInvalidoException();
@@ -47,6 +59,11 @@ public class PeriodoLetivoService {
         for (PeriodoLetivo periodoLetivo : periodosInstituicao) {
             if (!periodo.checkLastPeriodoData(periodoLetivo)) {
                 throw new PeriodoNotMatchLastException();
+            }
+        }
+        for (Estudante estudante : estudanteRepository.findAll()) {
+            if (estudante.getDeclaracaoAtual() != null) {
+                declaracaoRepository.deleteDeclaracaoByEstudanteMatricula(estudante.getMatricula());
             }
         }
         periodo.setAno(p.getAno());

@@ -48,8 +48,7 @@ public class Estudante {
     @NotBlank(message = "Campo obrigatório!")
     private String nome;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "declaracao_fk")
+    @OneToOne(mappedBy = "estudante")
     private Declaracao declaracaoAtual;
 
     @ManyToOne(cascade = CascadeType.ALL)

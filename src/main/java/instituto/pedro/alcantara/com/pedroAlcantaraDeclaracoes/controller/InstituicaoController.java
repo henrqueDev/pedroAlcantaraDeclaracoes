@@ -37,8 +37,7 @@ public class InstituicaoController {
     private final InstituicaoService instituicaoService;
     // private final EstudanteService estudanteService;
 
-    @GetMapping
-    @RequestMapping("/list")
+    @GetMapping(value = "/list")
     public ModelAndView index(ModelAndView model) {
 
         model.setViewName("instituicoes/list");
@@ -47,12 +46,12 @@ public class InstituicaoController {
         return model;
     }
 
-    @GetMapping
-    @RequestMapping("/create")
+    @GetMapping(value = "/create")
     public ModelAndView create(InstituicaoDTO instituicao, ModelAndView model) {
 
         model.setViewName("instituicoes/form");
         model.addObject("instituicao", instituicao);
+        model.addObject("method", "POST");
         return model;
     }
 
@@ -64,19 +63,25 @@ public class InstituicaoController {
                 }).collect(Collectors.toList());
     }
 
-    @PostMapping
-    @RequestMapping("/store")
+    @PostMapping(value = "/create")
     public ModelAndView salvar(@Valid @ModelAttribute("instituicao") InstituicaoDTO i, BindingResult validation,
             ModelAndView model, RedirectAttributes ra) {
 
         if (validation.hasErrors()) {
             model.addObject("instituicao", i);
-            model.addObject("instituicoes", instituicaoService.getAll());
-            model.setViewName("estudantes/form");
+            model.addObject("method", "POST");
+            model.setViewName("instituicoes/form");
             return model;
         }
 
-        this.instituicaoService.save(i);
+        try {
+            this.instituicaoService.save(i);
+        } catch (Exception e) {
+            model.addObject("instituicao", i);
+            model.addObject("exception", e.getMessage());
+            model.setViewName("instituicoes/form");
+            return model;
+        }
 
         ra.addFlashAttribute("mensagem", "A instituição foi Cadastrada com Sucesso!");
         model.addObject("instituicoes", instituicaoService.getAll());

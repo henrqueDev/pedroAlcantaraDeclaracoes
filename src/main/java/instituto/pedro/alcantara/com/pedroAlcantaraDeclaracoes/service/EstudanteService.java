@@ -73,19 +73,17 @@ public class EstudanteService {
     public void emitirDeclaracao(@Valid DeclaracaoDTO d) throws Exception {
         LocalDate dataRecebimento = LocalDate.now();
 
-        Estudante e = this.estudanteRepository.findById(d.getEstudante().getMatricula())
+        Estudante e = this.estudanteRepository.findById(d.getEstudante())
                 .orElseThrow(() -> new InstituicaoNotFoundException());
-        try {
-            if (e.getInstituicaoAtual().getPeriodoAtual() != null) {
-                Declaracao declaracao = new Declaracao(d.getObservacao(), dataRecebimento, e);
-                e.setDeclaracaoAtual(declaracao);
-                this.declaracaoRepository.save(declaracao);
-            } else {
-                new InstituicaoWithoutPeriodoException();
-            }
-        } catch (Exception exception) {
-            System.out.println(exception);
+        if (e.getInstituicaoAtual().getPeriodoAtual() != null) {
+            Declaracao declaracao = new Declaracao(d.getObservacao(), dataRecebimento, e);
+            e.setDeclaracaoAtual(declaracao);
+            this.estudanteRepository.save(e);
+            this.declaracaoRepository.save(declaracao);
+        } else {
+            throw new InstituicaoWithoutPeriodoException();
         }
+
     }
 
     public List<Estudante> getAll() {

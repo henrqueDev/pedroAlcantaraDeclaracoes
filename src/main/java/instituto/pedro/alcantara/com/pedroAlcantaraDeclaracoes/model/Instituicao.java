@@ -1,6 +1,5 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model;
 
-
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -14,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -31,32 +31,31 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 
-@Table(name="instituicoes")
+@Table(name = "instituicoes")
 
 public class Instituicao {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 
-    @Column(name="nome")
-    @NotNull
+    @Column(name = "nome")
+    @NotBlank(message = "Campo obrigatório!")
     private String nome;
 
-    @Column(name="sigla")
-    @NotNull
+    @Column(name = "sigla")
+    @NotBlank(message = "Campo obrigatório!")
     private String sigla;
 
-    @Column(name="fone")
-    @NotNull
+    @Column(name = "fone")
+    @NotBlank(message = "Campo obrigatório!")
     private String fone;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="periodoAtual_fk", referencedColumnName = "id")
+    @JoinColumn(name = "periodoAtual_fk", referencedColumnName = "id")
     private PeriodoLetivo periodoAtual;
 
-    
     @OneToMany(mappedBy = "instituicao", cascade = CascadeType.ALL)
     private List<PeriodoLetivo> periodos;
 
@@ -64,7 +63,7 @@ public class Instituicao {
     @OneToMany(mappedBy = "instituicaoAtual", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Estudante> alunos;
 
-    public String toString(){
+    public String toString() {
         return this.nome;
     }
 

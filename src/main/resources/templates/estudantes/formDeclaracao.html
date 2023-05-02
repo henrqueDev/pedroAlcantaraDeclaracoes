@@ -7,8 +7,8 @@
         <div class="card p-4 mt-4">
             
             <h1>Emissão de declaração</h1>
-
-            <form th:action="@{/estudantes/storeDeclaracao}"
+            <div th:if="${exception != null}" th:text="${exception}" class="alert alert-danger" ></div>
+            <form th:action="@{/estudantes/createDeclaracao}"
             method="POST"
             th:object="${declaracao}"
             class="p-2"
@@ -16,8 +16,8 @@
             <input type="hidden" th:field="*{id}"/>
                 <div class="form-group m-2">
                     <label for="Matricula">Matricula:</label>
-                    <input th:if="${declaracao.estudante != null}" readonly type="number" id="Matricula" class="form-control" th:field="*{estudante.matricula}" />
-                    <input th:unless="${declaracao.estudante != null}" type="number" id="Matricula" class="form-control" th:field="*{estudante.matricula}" />
+                    <input th:if="${declaracao.estudante != null}" readonly type="number" id="Matricula" class="form-control" th:field="*{estudante}" />
+                    <input th:unless="${declaracao.estudante != null}" type="number" id="Matricula" class="form-control" th:field="*{estudante}" />
                 </div>
                 <div class="form-group m-2">
                     <label for="Observacao">Observacao:</label>

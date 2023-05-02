@@ -23,6 +23,6 @@ public class DeclaracaoDTO {
 
     private String observacao;
     private String dataRecebimento;
-    private EstudanteDTO estudante;
+    private Integer estudante;
 
 }

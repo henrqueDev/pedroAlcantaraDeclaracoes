@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -24,17 +25,17 @@ public class PeriodoLetivoDTO {
 
     private int ano;
 
-    @NotNull
     private int periodo;
 
-    @NotBlank
+    @NotBlank(message = "Campo obrigatório!")
     private String dataInicio;
 
-    @NotBlank
+    @NotBlank(message = "Campo obrigatório!")
     private String dataFinal;
 
     private List<DeclaracaoDTO> declaracoes;
 
+    @NotNull(message = "Precisa de uma Instituição!")
     private Integer instituicao;
 
 }

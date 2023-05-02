@@ -9,7 +9,8 @@
     <div class="card p-4 mt-4">
         <h1>Cadastro de PeriodoLetivo</h1>
 
-        <form th:action="@{/periodos/store}"
+        <div th:if="${exception != null}" th:text="${exception}" class="alert alert-danger" ></div>
+        <form th:action="@{/periodos/create}"
         method="POST"
         th:object="${periodoLetivo}"
         class="p-2"
@@ -18,22 +19,22 @@
             <div class="form-group m-2">
                 <label for="Nome">Ano</label>
                 <input type="number" id="Ano" class="form-control" th:field="*{ano}" />
-                <div th:if="${#fields.hasErrors('ano')}"  th:errors="*{ano}"></div>
+                <div th:if="${#fields.hasErrors('ano')}" th:errorclass="error"  th:errors="*{ano}" class="alert alert-danger"></div>
             </div>
             <div class="form-group m-2">
                 <label for="periodo">Periodo</label>
                 <input type="number" id="periodo" class="form-control" th:field="*{periodo}" />
-                <div th:if="${#fields.hasErrors('periodo')}"  th:errors="*{periodo}"></div>
+                <div th:if="${#fields.hasErrors('periodo')}"  th:errors="*{periodo}" class="alert alert-danger"></div>
             </div>
             <div class="form-group m-2">
                 <label for="dataInicio">dataInicio</label>
                 <input type="date" id="dataInicio" class="form-control" th:field="*{dataInicio}" />
-                <div th:if="${#fields.hasErrors('dataInicio')}"  th:errors="*{dataInicio}"></div>
+                <div th:if="${#fields.hasErrors('dataInicio')}"  th:errors="*{dataInicio}" class="alert alert-danger"></div>
             </div>
             <div class="form-group m-2">
                 <label for="Nome">dataFinal</label>
                 <input type="date" id="dataFinal" class="form-control" th:field="*{dataFinal}" />
-                <div th:if="${#fields.hasErrors('dataFinal')}"  th:errors="*{dataFinal}"></div>
+                <div th:if="${#fields.hasErrors('dataFinal')}"  th:errors="*{dataFinal}" class="alert alert-danger"></div>
             </div>
             <div class="form-group m-2">
                 <label for="Instituicao">Instituição:</label>
@@ -42,7 +43,7 @@
                     <option th:each="instituicao : ${instituicoes}" th:value="${instituicao.id}" th:text="${instituicao.nome}"></option>
 
                 </select>
-                <div th:if="${#fields.hasErrors('instituicao')}"  th:errors="*{instituicao}"></div>
+                <div th:if="${#fields.hasErrors('instituicao')}"  th:errors="*{instituicao}" class="alert alert-danger"></div>
             </div>
 
 

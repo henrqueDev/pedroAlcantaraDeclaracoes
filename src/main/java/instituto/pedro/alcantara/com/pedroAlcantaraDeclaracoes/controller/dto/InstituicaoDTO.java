@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,13 +22,13 @@ public class InstituicaoDTO {
 
     private Integer id;
 
-    @NotBlank
+    @NotBlank(message = "Campo obrigatório!")
     private String nome;
 
-    @NotBlank
+    @NotBlank(message = "Campo obrigatório!")
     private String sigla;
 
-    @NotBlank
+    @NotBlank(message = "Campo obrigatório!")
     private String fone;
 
     private List<EstudanteDTO> alunos;
