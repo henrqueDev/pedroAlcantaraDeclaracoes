@@ -11,3 +11,5 @@ const Toast = Swal.mixin({
         toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
 })
+
+document.getElementById('onDevelopment').addEventListener('click', () => {Swal.fire({title: 'Feature em Desenvolvimento', icon: 'warning', timer: 1500, showConfirmButton: false,})});
