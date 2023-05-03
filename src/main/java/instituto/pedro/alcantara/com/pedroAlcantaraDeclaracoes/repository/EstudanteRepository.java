@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.PeriodoLetivo;
 
 public interface EstudanteRepository extends JpaRepository<Estudante, Integer> {
 
@@ -17,6 +18,9 @@ public interface EstudanteRepository extends JpaRepository<Estudante, Integer> {
     Optional<Estudante> findById(Integer id);
 
     List<Estudante> findAllByInstituicaoAtual(Instituicao instituicaoAtual);
+
+    @Query("select e from Estudante e where e.declaracaoAtual.periodo = :periodo ")
+    List<Estudante> findAllEstudantesByPeriodo(@Param(value = "periodo") PeriodoLetivo periodo);
 
     @Modifying
     @Query("update Estudante e set e.nome = :nome, e.instituicaoAtual = :instituicaoAtual where e.matricula = :matricula")

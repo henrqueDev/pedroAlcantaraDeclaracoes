@@ -133,7 +133,8 @@ public class PeriodoLetivoService {
         for (Declaracao declaracao : declaracoes) {
             this.declaracaoRepository.delete(declaracao);
         }
-        for (Estudante estudante : p.getInstituicao().getAlunos()) {
+        List<Estudante> estudantes = this.estudanteRepository.findAllEstudantesByPeriodo(p);
+        for (Estudante estudante : estudantes) {
             estudante.setDeclaracaoAtual(null);
         }
 
