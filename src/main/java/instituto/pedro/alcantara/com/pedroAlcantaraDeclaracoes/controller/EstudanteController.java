@@ -25,6 +25,7 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.Es
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.estudante.EstudanteNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Declaracao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.EstudanteService;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.InstituicaoService;
 import lombok.RequiredArgsConstructor;
@@ -123,7 +124,9 @@ public class EstudanteController {
         try {
             Estudante e = this.estudanteService.getById(id).orElseThrow(() -> new EstudanteNotFoundException());
             declaracao.setEstudante(e.getMatricula());
+            Instituicao i = e.getInstituicaoAtual();
             model.setViewName("estudantes/formDeclaracao");
+            model.addObject("periodos", i != null ? i.getPeriodos() : null);
             model.addObject("declaracao", declaracao);
         } catch (Exception e) {
             model.setViewName("estudantes/formDeclaracao");
