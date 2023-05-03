@@ -51,7 +51,7 @@ public class PeriodoLetivoController {
     /*
      * @GetMapping
      * public List<PeriodoLetivoDTO> getAll(){
-     * 
+     *
      * return this.PeriodoLetivoService.getAll()
      * .stream().map(i -> {
      * return this.converter(i);
@@ -67,6 +67,7 @@ public class PeriodoLetivoController {
         if (validation.hasErrors()) {
             model.addObject("periodoLetivo", p);
             model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("hasErrors", true);
             model.setViewName("periodoLetivo/form");
             return model;
         }
@@ -83,19 +84,20 @@ public class PeriodoLetivoController {
         model.addObject("periodos", periodoLetivoService.getAll());
         model.setViewName("redirect:list");
         ra.addFlashAttribute("mensagem", "Periodo Cadastrado com Sucesso!");
+        ra.addFlashAttribute("success", true);
         return model;
     }
 
     /*
      * private PeriodoLetivoDTO converter(PeriodoLetivo i){
-     * 
+     *
      * return PeriodoLetivoDTO.builder()
      * .nome(i.getNome())
      * .sigla(i.getSigla())
      * .fone(i.getFone())
      * .alunos(this.converterEstudanteDTO(i.getAlunos()))
      * .build();
-     * 
+     *
      * }
      */
 

@@ -89,6 +89,7 @@ public class InstituicaoController {
         if (validation.hasErrors()) {
             model.addObject("instituicao", i);
             model.addObject("method", "POST");
+            model.addObject("hasErrors", true);
             model.setViewName("instituicoes/form");
             return model;
         }
@@ -104,6 +105,7 @@ public class InstituicaoController {
         }
 
         ra.addFlashAttribute("mensagem", "A instituição foi Cadastrada com Sucesso!");
+        ra.addFlashAttribute("success", true);
         model.addObject("instituicoes", instituicaoService.getAll());
         model.setViewName("redirect:list");
         return model;
@@ -117,6 +119,7 @@ public class InstituicaoController {
         if (validation.hasErrors()) {
             model.addObject("instituicao", i);
             model.addObject("method", "PUT");
+            model.addObject("hasErrors", true);
             model.setViewName("instituicoes/form");
             return model;
         }
@@ -132,6 +135,7 @@ public class InstituicaoController {
         }
 
         ra.addFlashAttribute("mensagem", "A instituição foi Cadastrada com Sucesso!");
+        ra.addFlashAttribute("success", true);
         model.addObject("instituicoes", instituicaoService.getAll());
         model.setViewName("redirect:list");
         return model;

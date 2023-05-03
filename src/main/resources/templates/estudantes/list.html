@@ -12,9 +12,9 @@
                 <button type="button" class="btn btn-info text-light" style="padding: 8px;">Cadastrar</button>
             </a>
         </div>
-        
+
         <div th:if="${mensagem}" th:text="${mensagem}" class="alert alert-success"></div>
-    
+
         <table class="table">
             <thead class="bg-info">
               <tr>
@@ -35,7 +35,7 @@
                 <td>
                   <a th:href="@{/estudantes/create/{id}(id = ${estudante.matricula})}">
                     <button type="button" class="btn btn-primary" th:text="Editar"></button>
-                  
+
                   </a>
                   <a th:href="@{/estudantes/create/{id}(id = ${estudante.matricula})}">
                     <button type="button" class="btn btn-primary" th:text="Excluir"></button>
@@ -45,6 +45,8 @@
             </tbody>
           </table>
     </div>
+
+    <div th:replace="~{/Validation/validation :: submitSuccess}"></div>
   </section>
 </body>
 

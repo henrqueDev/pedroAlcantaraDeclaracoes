@@ -166,6 +166,7 @@ public class EstudanteController {
             model.addObject("estudante", estudante);
             model.addObject("instituicoes", instituicaoService.getAll());
             model.addObject("method", "POST");
+            model.addObject("hasErrors", true);
             model.setViewName("estudantes/form");
             return model;
         }
@@ -180,6 +181,7 @@ public class EstudanteController {
             return model;
         }
         model.setViewName("redirect:list");
+        ra.addFlashAttribute("success", true);
         ra.addFlashAttribute("mensagem", "Estudante Cadastrado com Sucesso!");
         return model;
     }
@@ -192,6 +194,7 @@ public class EstudanteController {
             model.addObject("estudante", estudante);
             model.addObject("instituicoes", instituicaoService.getAll());
             model.addObject("method", "PUT");
+            model.addObject("hasErrors", true);
             model.setViewName("estudantes/form");
             return model;
         }
@@ -206,6 +209,7 @@ public class EstudanteController {
             return model;
         }
         model.setViewName("redirect:list");
+        ra.addFlashAttribute("success", true);
         ra.addFlashAttribute("mensagem", "Estudante Cadastrado com Sucesso!");
         return model;
     }

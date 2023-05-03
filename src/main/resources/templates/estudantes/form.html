@@ -3,9 +3,9 @@
 
 <body>
     <section id="estudantes-form" layout:fragment="content">
-        
+
         <div class="card p-4 mt-4">
-            
+
             <h1>Cadastro de Estudantes</h1>
             <div th:if="${exception != null}" th:text="${exception}" class="alert alert-danger" ></div>
             <form th:action="@{/estudantes/create}"
@@ -32,12 +32,14 @@
                     <a th:href="@{/estudantes/list}">
                         <button type="button" class="btn btn-secondary">Cancelar</button>
                     </a>
-                    
-                    <button type="submit" class="btn btn-primary">Salvar</button>
+
+                    <button id="submit" class="btn btn-primary">Salvar</button>
                 </div>
 
             </form>
         </div>
+
+        <div th:replace="~{/Validation/validation :: submitError}"></div>
     </section>
 
 </body>

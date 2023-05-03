@@ -3,7 +3,7 @@
 
 <body>
   <section id="periodosLetivos-table" layout:fragment="content">
-  
+
     <div class="container mt-4">
 
         <div style="display: flex; justify-content: space-between;">
@@ -12,9 +12,9 @@
                 <button type="button" class="btn btn-info text-light" style="padding: 8px;">Cadastrar</button>
             </a>
         </div>
-        
+
         <div th:if="${mensagem}" th:text="${mensagem}" class="alert alert-success"></div>
-    
+
         <table class="table">
             <thead class="bg-info">
               <tr>
@@ -24,7 +24,7 @@
               </tr>
             </thead>
             <tbody>
-             
+
             <tr th:each="periodoLetivo : ${periodosLetivos}">
                 <td th:text="${periodoLetivo.ano}"></td>
                 <td th:text="${periodoLetivo.periodo}"></td>
@@ -33,8 +33,10 @@
             </tbody>
           </table>
     </div>
+
+    <div th:replace="~{/Validation/validation :: submitSuccess}"></div>
   </section>
 </body>
 
 </html>
-        
+

@@ -3,7 +3,7 @@
 
 <body>
     <section id="instituicoes-form" layout:fragment="content">
-            
+
         <div class="card p-4 mt-4">
             <h1>Cadastro de Instituicao</h1>
 
@@ -44,12 +44,14 @@
                     <a th:href="@{/instituicoes/list}">
                         <button type="button" class="btn btn-secondary">Cancelar</button>
                     </a>
-                    
+
                     <button type="submit" class="btn btn-primary">Salvar</button>
                 </div>
 
             </form>
         </div>
+
+        <div th:replace="~{/Validation/validation :: submitError}"></div>
     </section>
 </body>
 
