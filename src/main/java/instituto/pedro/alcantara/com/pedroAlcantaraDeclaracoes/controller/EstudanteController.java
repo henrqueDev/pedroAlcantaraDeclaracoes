@@ -142,6 +142,7 @@ public class EstudanteController {
         if (validation.hasErrors()) {
             model.addObject("declaracao", declaracao);
             model.addObject("method", "POST");
+            model.addObject("hasErrors", true);
             model.setViewName("estudantes/formDeclaracao");
             return model;
         }
@@ -159,6 +160,7 @@ public class EstudanteController {
         model.addObject("estudantes", estudanteService.getAll());
         model.setViewName("redirect:list");
         ra.addFlashAttribute("mensagem", "Declaração gerada com Sucesso!");
+        ra.addFlashAttribute("success", true);
         return model;
     }
 
