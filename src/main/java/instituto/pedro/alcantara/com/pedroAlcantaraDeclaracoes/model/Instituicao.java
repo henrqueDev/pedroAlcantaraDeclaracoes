@@ -56,7 +56,7 @@ public class Instituicao {
     @JoinColumn(name = "periodoAtual_fk", referencedColumnName = "id")
     private PeriodoLetivo periodoAtual;
 
-    @OneToMany(mappedBy = "instituicao", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "instituicao")
     private List<PeriodoLetivo> periodos;
 
     @JsonIgnore

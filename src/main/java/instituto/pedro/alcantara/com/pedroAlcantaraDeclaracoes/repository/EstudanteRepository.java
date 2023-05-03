@@ -21,4 +21,8 @@ public interface EstudanteRepository extends JpaRepository<Estudante, Integer> {
     void updateEstudante(@Param(value = "matricula") Integer matricula, @Param(value = "nome") String nome,
             @Param(value = "instituicaoAtual") Instituicao instituicaoAtual);
 
+    @Modifying
+    @Query("delete from Estudante e where e.matricula = :matricula")
+    void deleteEstudanteByMatricula(@Param(value = "matricula") Integer matricula);
+
 }

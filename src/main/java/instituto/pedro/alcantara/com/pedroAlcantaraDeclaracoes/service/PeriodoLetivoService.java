@@ -63,7 +63,7 @@ public class PeriodoLetivoService {
         }
         for (Estudante estudante : estudanteRepository.findAll()) {
             if (estudante.getDeclaracaoAtual() != null) {
-                declaracaoRepository.deleteDeclaracaoByEstudanteMatricula(estudante.getMatricula());
+                estudante.setDeclaracaoAtual(null);
             }
         }
         periodo.setAno(p.getAno());
