@@ -16,12 +16,15 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.estudan
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.estudante.EstudanteNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoWithoutPeriodoException;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.periodo.PeriodoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Declaracao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.PeriodoLetivo;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.DeclaracaoRepository;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.EstudanteRepository;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.InstituicaoRepository;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.PeriodoLetivoRepository;
 
 @Service
 
@@ -35,6 +38,9 @@ public class EstudanteService {
 
     @Autowired
     private DeclaracaoRepository declaracaoRepository;
+
+    @Autowired
+    private PeriodoLetivoRepository periodoLetivoRepository;
 
     @Transactional
     public void update(@Valid EstudanteDTO estudante) throws Exception {
@@ -105,9 +111,13 @@ public class EstudanteService {
 
         Estudante e = this.estudanteRepository.findById(d.getEstudante())
                 .orElseThrow(() -> new InstituicaoNotFoundException());
+
+        PeriodoLetivo p = this.periodoLetivoRepository.findById(d.getPeriodo())
+                .orElseThrow(() -> new PeriodoNotFoundException());
+
         if (e.getInstituicaoAtual() != null) {
             if (e.getInstituicaoAtual().getPeriodoAtual() != null) {
-                Declaracao declaracao = new Declaracao(d.getObservacao(), dataRecebimento, e);
+                Declaracao declaracao = new Declaracao(d.getObservacao(), dataRecebimento, e, p);
                 e.setDeclaracaoAtual(declaracao);
                 this.declaracaoRepository.save(declaracao);
             } else {

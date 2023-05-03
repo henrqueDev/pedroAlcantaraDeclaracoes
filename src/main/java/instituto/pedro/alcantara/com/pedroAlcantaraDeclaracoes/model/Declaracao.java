@@ -31,11 +31,11 @@ import lombok.NoArgsConstructor;
 
 public class Declaracao {
 
-    public Declaracao(String observacao, LocalDate dataRecebimento, Estudante estudante) {
+    public Declaracao(String observacao, LocalDate dataRecebimento, Estudante estudante, PeriodoLetivo periodo) {
         this.observacao = observacao;
         this.dataRecebimento = dataRecebimento;
         this.estudante = estudante;
-        this.periodo = estudante.getInstituicaoAtual().getPeriodoAtual();
+        this.periodo = periodo;
     }
 
     @Id
@@ -56,8 +56,7 @@ public class Declaracao {
     private Estudante estudante;
 
     @ManyToOne
-    @JoinColumn(name = "periodo_fk", referencedColumnName = "id")
-    @NotNull
+    @JoinColumn(name = "periodo_fk")
     private PeriodoLetivo periodo;
 
     public String toString() {

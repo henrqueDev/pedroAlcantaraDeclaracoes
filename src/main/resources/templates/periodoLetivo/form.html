@@ -7,11 +7,11 @@
     <section id="periodoLetivo-form" layout:fragment="content">
 
         <div class="card p-4 mt-4">
-            <h1>Cadastro de PeriodoLetivo</h1>
+            <h1 th:text="${title}"></h1>
 
             <div th:if="${exception != null}" th:text="${exception}" class="alert alert-danger" ></div>
             <form th:action="@{/periodos/create}"
-            method="POST"
+            th:method="${method}"
             th:object="${periodoLetivo}"
             class="p-2"
             style="border-radius: 16px;">

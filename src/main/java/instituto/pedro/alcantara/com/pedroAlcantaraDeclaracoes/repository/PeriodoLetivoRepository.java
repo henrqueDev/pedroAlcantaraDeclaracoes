@@ -13,12 +13,12 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.PeriodoLeti
 
 public interface PeriodoLetivoRepository extends JpaRepository<PeriodoLetivo, Integer> {
 
-    @Query("select p from PeriodoLetivo p order by p.dataFinal desc")
-    Optional<PeriodoLetivo> findByLastPeriodo();
+    @Query("select p from PeriodoLetivo p where p.dataFinal < :data order by p.dataFinal desc")
+    Optional<PeriodoLetivo> findByLastPeriodo(@Param(value = "data") LocalDate data);
 
     @Modifying
-    @Query("update PeriodoLetivo p set p.ano = :ano, p.periodo = :periodo, p.dataInicio = :dataInicio, p.dataFinal = :dataFinal")
-    void update(@Param(value = "ano") int ano, @Param(value = "periodo") int periodo,
+    @Query("update PeriodoLetivo p set p.ano = :ano, p.periodo = :periodo, p.dataInicio = :dataInicio, p.dataFinal = :dataFinal where p.id = :id")
+    void update(@Param(value = "id") Integer id, @Param(value = "ano") int ano, @Param(value = "periodo") int periodo,
             @Param(value = "dataInicio") LocalDate dataInicio, @Param(value = "dataFinal") LocalDate dataFinal);
 
 }

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -17,6 +18,7 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.institu
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.periodo.PeriodoInvalidoException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.periodo.PeriodoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.periodo.PeriodoNotMatchLastException;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Declaracao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.PeriodoLetivo;
@@ -88,34 +90,63 @@ public class PeriodoLetivoService {
 
         LocalDate dataInicio = LocalDate.parse(p.getDataInicio(), DateTimeFormatter.ISO_LOCAL_DATE);
         LocalDate dataFinal = LocalDate.parse(p.getDataFinal(), DateTimeFormatter.ISO_LOCAL_DATE);
-        periodo.setPeriodo(p.getPeriodo());
-        periodo.setDataInicio(dataInicio);
-        periodo.setDataFinal(dataFinal);
+        // Optional<PeriodoLetivo> periodoBefore =
+        // this.periodoLetivoRepository.findByLastPeriodo(dataFinal);
 
         if (dataInicio.isAfter(dataFinal) || dataInicio.isEqual(dataFinal)
                 || dataInicio.getYear() != dataFinal.getYear()) {
             throw new PeriodoInvalidoException();
         }
-        for (PeriodoLetivo periodoLetivo : periodosInstituicao) {
-            if (!periodo.checkLastPeriodoData(periodoLetivo)) {
-                throw new PeriodoNotMatchLastException();
-            }
-        }
-        for (Estudante estudante : estudanteRepository.findAll()) {
-            if (estudante.getDeclaracaoAtual() != null) {
+        /*
+         * for (PeriodoLetivo periodoLetivo : periodosInstituicao) {
+         * if (!periodo.checkLastPeriodoData(periodoLetivo) || ) {
+         * throw new PeriodoNotMatchLastException();
+         * }
+         * }
+         */
+
+        for (Estudante estudante : estudanteRepository.findAllByInstituicaoAtual(i)) {
+            PeriodoLetivo pl = estudante.getDeclaracaoAtual() != null ? estudante.getDeclaracaoAtual().getPeriodo()
+                    : null;
+            if (pl == periodo) {
                 estudante.setDeclaracaoAtual(null);
             }
         }
+        periodo.setPeriodo(p.getPeriodo());
+        periodo.setDataInicio(dataInicio);
+        periodo.setDataFinal(dataFinal);
         periodo.setAno(p.getAno());
         periodo.setInstituicao(i);
         i.setPeriodos(periodosInstituicao);
-        i.setPeriodoAtual(periodo);
-        this.periodoLetivoRepository.update(periodo.getAno(), periodo.getPeriodo(), periodo.getDataInicio(),
+        this.periodoLetivoRepository.update(periodo.getId(), periodo.getAno(), periodo.getPeriodo(),
+                periodo.getDataInicio(),
                 periodo.getDataFinal());
+
+    }
+
+    @Transactional
+    public void deletePeriodo(Integer periodo) {
+        PeriodoLetivo p = this.periodoLetivoRepository.findById(periodo)
+                .orElseThrow(() -> new InstituicaoNotFoundException());
+
+        List<Declaracao> declaracoes = p.getDeclaracoes();
+        for (Declaracao declaracao : declaracoes) {
+            this.declaracaoRepository.delete(declaracao);
+        }
+        for (Estudante estudante : p.getInstituicao().getAlunos()) {
+            estudante.setDeclaracaoAtual(null);
+        }
+
+        p.getInstituicao().setPeriodoAtual(null);
+        this.periodoLetivoRepository.delete(p);
     }
 
     public List<PeriodoLetivo> getAll() {
         return this.periodoLetivoRepository.findAll();
+    }
+
+    public Optional<PeriodoLetivo> getById(Integer id) {
+        return this.periodoLetivoRepository.findById(id);
     }
 
 }

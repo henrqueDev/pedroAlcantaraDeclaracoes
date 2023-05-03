@@ -33,8 +33,6 @@ public class PeriodoLetivoDTO {
     @NotBlank(message = "Campo obrigatório!")
     private String dataFinal;
 
-    private List<DeclaracaoDTO> declaracoes;
-
     @NotNull(message = "Precisa de uma Instituição!")
     private Integer instituicao;
 

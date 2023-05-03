@@ -115,6 +115,7 @@ public class EstudanteController {
             ModelAndView model) {
         model.setViewName("estudantes/formDeclaracao");
         model.addObject("declaracao", declaracao);
+
         return model;
     }
 

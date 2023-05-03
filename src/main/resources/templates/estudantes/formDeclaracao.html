@@ -20,8 +20,8 @@
                     <input th:unless="${declaracao.estudante != null}" type="number" id="Matricula" class="form-control" th:field="*{estudante}" />
                 </div>
                 <div class="form-group m-2">
-                    <label for="instituicao">Periodo:</label>
-                    <select class="form-control" th:field="*{periodo}">
+                    <label for="periodo">Periodo:</label>
+                    <select class="form-control" id="periodo" th:field="*{periodo}">
                         <option value="">Selecione</option>
                         <option th:each="p : ${periodos}" th:value="${p.id}" th:text="${p.ano + '.' + p.periodo}"></option>
                     </select>
