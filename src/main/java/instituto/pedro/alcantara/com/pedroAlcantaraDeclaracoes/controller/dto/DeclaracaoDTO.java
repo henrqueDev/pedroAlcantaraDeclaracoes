@@ -24,5 +24,6 @@ public class DeclaracaoDTO {
     private String observacao;
     private String dataRecebimento;
     private Integer estudante;
+    private Integer periodo;
 
 }
