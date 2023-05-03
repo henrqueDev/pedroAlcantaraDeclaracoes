@@ -3,8 +3,87 @@
 
 <body>
     <div layout:fragment="content">
-        <h1>KKKK JAVA</h1>
+
+        <main class="container mt-5 p-2">
+            <div class="row justify-content-center">
+                <div class="col-md-8 text-center">
+                    <h1 class="mb-4">Bem-vindo ao nosso Sistema de Declarações!</h1>
+                    <p class="lead mb-4">Por favor selecione uma das seguintes opções:</p>
+                </div>
+            </div>
+            <div class="row justify-content-center p-2">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Adicionar uma Declaração</h5>
+                            <p class="card-text">Adicionar uma nova Declaração ao Sistema.</p>
+                            <a th:href="@{/estudantes/list}" class="btn btn-primary">Adicionar</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Visualizar Declarações</h5>
+                            <p class="card-text">Veja todas as declarações do sistema.</p>
+                            <a href="#" class="btn btn-primary" id="onDevelopment">Visualizar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center p-2">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Adicionar Estudante</h5>
+                            <p class="card-text">Adicionar um novo estudante ao Sistema.</p>
+                            <a th:href="@{/estudantes/create}" class="btn btn-primary">Adicionar</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Visualizar Estudantes</h5>
+                            <p class="card-text">Veja todos os Estudantes do sistema.</p>
+                            <a th:href="@{/estudantes/list}" class="btn btn-primary">Visualizar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center p-2">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Adicionar Instituição</h5>
+                            <p class="card-text">Adicionar uma nova Instituição ao Sistema.</p>
+                            <a th:href="@{/instituicoes/create}" class="btn btn-primary">Adicionar</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Visualizar Instituições</h5>
+                            <p class="card-text">Veja todas as Instituições do sistema.</p>
+                            <a th:href="@{/instituicoes/list}" class="btn btn-primary">Visualizar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
+
+    <div layout:fragment="footer">
+        <footer class="logo-background text-center text-white mt-5 py-3">
+            <p>&copy; 2023 Porta Declarations System</p>
+        </footer>
+    </div>
+
 </body>
 
 </html>
+
+<script>
+    document.getElementById('onDevelopment').addEventListener('click', () => {Swal.fire({title: 'Feature em Desenvolvimento', icon: 'warning', timer: 1500, showConfirmButton: false,})});
+</script>
