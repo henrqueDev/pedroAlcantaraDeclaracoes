@@ -15,6 +15,7 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.Pe
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.ExceptionList;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.periodo.PeriodoInvalidoException;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.periodo.PeriodoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.periodo.PeriodoNotMatchLastException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
@@ -61,7 +62,7 @@ public class PeriodoLetivoService {
                 throw new PeriodoNotMatchLastException();
             }
         }
-        for (Estudante estudante : estudanteRepository.findAll()) {
+        for (Estudante estudante : estudanteRepository.findAllByInstituicaoAtual(i)) {
             if (estudante.getDeclaracaoAtual() != null) {
                 estudante.setDeclaracaoAtual(null);
             }
@@ -72,6 +73,45 @@ public class PeriodoLetivoService {
         i.setPeriodos(periodosInstituicao);
         i.setPeriodoAtual(periodo);
         return periodoLetivoRepository.save(periodo);
+    }
+
+    @Transactional
+    public void update(@Valid PeriodoLetivoDTO p) throws Exception {
+
+        PeriodoLetivo periodo = this.periodoLetivoRepository.findById(p.getId())
+                .orElseThrow(() -> new PeriodoNotFoundException());
+
+        Instituicao i = instituicaoRepository.findById(p.getInstituicao())
+                .orElseThrow(() -> new InstituicaoNotFoundException());
+
+        List<PeriodoLetivo> periodosInstituicao = i.getPeriodos();
+
+        LocalDate dataInicio = LocalDate.parse(p.getDataInicio(), DateTimeFormatter.ISO_LOCAL_DATE);
+        LocalDate dataFinal = LocalDate.parse(p.getDataFinal(), DateTimeFormatter.ISO_LOCAL_DATE);
+        periodo.setPeriodo(p.getPeriodo());
+        periodo.setDataInicio(dataInicio);
+        periodo.setDataFinal(dataFinal);
+
+        if (dataInicio.isAfter(dataFinal) || dataInicio.isEqual(dataFinal)
+                || dataInicio.getYear() != dataFinal.getYear()) {
+            throw new PeriodoInvalidoException();
+        }
+        for (PeriodoLetivo periodoLetivo : periodosInstituicao) {
+            if (!periodo.checkLastPeriodoData(periodoLetivo)) {
+                throw new PeriodoNotMatchLastException();
+            }
+        }
+        for (Estudante estudante : estudanteRepository.findAll()) {
+            if (estudante.getDeclaracaoAtual() != null) {
+                estudante.setDeclaracaoAtual(null);
+            }
+        }
+        periodo.setAno(p.getAno());
+        periodo.setInstituicao(i);
+        i.setPeriodos(periodosInstituicao);
+        i.setPeriodoAtual(periodo);
+        this.periodoLetivoRepository.update(periodo.getAno(), periodo.getPeriodo(), periodo.getDataInicio(),
+                periodo.getDataFinal());
     }
 
     public List<PeriodoLetivo> getAll() {

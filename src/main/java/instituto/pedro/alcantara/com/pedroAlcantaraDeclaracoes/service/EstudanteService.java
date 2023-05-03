@@ -95,7 +95,8 @@ public class EstudanteService {
         for (Declaracao declaracao : declaracoes) {
             this.declaracaoRepository.delete(declaracao);
         }
-        this.estudanteRepository.deleteEstudanteByMatricula(estudante);
+
+        this.estudanteRepository.delete(e);
     }
 
     @Transactional

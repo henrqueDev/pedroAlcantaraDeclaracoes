@@ -51,7 +51,7 @@ public class Estudante {
     @NotBlank(message = "Campo obrigatório!")
     private String nome;
 
-    @OneToMany(mappedBy = "estudante")
+    @OneToMany(mappedBy = "estudante", cascade = CascadeType.ALL)
     private List<Declaracao> declaracoes;
 
     @OneToOne(cascade = CascadeType.ALL)

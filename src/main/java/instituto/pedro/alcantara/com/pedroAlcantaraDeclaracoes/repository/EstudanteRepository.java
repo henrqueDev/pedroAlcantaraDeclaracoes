@@ -16,6 +16,8 @@ public interface EstudanteRepository extends JpaRepository<Estudante, Integer> {
 
     Optional<Estudante> findById(Integer id);
 
+    List<Estudante> findAllByInstituicaoAtual(Instituicao instituicaoAtual);
+
     @Modifying
     @Query("update Estudante e set e.nome = :nome, e.instituicaoAtual = :instituicaoAtual where e.matricula = :matricula")
     void updateEstudante(@Param(value = "matricula") Integer matricula, @Param(value = "nome") String nome,

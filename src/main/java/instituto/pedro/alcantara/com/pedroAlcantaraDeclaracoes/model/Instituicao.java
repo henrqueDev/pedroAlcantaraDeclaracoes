@@ -52,7 +52,7 @@ public class Instituicao {
     @NotBlank(message = "Campo obrigatório!")
     private String fone;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "periodoAtual_fk", referencedColumnName = "id")
     private PeriodoLetivo periodoAtual;
 

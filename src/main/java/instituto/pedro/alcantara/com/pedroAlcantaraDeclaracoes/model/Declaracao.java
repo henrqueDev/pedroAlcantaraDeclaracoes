@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -43,6 +44,7 @@ public class Declaracao {
     private Integer id;
 
     @Column(name = "observacao")
+    @NotBlank
     private String observacao;
 
     @Column(name = "dataRecebimento")
@@ -53,8 +55,9 @@ public class Declaracao {
     @JoinColumn(name = "estudante_fk", referencedColumnName = "matricula")
     private Estudante estudante;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "periodo_fk", referencedColumnName = "id")
+    @NotNull
     private PeriodoLetivo periodo;
 
     public String toString() {

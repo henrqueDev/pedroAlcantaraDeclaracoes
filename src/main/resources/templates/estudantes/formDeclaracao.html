@@ -25,11 +25,15 @@
                         <option value="">Selecione</option>
                         <option th:each="p : ${periodos}" th:value="${p.id}" th:text="${p.ano + '.' + p.periodo}"></option>
                     </select>
+                    <div th:if="${#fields.hasErrors('periodo')}"  th:errors="*{periodo}" class="alert alert-danger"></div>
                 </div>
+                
                 <div class="form-group m-2">
-                    <label for="Observacao">Observacao:</label>
-                    <input type="text" id="Observacao" class="form-control" th:field="*{observacao}" />
+                    <label for="observacao">Observacao:</label>
+                    <input type="text" id="observacao" th:value="${declaracao.observacao}" class="form-control" th:field="*{observacao}" />
+                    <div th:if="${#fields.hasErrors('observacao')}"  th:errors="*{observacao}" class="alert alert-danger"></div>
                 </div>
+                
                 <div id="ActionButtons" class="mx-2 mt-4" style="display: flex; justify-content: end; gap: 0 6px;">
                     <a th:href="@{/estudantes/list}">
                         <button type="button" class="btn btn-secondary">Cancelar</button>
