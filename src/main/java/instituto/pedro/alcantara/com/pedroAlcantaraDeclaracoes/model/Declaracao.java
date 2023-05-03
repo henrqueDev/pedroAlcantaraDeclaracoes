@@ -49,11 +49,11 @@ public class Declaracao {
     @NotNull
     private LocalDate dataRecebimento;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "estudante_fk", referencedColumnName = "matricula")
     private Estudante estudante;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "periodo_fk", referencedColumnName = "id")
     private PeriodoLetivo periodo;
 

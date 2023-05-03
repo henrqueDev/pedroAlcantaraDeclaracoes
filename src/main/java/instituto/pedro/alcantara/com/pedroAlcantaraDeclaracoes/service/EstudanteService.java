@@ -91,8 +91,8 @@ public class EstudanteService {
     @Transactional
     public void deleteEstudante(Integer estudante) {
         Estudante e = this.estudanteRepository.findById(estudante).orElseThrow(() -> new EstudanteNotFoundException());
-        List<Declaracao> Declaracoes = e.getDeclaracoes();
-        for (Declaracao declaracao : Declaracoes) {
+        List<Declaracao> declaracoes = e.getDeclaracoes();
+        for (Declaracao declaracao : declaracoes) {
             this.declaracaoRepository.delete(declaracao);
         }
         this.estudanteRepository.deleteEstudanteByMatricula(estudante);

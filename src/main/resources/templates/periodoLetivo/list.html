@@ -21,6 +21,7 @@
                 <th scope="col"><span class="text-light">Ano</span></th>
                 <th scope="col"><span class="text-light">Periodo</span></th>
                 <th scope="col"><span class="text-light">Instituicao</span></th>
+                <th scope="col"><span class="text-light">Ações</span></th>
               </tr>
             </thead>
             <tbody>
@@ -29,6 +30,15 @@
                 <td th:text="${periodoLetivo.ano}"></td>
                 <td th:text="${periodoLetivo.periodo}"></td>
                 <td th:text="${periodoLetivo.instituicao.nome}"></td>
+                 <td>
+                  <a th:href="@{/periodos/create/{id}(id = ${periodoLetivo.id})}">
+                    <button type="button" class="btn btn-primary" th:text="Editar"></button>
+
+                  </a>
+                  <a th:href="@{/periodos/delete/{id}(id = ${periodoLetivo.id})}">
+                    <button type="button" class="btn btn-primary" th:text="Excluir"></button>
+                  </a>
+                </td>
             </tr>
             </tbody>
           </table>

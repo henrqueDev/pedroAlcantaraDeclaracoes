@@ -24,7 +24,7 @@ public interface InstituicaoRepository extends JpaRepository<Instituicao, Intege
             @Param(value = "periodoAtual") PeriodoLetivo periodoAtual);
 
     @Modifying
-    @Query("delete from Instituicao i where i.id=:id")
-    void deleteEstudanteByMatricula(@Param(value = "id") Integer id);
+    @Query("delete from Instituicao i where i.id = :id")
+    void deleteInstituicaoById(@Param(value = "id") Integer id);
 
 }

@@ -168,5 +168,21 @@ public class InstituicaoController {
 
     }
 
+    @GetMapping(value = "/delete/{id}")
+    public ModelAndView deleteInstituicao(@PathVariable(name = "id") Integer id, ModelAndView model,
+            RedirectAttributes ra) {
+        try {
+            this.instituicaoService.deleteInstituicao(id);
+        } catch (Exception e) {
+            model.addObject("instituicoes", instituicaoService.getAll());
+            ra.addFlashAttribute("mensagem", e.getMessage());
+            model.setViewName("redirect:/instituicoes/list");
+            return model;
+        }
+        model.setViewName("redirect:/instituicoes/list");
+        ra.addFlashAttribute("mensagem", "Instituicao removido com Sucesso!");
+        return model;
+    }
+
 }
 // a

@@ -76,6 +76,18 @@ public class InstituicaoService {
                 instituicaoAtualizada.getFone(), instituicaoAtualizada.getPeriodoAtual());
     }
 
+    @Transactional
+    public void deleteInstituicao(Integer instituicao) {
+        Instituicao i = this.instituicaoRepository.findById(instituicao)
+                .orElseThrow(() -> new InstituicaoNotFoundException());
+        List<Estudante> estudantes = i.getAlunos();
+        for (Estudante estudante : estudantes) {
+            estudante.setInstituicaoAtual(null);
+            estudante.setDeclaracaoAtual(null);
+        }
+        this.instituicaoRepository.delete(i);
+    }
+
     private List<Estudante> converterA(List<EstudanteDTO> alunos) {
         return alunos == null ? new ArrayList<Estudante>()
                 : alunos.stream().map(

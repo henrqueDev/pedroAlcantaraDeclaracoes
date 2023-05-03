@@ -52,15 +52,14 @@ public class Instituicao {
     @NotBlank(message = "Campo obrigatório!")
     private String fone;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "periodoAtual_fk", referencedColumnName = "id")
     private PeriodoLetivo periodoAtual;
 
-    @OneToMany(mappedBy = "instituicao")
+    @OneToMany(mappedBy = "instituicao", cascade = CascadeType.ALL)
     private List<PeriodoLetivo> periodos;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "instituicaoAtual", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "instituicaoAtual", fetch = FetchType.LAZY)
     private List<Estudante> alunos;
 
     public String toString() {

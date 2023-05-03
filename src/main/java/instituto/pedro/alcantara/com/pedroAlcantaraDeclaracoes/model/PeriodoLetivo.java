@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -58,8 +59,7 @@ public class PeriodoLetivo {
     // 1 - 30/1 to 30/06 2- 01/07 to 31/12
     // 31/1 to 30/07
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "periodo")
+    @OneToMany(mappedBy = "periodo", cascade = CascadeType.ALL)
     private List<Declaracao> declaracoes;
 
     @ManyToOne
