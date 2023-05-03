@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.fasterxml.jackson.annotation.JsonCreator.Mode;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 
@@ -210,7 +214,23 @@ public class EstudanteController {
         }
         model.setViewName("redirect:list");
         ra.addFlashAttribute("success", true);
-        ra.addFlashAttribute("mensagem", "Estudante Cadastrado com Sucesso!");
+        ra.addFlashAttribute("mensagem", "Estudante atualizado com Sucesso!");
+        return model;
+    }
+
+    @GetMapping(value = "/delete/{id}")
+    public ModelAndView deleteEstudante(@PathVariable(name = "id") Integer id, ModelAndView model,
+            RedirectAttributes ra) {
+        try {
+            this.estudanteService.deleteEstudante(id);
+        } catch (Exception e) {
+            model.addObject("estudantes", estudanteService.getAll());
+            ra.addFlashAttribute("mensagem", e.getMessage());
+            model.setViewName("redirect:/estudantes/list");
+            return model;
+        }
+        model.setViewName("redirect:/estudantes/list");
+        ra.addFlashAttribute("mensagem", "Estudante removido com Sucesso!");
         return model;
     }
 

@@ -54,11 +54,11 @@ public class Estudante {
     @OneToMany(mappedBy = "estudante")
     private List<Declaracao> declaracoes;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "declaracao_atual")
     private Declaracao declaracaoAtual;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "instituicao_id")
     private Instituicao instituicaoAtual;
 

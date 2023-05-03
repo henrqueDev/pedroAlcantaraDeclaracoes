@@ -10,7 +10,7 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Declaracao;
 public interface DeclaracaoRepository extends JpaRepository<Declaracao, Integer> {
 
     @Modifying
-    @Query("delete from Declaracao d where d.estudante.matricula=:matricula")
-    void deleteDeclaracaoByEstudanteMatricula(@Param(value = "matricula") Integer matricula);
+    @Query("delete from Declaracao d where d.id=:id")
+    void deleteDeclaracaoByid(@Param(value = "id") Integer id);
 
 }

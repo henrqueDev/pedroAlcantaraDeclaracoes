@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.DeclaracaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.estudante.EstudanteInstituicaoNotFoundException;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.estudante.EstudanteNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoWithoutPeriodoException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Declaracao;
@@ -88,6 +89,16 @@ public class EstudanteService {
     }
 
     @Transactional
+    public void deleteEstudante(Integer estudante) {
+        Estudante e = this.estudanteRepository.findById(estudante).orElseThrow(() -> new EstudanteNotFoundException());
+        List<Declaracao> Declaracoes = e.getDeclaracoes();
+        for (Declaracao declaracao : Declaracoes) {
+            this.declaracaoRepository.delete(declaracao);
+        }
+        this.estudanteRepository.deleteEstudanteByMatricula(estudante);
+    }
+
+    @Transactional
     public void emitirDeclaracao(@Valid DeclaracaoDTO d) throws Exception {
         LocalDate dataRecebimento = LocalDate.now();
 
@@ -97,7 +108,6 @@ public class EstudanteService {
             if (e.getInstituicaoAtual().getPeriodoAtual() != null) {
                 Declaracao declaracao = new Declaracao(d.getObservacao(), dataRecebimento, e);
                 e.setDeclaracaoAtual(declaracao);
-                this.estudanteRepository.save(e);
                 this.declaracaoRepository.save(declaracao);
             } else {
                 throw new InstituicaoWithoutPeriodoException();
