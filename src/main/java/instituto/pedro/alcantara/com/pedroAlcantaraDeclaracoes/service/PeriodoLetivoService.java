@@ -59,16 +59,21 @@ public class PeriodoLetivoService {
                 || dataInicio.getYear() != dataFinal.getYear()) {
             throw new PeriodoInvalidoException();
         }
-        for (PeriodoLetivo periodoLetivo : periodosInstituicao) {
-            if (!periodo.checkLastPeriodoData(periodoLetivo)) {
-                throw new PeriodoNotMatchLastException();
-            }
-        }
-        for (Estudante estudante : estudanteRepository.findAllByInstituicaoAtual(i)) {
-            if (estudante.getDeclaracaoAtual() != null) {
-                estudante.setDeclaracaoAtual(null);
-            }
-        }
+        /*
+         * for (PeriodoLetivo periodoLetivo : periodosInstituicao) {
+         * if (!periodo.checkLastPeriodoData(periodoLetivo)) {
+         * throw new PeriodoNotMatchLastException();
+         * }
+         * }
+         */
+        /*
+         * for (Estudante estudante : estudanteRepository.findAllByInstituicaoAtual(i))
+         * {
+         * if (estudante.getDeclaracaoAtual() != null) {
+         * estudante.setDeclaracaoAtual(null);
+         * }
+         * }
+         */
         periodo.setAno(p.getAno());
         periodo.setInstituicao(i);
         periodosInstituicao.add(periodo);
@@ -105,18 +110,22 @@ public class PeriodoLetivoService {
          * }
          */
 
-        for (Estudante estudante : estudanteRepository.findAllByInstituicaoAtual(i)) {
-            PeriodoLetivo pl = estudante.getDeclaracaoAtual() != null ? estudante.getDeclaracaoAtual().getPeriodo()
-                    : null;
-            if (pl == periodo) {
-                estudante.setDeclaracaoAtual(null);
-            }
-        }
+        /*
+         * for (Estudante estudante : estudanteRepository.findAllByInstituicaoAtual(i))
+         * {
+         * PeriodoLetivo pl = estudante.getDeclaracaoAtual() != null ?
+         * estudante.getDeclaracaoAtual().getPeriodo()
+         * : null;
+         * if (pl == periodo) {
+         * estudante.setDeclaracaoAtual(null);
+         * }
+         * }
+         */
+
         periodo.setPeriodo(p.getPeriodo());
         periodo.setDataInicio(dataInicio);
         periodo.setDataFinal(dataFinal);
         periodo.setAno(p.getAno());
-        periodo.setInstituicao(i);
         i.setPeriodos(periodosInstituicao);
         this.periodoLetivoRepository.update(periodo.getId(), periodo.getAno(), periodo.getPeriodo(),
                 periodo.getDataInicio(),

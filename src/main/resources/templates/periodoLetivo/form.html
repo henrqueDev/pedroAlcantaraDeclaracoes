@@ -41,12 +41,9 @@
                     <select class="form-control" id="Instituicao" name="instituicao" th:field="*{instituicao}">
                         <option value="">Selecione</option>
                         <option th:each="instituicao : ${instituicoes}" th:value="${instituicao.id}" th:text="${instituicao.nome}"></option>
-
                     </select>
                     <div th:if="${#fields.hasErrors('instituicao')}"  th:errors="*{instituicao}" class="alert alert-danger"></div>
                 </div>
-
-
                 <div id="ActionButtons" class="m-2" style="display: flex; justify-content: end; gap: 0 6px;">
                     <a th:href="@{/periodos/list}">
                         <button type="button" class="btn btn-secondary">Cancelar</button>

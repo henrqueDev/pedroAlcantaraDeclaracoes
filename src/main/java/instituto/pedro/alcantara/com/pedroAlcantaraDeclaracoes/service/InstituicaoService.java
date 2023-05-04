@@ -62,11 +62,13 @@ public class InstituicaoService {
                 ? this.periodoLetivoRepository.findById(i.getPeriodoAtual())
                         .orElseThrow(() -> new PeriodoNotFoundException())
                 : null;
-        if (newPeriodo == null) {
-            for (Estudante e : instituicaoAtualizada.getAlunos()) {
-                e.setDeclaracaoAtual(null);
-            }
-        }
+        /*
+         * if (newPeriodo == null) {
+         * for (Estudante e : instituicaoAtualizada.getAlunos()) {
+         * e.setDeclaracaoAtual(null);
+         * }
+         * }
+         */
         instituicaoAtualizada.setNome(i.getNome());
         instituicaoAtualizada.setSigla(i.getSigla());
         instituicaoAtualizada.setFone(i.getFone());

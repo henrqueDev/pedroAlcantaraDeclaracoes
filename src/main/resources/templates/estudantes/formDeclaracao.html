@@ -13,25 +13,26 @@
             th:object="${declaracao}"
             class="p-2"
             style="border-radius: 16px;">
+            <input th:if="${declaracao.estudante != null}" hidden type="number" id="Matricula" class="form-control" th:field="*{estudante}" />
             <input type="hidden" th:field="*{id}"/>
-                <div class="form-group m-2">
+                <!--<div class="form-group m-2">
                     <label for="Matricula">Matricula:</label>
-                    <input th:if="${declaracao.estudante != null}" readonly type="number" id="Matricula" class="form-control" th:field="*{estudante}" />
-                    <input th:unless="${declaracao.estudante != null}" type="number" id="Matricula" class="form-control" th:field="*{estudante}" />
-                </div>
-                <div class="form-group m-2">
-                    <label for="periodo">Periodo:</label>
-                    <select class="form-control" id="periodo" th:field="*{periodo}">
-                        <option value="">Selecione</option>
-                        <option th:each="p : ${periodos}" th:value="${p.id}" th:text="${p.ano + '.' + p.periodo}"></option>
-                    </select>
-                    <div th:if="${#fields.hasErrors('periodo')}"  th:errors="*{periodo}" class="alert alert-danger"></div>
-                </div>
-                
-                <div class="form-group m-2">
-                    <label for="observacao">Observacao:</label>
-                    <input type="text" id="observacao" th:value="${declaracao.observacao}" class="form-control" th:field="*{observacao}" />
-                    <div th:if="${#fields.hasErrors('observacao')}"  th:errors="*{observacao}" class="alert alert-danger"></div>
+                    <input th:if="${declaracao.estudante != null}" hidden type="number" id="Matricula" class="form-control" th:field="*{estudante}" />
+                </div>-->
+                    <div class="form-group m-2">
+                        <label for="periodo">Periodo:</label>
+                        <select class="form-control" id="periodo" th:field="*{periodo}">
+                            <option value="">Selecione</option>
+                            <option th:each="p : ${periodos}" th:value="${p.id}" th:text="${p.ano + '.' + p.periodo}"></option>
+                        </select>
+                        <div th:if="${#fields.hasErrors('periodo')}"  th:errors="*{periodo}" class="alert alert-danger"></div>
+                    </div>
+                    
+                    <div class="form-group m-2">
+                        <label for="observacao">Observacao:</label>
+                        <input type="text" id="observacao" th:value="${declaracao.observacao}" class="form-control" th:field="*{observacao}" />
+                        <div th:if="${#fields.hasErrors('observacao')}"  th:errors="*{observacao}" class="alert alert-danger"></div>
+                    </div>
                 </div>
                 
                 <div id="ActionButtons" class="mx-2 mt-4" style="display: flex; justify-content: end; gap: 0 6px;">

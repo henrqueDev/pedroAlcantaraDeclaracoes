@@ -116,7 +116,7 @@ public class EstudanteService {
                 .orElseThrow(() -> new PeriodoNotFoundException());
 
         if (e.getInstituicaoAtual() != null) {
-            if (e.getInstituicaoAtual().getPeriodoAtual() != null) {
+            if (e.getInstituicaoAtual().getPeriodos() != null) {
                 Declaracao declaracao = new Declaracao(d.getObservacao(), dataRecebimento, e, p);
                 e.setDeclaracaoAtual(declaracao);
                 this.declaracaoRepository.save(declaracao);
@@ -130,6 +130,10 @@ public class EstudanteService {
 
     public List<Estudante> getAll() {
         return this.estudanteRepository.findAll();
+    }
+
+    public Optional<Declaracao> getDeclaracaoById(Integer id) {
+        return this.declaracaoRepository.findById(id);
     }
 
     public Optional<Estudante> getById(Integer id) {

@@ -17,7 +17,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.PeriodoLetivoDTO;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.periodo.PeriodoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.PeriodoLetivo;
@@ -59,9 +61,10 @@ public class PeriodoLetivoController {
         try {
             PeriodoLetivo p = this.periodoLetivoService.getById(id)
                     .orElseThrow(() -> new PeriodoNotFoundException());
+            Instituicao i = this.instituicaoService.getById(p.getInstituicao().getId());
             model.addObject("title", "Atualizar Periodo Letivo");
             model.addObject("periodoLetivo", this.converter(p));
-            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("instituicoes", i);
             model.addObject("method", "PUT");
             model.setViewName("periodoLetivo/form");
         } catch (Exception e) {
@@ -122,6 +125,7 @@ public class PeriodoLetivoController {
             throws Exception {
 
         if (validation.hasErrors()) {
+            model.addObject("title", "Cadastrar Periodo Letivo");
             model.addObject("periodoLetivo", p);
             model.addObject("instituicoes", instituicaoService.getAll());
             model.addObject("hasErrors", true);
@@ -132,6 +136,7 @@ public class PeriodoLetivoController {
         try {
             this.periodoLetivoService.update(p);
         } catch (Exception e) {
+            model.addObject("title", "Cadastrar Periodo Letivo");
             model.addObject("periodoLetivo", p);
             model.addObject("exception", e.getMessage());
             model.addObject("instituicoes", instituicaoService.getAll());

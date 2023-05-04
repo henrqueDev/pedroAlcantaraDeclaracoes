@@ -23,6 +23,7 @@ import org.springframework.validation.BindingResult;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.DeclaracaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.estudante.EstudanteNotFoundException;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Declaracao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
@@ -87,6 +88,7 @@ public class EstudanteController {
                 .observacao(declaracao.getObservacao())
                 .dataRecebimento(declaracao.getDataRecebimento().format(formatter))
                 .estudante(declaracao.getEstudante().getMatricula())
+                .periodo(declaracao.getPeriodo().getId())
                 .build();
     }
 
@@ -126,13 +128,17 @@ public class EstudanteController {
             Estudante e = this.estudanteService.getById(id).orElseThrow(() -> new EstudanteNotFoundException());
             declaracao.setEstudante(e.getMatricula());
             Instituicao i = e.getInstituicaoAtual();
+            if (i == null) {
+                throw new InstituicaoNotFoundException();
+            }
+
             model.setViewName("estudantes/formDeclaracao");
+            model.addObject("nome", e.getNome());
             model.addObject("periodos", i != null ? i.getPeriodos() : null);
             model.addObject("declaracao", declaracao);
         } catch (Exception e) {
             model.setViewName("estudantes/formDeclaracao");
             model.addObject("exception", e.getMessage());
-            model.addObject("declaracao", declaracao);
         }
         return model;
     }
@@ -143,15 +149,20 @@ public class EstudanteController {
             ModelAndView model,
             RedirectAttributes ra) throws Exception {
 
-        if (validation.hasErrors()) {
-            model.addObject("declaracao", declaracao);
-            model.addObject("method", "POST");
-            model.addObject("hasErrors", true);
-            model.setViewName("estudantes/formDeclaracao");
-            return model;
-        }
-
         try {
+            if (validation.hasErrors()) {
+                model.addObject("declaracao", declaracao);
+                Estudante e = this.estudanteService.getById(declaracao.getEstudante())
+                        .orElseThrow(() -> new EstudanteNotFoundException());
+                declaracao.setEstudante(e.getMatricula());
+                Instituicao i = e.getInstituicaoAtual();
+                model.addObject("periodos", i != null ? i.getPeriodos() : null);
+                model.addObject("method", "POST");
+                model.addObject("hasErrors", true);
+                model.setViewName("estudantes/formDeclaracao");
+                return model;
+            }
+
             this.estudanteService.emitirDeclaracao(declaracao);
         } catch (Exception e) {
             model.addObject("declaracao", declaracao);
