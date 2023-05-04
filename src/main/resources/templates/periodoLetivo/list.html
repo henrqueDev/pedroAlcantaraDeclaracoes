@@ -2,12 +2,12 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:insert="~{layout/layout}" th:with="titulo='Instituições'">
 
 <body>
-  <section id="instituicoes-table" layout:fragment="content">
+  <section id="periodosLetivos-table" layout:fragment="content">
 
     <div class="container mt-4">
 
         <div style="display: flex; justify-content: space-between;">
-            <h1>Lista de Instituições</h1>
+            <h1>Lista de PeriodosLetivos</h1>
             <a th:href="@{create}" style="margin: 6px;">
                 <button type="button" class="btn btn-info text-light" style="padding: 8px;">Cadastrar</button>
             </a>
@@ -18,29 +18,28 @@
         <table class="table">
             <thead class="bg-info">
               <tr>
-                <th scope="col"><span class="text-light">Nome</span></th>
-                <th scope="col"><span class="text-light">Sigla</span></th>
-                <th scope="col"><span class="text-light">Fone</span></th>
+                <th scope="col"><span class="text-light">Ano</span></th>
                 <th scope="col"><span class="text-light">Periodo</span></th>
+                <th scope="col"><span class="text-light">Instituicao</span></th>
                 <th scope="col"><span class="text-light">Ações</span></th>
               </tr>
             </thead>
             <tbody>
-              <tr th:each="instituicao : ${instituicoes}">
-                <td th:text="${instituicao.nome}"></td>
-                <td th:text="${instituicao.sigla}"></td>
-                <td th:text="${instituicao.fone}"></td>
-                <td th:text="${instituicao.periodoAtual}"></td>
-                <td>
-                  <a th:href="@{/instituicoes/create/{id}(id = ${instituicao.id})}">
+
+            <tr th:each="periodoLetivo : ${periodosLetivos}">
+                <td th:text="${periodoLetivo.ano}"></td>
+                <td th:text="${periodoLetivo.periodo}"></td>
+                <td th:text="${periodoLetivo.instituicao.nome}"></td>
+                 <td>
+                  <a th:href="@{/periodos/create/{id}(id = ${periodoLetivo.id})}">
                     <button type="button" class="btn btn-primary" th:text="Editar"></button>
 
                   </a>
-                  <a th:href="@{/instituicoes/delete/{id}(id = ${instituicao.id})}">
+                  <a th:href="@{/periodos/delete/{id}(id = ${periodoLetivo.id})}">
                     <button type="button" class="btn btn-primary" th:text="Excluir"></button>
                   </a>
                 </td>
-              </tr>
+            </tr>
             </tbody>
           </table>
     </div>
@@ -50,3 +49,4 @@
 </body>
 
 </html>
+

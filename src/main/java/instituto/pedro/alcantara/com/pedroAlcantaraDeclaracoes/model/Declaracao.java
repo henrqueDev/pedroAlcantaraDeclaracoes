@@ -1,5 +1,6 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.CascadeType;
@@ -12,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -25,32 +27,40 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 
-@Table(name="declaracoes")
-
+@Table(name = "declaracoes")
 
 public class Declaracao {
 
+    public Declaracao(String observacao, LocalDate dataRecebimento, Estudante estudante, PeriodoLetivo periodo) {
+        this.observacao = observacao;
+        this.dataRecebimento = dataRecebimento;
+        this.estudante = estudante;
+        this.periodo = periodo;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="id")
+    @Column(name = "id")
     private Integer id;
 
-    @Column(name="observacao")
+    @Column(name = "observacao")
+    @NotBlank
     private String observacao;
 
-    @Column(name="dataRecebimento")
+    @Column(name = "dataRecebimento")
     @NotNull
-    private LocalDateTime dataRecebimento;
+    private LocalDate dataRecebimento;
 
-    @OneToOne(mappedBy = "declaracaoAtual")
+    @ManyToOne
+    @JoinColumn(name = "estudante_fk", referencedColumnName = "matricula")
     private Estudante estudante;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="estudante_fk", referencedColumnName = "matricula")
-    private Estudante estudanteId;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="periodo_fk", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "periodo_fk")
     private PeriodoLetivo periodo;
+
+    public String toString() {
+        return this.id.toString();
+    }
 
 }

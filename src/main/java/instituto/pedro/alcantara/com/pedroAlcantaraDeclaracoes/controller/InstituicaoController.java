@@ -1,18 +1,28 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-
+import org.springframework.validation.BindingResult;
+import org.springframework.http.HttpStatus;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
@@ -25,75 +35,154 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 
 public class InstituicaoController {
-    
+
     private final InstituicaoService instituicaoService;
     // private final EstudanteService estudanteService;
 
-    @GetMapping
-    @RequestMapping("/list")
-    public String index(Model model) {
+    @GetMapping(value = "/list")
+    public ModelAndView index(ModelAndView model) {
 
-        model.addAttribute("instituicoes", getAll());
-        return "instituicoes/list";
+        model.setViewName("instituicoes/list");
+        model.addObject("menu", "instituicoes");
+        model.addObject("instituicoes", instituicaoService.getAll());
+        return model;
     }
 
-    @GetMapping
-    @RequestMapping("/create")
-    public String create(InstituicaoDTO instituicao, Model model) {
+    @GetMapping(value = "/create")
+    public ModelAndView create(InstituicaoDTO instituicao, ModelAndView model) {
 
-        model.addAttribute("instituicao", instituicao);
-        return "instituicoes/form";
+        model.setViewName("instituicoes/form");
+        model.addObject("instituicao", instituicao);
+        model.addObject("method", "POST");
+        return model;
     }
 
-    @GetMapping
-    public List<InstituicaoDTO> getAll(){
+    @GetMapping(value = "/create/{id}")
+    public ModelAndView updateInstituicaoForm(@PathVariable(value = "id") Integer id, ModelAndView model) {
+        try {
+            Instituicao instituicao = instituicaoService.getById(id);
+            model.setViewName("instituicoes/form");
+            model.addObject("instituicao", this.converter(instituicao));
+            model.addObject("method", "PUT");
+            model.addObject("periodos", instituicao.getPeriodos());
+        } catch (Exception e) {
+            model.setViewName("instituicoes/form");
+            model.addObject("exception", e.getMessage());
+            model.addObject("instituicao", new Instituicao());
+            model.addObject("method", "POST");
+        }
+        return model;
+    }
+
+    public List<InstituicaoDTO> getAll() {
 
         return this.instituicaoService.getAll()
-            .stream().map(i -> {
-                return this.converter(i);
-            }).collect(Collectors.toList());
+                .stream().map(i -> {
+                    return this.converter(i);
+                }).collect(Collectors.toList());
     }
 
-    @GetMapping
-    @RequestMapping("/{id}/alunos")
-    public InstituicaoDTO getEstudanteByInstituicao(@PathVariable("id") Integer id) throws Exception{   
-        return this.instituicaoService.getAllAlunosByInstituicao(id)
-        .map(e -> converter(e))
-        .orElseThrow(() -> new Exception("Exception"));
+    @PostMapping(value = "/create")
+    public ModelAndView salvar(@Valid @ModelAttribute("instituicao") InstituicaoDTO i, BindingResult validation,
+            ModelAndView model, RedirectAttributes ra) {
+
+        if (validation.hasErrors()) {
+            model.addObject("instituicao", i);
+            model.addObject("method", "POST");
+            model.addObject("hasErrors", true);
+            model.setViewName("instituicoes/form");
+            return model;
+        }
+
+        try {
+            this.instituicaoService.save(i);
+        } catch (Exception e) {
+            model.addObject("instituicao", i);
+            model.addObject("exception", e.getMessage());
+            model.addObject("method", "POST");
+            model.setViewName("instituicoes/form");
+            return model;
+        }
+
+        ra.addFlashAttribute("mensagem", "A instituição foi Cadastrada com Sucesso!");
+        ra.addFlashAttribute("success", true);
+        model.addObject("instituicoes", instituicaoService.getAll());
+        model.setViewName("redirect:list");
+        return model;
     }
 
-    @PostMapping
-    @RequestMapping("/store")
+    @PutMapping(value = "/create")
+    public ModelAndView updateInstituicao(@Valid @ModelAttribute("instituicao") InstituicaoDTO i,
+            BindingResult validation,
+            ModelAndView model, RedirectAttributes ra) {
 
-    public String salvar(@Valid InstituicaoDTO i, Model model) {
-        this.instituicaoService.save(i);
+        if (validation.hasErrors()) {
+            model.addObject("instituicao", i);
+            model.addObject("method", "PUT");
+            model.addObject("hasErrors", true);
+            model.setViewName("instituicoes/form");
+            return model;
+        }
 
-        model.addAttribute("instituicoes", getAll());
-        return "instituicoes/list";
+        try {
+            this.instituicaoService.update(i);
+        } catch (Exception e) {
+            model.addObject("instituicao", i);
+            model.addObject("exception", e.getMessage());
+            model.addObject("method", "POST");
+            model.setViewName("instituicoes/form");
+            return model;
+        }
+
+        ra.addFlashAttribute("mensagem", "A instituição foi Cadastrada com Sucesso!");
+        ra.addFlashAttribute("success", true);
+        model.addObject("instituicoes", instituicaoService.getAll());
+        model.setViewName("redirect:list");
+        return model;
     }
 
-    private List<EstudanteDTO> converterEstudanteDTO(List<Estudante> e){
+    private List<EstudanteDTO> converterEstudanteDTO(List<Estudante> e) {
         return e.stream().map(estudante -> {
-           return EstudanteDTO
-                .builder()
+            return EstudanteDTO
+                    .builder()
                     .matricula(estudante.getMatricula())
                     .nome(estudante.getNome())
                     .instituicaoAtual(estudante.getInstituicaoAtual().getId())
-                .build();
+                    .build();
         }).collect(Collectors.toList());
-          
+
     }
 
-    private InstituicaoDTO converter(Instituicao i){
-        
+    private InstituicaoDTO converter(Instituicao i) {
+
+        Integer periodo = i.getPeriodoAtual() != null ? i.getPeriodoAtual().getId() : null;
+
         return InstituicaoDTO.builder()
-        .nome(i.getNome())
-        .sigla(i.getSigla())
-        .fone(i.getFone())
-        .alunos(this.converterEstudanteDTO(i.getAlunos()))
-        .build();
-            
+                .id(i.getId())
+                .nome(i.getNome())
+                .sigla(i.getSigla())
+                .fone(i.getFone())
+                .alunos(this.converterEstudanteDTO(i.getAlunos()))
+                .periodoAtual(periodo)
+                .build();
+
+    }
+
+    @GetMapping(value = "/delete/{id}")
+    public ModelAndView deleteInstituicao(@PathVariable(name = "id") Integer id, ModelAndView model,
+            RedirectAttributes ra) {
+        try {
+            this.instituicaoService.deleteInstituicao(id);
+        } catch (Exception e) {
+            model.addObject("instituicoes", instituicaoService.getAll());
+            ra.addFlashAttribute("mensagem", e.getMessage());
+            model.setViewName("redirect:/instituicoes/list");
+            return model;
+        }
+        model.setViewName("redirect:/instituicoes/list");
+        ra.addFlashAttribute("mensagem", "Instituicao removido com Sucesso!");
+        return model;
     }
 
 }
-//a
+// a

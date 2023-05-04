@@ -1,0 +1,28 @@
+body {
+    background-color: rgb(236, 236, 236);
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.logo-background {
+    background-color: #3bf3ea;
+}
+
+.logo-background img {
+    margin-right: 5px;
+}
+
+.logo-font {
+    font-family:'Courier New', Courier, monospace;
+    font-size: 2.3rem;
+}
+
+.nav-font {
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 1.3rem;
+}
+

@@ -1,11 +1,13 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -14,24 +16,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 
-public class InstituicaoDTO {
-
+public class PeriodoLetivoDTO {
     private Integer id;
 
-    @NotBlank(message = "Campo obrigatório!")
-    private String nome;
+    private int ano;
+
+    private int periodo;
 
     @NotBlank(message = "Campo obrigatório!")
-    private String sigla;
+    private String dataInicio;
 
     @NotBlank(message = "Campo obrigatório!")
-    private String fone;
+    private String dataFinal;
 
-    private Integer periodoAtual;
+    @NotNull(message = "Precisa de uma Instituição!")
+    private Integer instituicao;
 
-    private List<EstudanteDTO> alunos;
 }

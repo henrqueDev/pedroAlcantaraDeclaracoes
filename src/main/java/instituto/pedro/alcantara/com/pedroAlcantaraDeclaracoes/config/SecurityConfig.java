@@ -18,11 +18,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.authorizeRequests()
 				.antMatchers(HttpMethod.GET, "/instituicoes/**")
 				.permitAll()
-                .antMatchers(HttpMethod.POST, "/instituicoes/**")
+				.antMatchers(HttpMethod.POST, "/instituicoes/**")
 				.permitAll()
-                .antMatchers(HttpMethod.GET, "/estudantes/**")
+				.antMatchers(HttpMethod.GET, "/estudantes/**")
 				.permitAll()
-                .antMatchers(HttpMethod.POST, "/estudantes/**")
+				.antMatchers(HttpMethod.POST, "/estudantes/**")
+				.permitAll()
+				.antMatchers(HttpMethod.GET, "/declaracoes/**")
+				.permitAll()
+				.antMatchers(HttpMethod.POST, "/declaracoes/**")
+				.permitAll()
+				.antMatchers(HttpMethod.GET, "/periodos/**")
+				.permitAll()
+				.antMatchers(HttpMethod.POST, "/periodos/**")
 				.permitAll();
 	}
 

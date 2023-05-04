@@ -1,6 +1,7 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,6 +9,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Declaracao;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,20 +20,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 
-public class InstituicaoDTO {
-
+public class DeclaracaoDTO {
     private Integer id;
 
     @NotBlank(message = "Campo obrigatório!")
-    private String nome;
+    private String observacao;
 
-    @NotBlank(message = "Campo obrigatório!")
-    private String sigla;
+    private String dataRecebimento;
 
-    @NotBlank(message = "Campo obrigatório!")
-    private String fone;
+    @NotNull(message = "Precisa de um estudante!")
+    private Integer estudante;
 
-    private Integer periodoAtual;
+    @NotNull(message = "Campo obrigatório!")
+    private Integer periodo;
 
-    private List<EstudanteDTO> alunos;
 }

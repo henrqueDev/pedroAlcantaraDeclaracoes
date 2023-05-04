@@ -1,5 +1,7 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model;
 
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,11 +10,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -26,24 +32,34 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 
-@Table(name="estudantes")
+@Table(name = "estudantes")
 
 public class Estudante {
 
+    public Estudante(Instituicao instituicao, String nome, Declaracao declaracao) {
+        this.instituicaoAtual = instituicao;
+        this.nome = nome;
+        this.declaracaoAtual = declaracao;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="matricula")
+    @Column(name = "matricula")
     private Integer matricula;
 
-    @Column(name="nome")
+    @Column(name = "nome")
+    @NotBlank(message = "Campo obrigatório!")
     private String nome;
 
+    @OneToMany(mappedBy = "estudante", cascade = CascadeType.ALL)
+    private List<Declaracao> declaracoes;
+
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "declaracao_fk", referencedColumnName = "id")
+    @JoinColumn(name = "declaracao_atual")
     private Declaracao declaracaoAtual;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="instituicao_id")
+    @ManyToOne
+    @JoinColumn(name = "instituicao_id")
     private Instituicao instituicaoAtual;
 
 }
