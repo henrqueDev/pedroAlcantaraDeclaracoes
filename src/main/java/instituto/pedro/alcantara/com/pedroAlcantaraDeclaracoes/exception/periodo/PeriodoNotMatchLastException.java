@@ -3,7 +3,7 @@ package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.period
 public class PeriodoNotMatchLastException extends RuntimeException {
 
     public PeriodoNotMatchLastException() {
-        super("Periodo de data não pode ser inserido entre os cadastrados !");
+        super("Periodo de data não pode ser inserido! Insira uma data válida ou futura!");
     }
 
 }
