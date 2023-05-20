@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 
@@ -36,15 +37,24 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 
 public class EstudanteController {
+    //Value to set pagination quantity
+    private static final int PAGE_SIZE = 10;
 
     private final EstudanteService estudanteService;
     private final InstituicaoService instituicaoService;
 
     @GetMapping(value = "/list")
-    public ModelAndView list(ModelAndView model) {
+    public ModelAndView list(ModelAndView model, Integer page) {
+        Pageable pageable = PageRequest.of(page != null ? page : 0, PAGE_SIZE);
+        Page<Estudante> entityPage = estudanteService.getAll(pageable);
+
+        model.addObject("estudantes", entityPage.getContent());
+        model.addObject("currentPage", entityPage.getNumber());
+        model.addObject("totalPages", entityPage.getTotalPages());
+        model.addObject("pagePath", "/estudantes/list");
+
         model.setViewName("estudantes/list");
         model.addObject("menu", "estudantes");
-        model.addObject("estudantes", estudanteService.getAll());
 
         return model;
     }
@@ -59,7 +69,7 @@ public class EstudanteController {
     }
 
     @GetMapping(value = "/create/{id}")
-    public ModelAndView updateEstudanteForm(@PathVariable(value = "id") Integer id, ModelAndView model) {
+    public ModelAndView updateEstudanteForm(@PathVariable(value = "id") Integer id, ModelAndView model, Integer page) {
         Optional<Estudante> estudante = estudanteService.getById(id);
         if (estudante.isPresent()) {
             model.setViewName("estudantes/form");
@@ -71,7 +81,10 @@ public class EstudanteController {
             model.addObject("estudante", this.converterEstudanteDTO(new Estudante()));
             model.addObject("method", "POST");
             model.addObject("instituicoes", instituicaoService.getAll());
-            model.addObject("estudantes", estudanteService.getAll());
+
+            Pageable pageable = PageRequest.of(page != null ? page : 0, PAGE_SIZE);
+            Page<Estudante> entityPage = estudanteService.getAll(pageable);
+            model.addObject("estudantes", entityPage.getContent());
         }
 
         return model;
@@ -172,7 +185,6 @@ public class EstudanteController {
             return model;
         }
 
-        model.addObject("estudantes", estudanteService.getAll());
         model.setViewName("redirect:list");
         ra.addFlashAttribute("mensagem", "Declaração gerada com Sucesso!");
         ra.addFlashAttribute("success", true);
@@ -241,7 +253,6 @@ public class EstudanteController {
         try {
             this.estudanteService.deleteEstudante(id);
         } catch (Exception e) {
-            model.addObject("estudantes", estudanteService.getAll());
             ra.addFlashAttribute("mensagem", e.getMessage());
             model.setViewName("redirect:/estudantes/list");
             return model;

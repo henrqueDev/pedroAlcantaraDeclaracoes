@@ -13,6 +13,15 @@
             <!-- Corpo da página entra aqui -->
             <h1>Conteúdo não definido para o layout!</h1>
         </div>
+
+                <!-- Pagination -->
+        <div th:if="${totalPages > 1}">
+            <ul class="pagination">
+                <li class="btn btn-primary m-1" th:each="pageNum : ${#numbers.sequence(0, totalPages-1)}" th:classappend="${pageNum == currentPage} ? 'active'">
+                    <a class="text-white" style="text-decoration: none;" th:href="@{${pagePath}(page=${pageNum})}" th:text="${pageNum}+1"></a>
+                </li>
+            </ul>
+        </div>
     </div>
 
     <footer class="logo-background text-center text-white mt-5 py-3">
