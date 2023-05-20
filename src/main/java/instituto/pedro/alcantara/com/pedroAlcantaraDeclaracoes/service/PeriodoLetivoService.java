@@ -10,6 +10,8 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.PeriodoLetivoDTO;
@@ -151,8 +153,8 @@ public class PeriodoLetivoService {
         this.periodoLetivoRepository.delete(p);
     }
 
-    public List<PeriodoLetivo> getAll() {
-        return this.periodoLetivoRepository.findAll();
+    public Page<PeriodoLetivo> getAll(Pageable pageable) {
+        return this.periodoLetivoRepository.findAll(pageable);
     }
 
     public Optional<PeriodoLetivo> getById(Integer id) {

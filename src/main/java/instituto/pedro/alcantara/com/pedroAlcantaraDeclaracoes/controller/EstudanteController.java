@@ -75,12 +75,12 @@ public class EstudanteController {
             model.setViewName("estudantes/form");
             model.addObject("method", "PUT");
             model.addObject("estudante", this.converterEstudanteDTO(estudante.get()));
-            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
         } else {
             model.setViewName("estudantes/form");
             model.addObject("estudante", this.converterEstudanteDTO(new Estudante()));
             model.addObject("method", "POST");
-            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
 
             Pageable pageable = PageRequest.of(page != null ? page : 0, PAGE_SIZE);
             Page<Estudante> entityPage = estudanteService.getAll(pageable);
@@ -120,7 +120,7 @@ public class EstudanteController {
     public ModelAndView create(EstudanteDTO estudante, ModelAndView model) {
         model.setViewName("estudantes/form");
         model.addObject("estudante", estudante);
-        model.addObject("instituicoes", instituicaoService.getAll());
+        model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
         model.addObject("method", "POST");
         return model;
     }
@@ -197,7 +197,7 @@ public class EstudanteController {
             RedirectAttributes ra) throws Exception {
         if (validation.hasErrors()) {
             model.addObject("estudante", estudante);
-            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
             model.addObject("method", "POST");
             model.addObject("hasErrors", true);
             model.setViewName("estudantes/form");
@@ -208,7 +208,7 @@ public class EstudanteController {
         } catch (Exception e) {
             model.addObject("estudante", estudante);
             model.addObject("exception", e.getMessage());
-            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
             model.addObject("method", "POST");
             model.setViewName("estudantes/form");
             return model;
@@ -225,7 +225,7 @@ public class EstudanteController {
             RedirectAttributes ra) throws Exception {
         if (validation.hasErrors()) {
             model.addObject("estudante", estudante);
-            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
             model.addObject("method", "PUT");
             model.addObject("hasErrors", true);
             model.setViewName("estudantes/form");
@@ -236,7 +236,7 @@ public class EstudanteController {
         } catch (Exception e) {
             model.addObject("estudante", estudante);
             model.addObject("exception", e.getMessage());
-            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
             model.addObject("method", "PUT");
             model.setViewName("estudantes/form");
             return model;

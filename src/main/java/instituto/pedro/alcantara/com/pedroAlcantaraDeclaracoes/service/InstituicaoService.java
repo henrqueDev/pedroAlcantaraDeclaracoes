@@ -36,6 +36,10 @@ public class InstituicaoService {
         return this.instituicaoRepository.findAll(pageable);
     }
 
+    public List<Instituicao> getAllWithoutPagination() {
+        return this.instituicaoRepository.findAll();
+    }
+
     public Instituicao getById(Integer id) throws Exception {
         return this.instituicaoRepository.findById(id).orElseThrow(() -> new InstituicaoNotFoundException());
     }

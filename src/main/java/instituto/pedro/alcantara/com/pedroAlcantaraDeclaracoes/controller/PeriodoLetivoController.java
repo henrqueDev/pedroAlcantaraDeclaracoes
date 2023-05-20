@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,6 +35,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 
 public class PeriodoLetivoController {
+    //Value to set pagination quantity
+    private static final int PAGE_SIZE = 10;
 
     private final PeriodoLetivoService periodoLetivoService;
 
@@ -39,17 +44,23 @@ public class PeriodoLetivoController {
     // private final EstudanteService estudanteService;
 
     @GetMapping(value = "/list")
-    public String index(Model model) {
+    public ModelAndView index(ModelAndView model, Integer page) {
+        Pageable pageable = PageRequest.of(page != null ? page : 0, PAGE_SIZE);
+        Page<PeriodoLetivo> entityPage = periodoLetivoService.getAll(pageable);
 
-        model.addAttribute("periodosLetivos", this.periodoLetivoService.getAll());
-        return "periodoLetivo/list";
+        model.setViewName("periodoLetivo/list");
+        model.addObject("periodosLetivos", entityPage.getContent());
+        model.addObject("currentPage", entityPage.getNumber());
+        model.addObject("totalPages", entityPage.getTotalPages());
+        model.addObject("pagePath", "/instituicoes/list");
+        return model;
     }
 
     @GetMapping(value = "/create")
     public ModelAndView create(PeriodoLetivoDTO periodoLetivo, ModelAndView model) {
         model.addObject("title", "Cadastrar Periodo Letivo");
         model.addObject("periodoLetivo", periodoLetivo);
-        model.addObject("instituicoes", instituicaoService.getAll());
+        model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
         model.addObject("method", "POST");
         model.setViewName("periodoLetivo/form");
         return model;
@@ -94,7 +105,7 @@ public class PeriodoLetivoController {
         if (validation.hasErrors()) {
             model.addObject("title", "Cadastrar Periodo Letivo");
             model.addObject("periodoLetivo", p);
-            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
             model.addObject("hasErrors", true);
             model.addObject("method", "POST");
             model.setViewName("periodoLetivo/form");
@@ -106,13 +117,12 @@ public class PeriodoLetivoController {
             model.addObject("title", "Cadastrar Periodo Letivo");
             model.addObject("periodoLetivo", p);
             model.addObject("exception", e.getMessage());
-            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
             model.addObject("method", "POST");
             model.setViewName("periodoLetivo/form");
             return model;
         }
 
-        model.addObject("periodos", periodoLetivoService.getAll());
         model.setViewName("redirect:list");
         ra.addFlashAttribute("mensagem", "Periodo Cadastrado com Sucesso!");
         ra.addFlashAttribute("success", true);
@@ -127,7 +137,7 @@ public class PeriodoLetivoController {
         if (validation.hasErrors()) {
             model.addObject("title", "Cadastrar Periodo Letivo");
             model.addObject("periodoLetivo", p);
-            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
             model.addObject("hasErrors", true);
             model.addObject("method", "POST");
             model.setViewName("periodoLetivo/form");
@@ -139,13 +149,12 @@ public class PeriodoLetivoController {
             model.addObject("title", "Cadastrar Periodo Letivo");
             model.addObject("periodoLetivo", p);
             model.addObject("exception", e.getMessage());
-            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
             model.addObject("method", "POST");
             model.setViewName("periodoLetivo/form");
             return model;
         }
 
-        model.addObject("periodos", periodoLetivoService.getAll());
         model.setViewName("redirect:list");
         ra.addFlashAttribute("mensagem", "Periodo atualizado com Sucesso!");
         ra.addFlashAttribute("success", true);
@@ -158,7 +167,6 @@ public class PeriodoLetivoController {
         try {
             this.periodoLetivoService.deletePeriodo(id);
         } catch (Exception e) {
-            model.addObject("periodos", periodoLetivoService.getAll());
             ra.addFlashAttribute("mensagem", e.getMessage());
             model.setViewName("redirect:/periodos/list");
             return model;
