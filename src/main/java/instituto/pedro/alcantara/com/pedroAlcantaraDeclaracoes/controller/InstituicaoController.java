@@ -22,6 +22,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
@@ -35,16 +38,24 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 
 public class InstituicaoController {
+    //Value to set pagination quantity
+    private static final int PAGE_SIZE = 10;
 
     private final InstituicaoService instituicaoService;
     // private final EstudanteService estudanteService;
 
     @GetMapping(value = "/list")
-    public ModelAndView index(ModelAndView model) {
+    public ModelAndView index(ModelAndView model, Integer page) {
+        Pageable pageable = PageRequest.of(page != null ? page : 0, PAGE_SIZE);
+        Page<Instituicao> entityPage = instituicaoService.getAll(pageable);
 
         model.setViewName("instituicoes/list");
         model.addObject("menu", "instituicoes");
-        model.addObject("instituicoes", instituicaoService.getAll());
+        model.addObject("instituicoes", entityPage.getContent());
+        model.addObject("currentPage", entityPage.getNumber());
+        model.addObject("totalPages", entityPage.getTotalPages());
+        model.addObject("pagePath", "/instituicoes/list");
+
         return model;
     }
 
@@ -106,7 +117,6 @@ public class InstituicaoController {
 
         ra.addFlashAttribute("mensagem", "A instituição foi Cadastrada com Sucesso!");
         ra.addFlashAttribute("success", true);
-        model.addObject("instituicoes", instituicaoService.getAll());
         model.setViewName("redirect:list");
         return model;
     }
@@ -136,7 +146,6 @@ public class InstituicaoController {
 
         ra.addFlashAttribute("mensagem", "A instituição foi Cadastrada com Sucesso!");
         ra.addFlashAttribute("success", true);
-        model.addObject("instituicoes", instituicaoService.getAll());
         model.setViewName("redirect:list");
         return model;
     }
@@ -174,7 +183,6 @@ public class InstituicaoController {
         try {
             this.instituicaoService.deleteInstituicao(id);
         } catch (Exception e) {
-            model.addObject("instituicoes", instituicaoService.getAll());
             ra.addFlashAttribute("mensagem", e.getMessage());
             model.setViewName("redirect:/instituicoes/list");
             return model;

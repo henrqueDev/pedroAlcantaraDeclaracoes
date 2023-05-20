@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
@@ -30,8 +32,8 @@ public class InstituicaoService {
     @Autowired
     private PeriodoLetivoRepository periodoLetivoRepository;
 
-    public List<Instituicao> getAll() {
-        return this.instituicaoRepository.findAll();
+    public Page<Instituicao> getAll(Pageable pageable) {
+        return this.instituicaoRepository.findAll(pageable);
     }
 
     public Instituicao getById(Integer id) throws Exception {
