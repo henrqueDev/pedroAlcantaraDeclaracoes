@@ -18,6 +18,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -64,6 +65,21 @@ public class Instituicao {
 
     public String toString() {
         return this.nome;
+    }
+
+    public static InstituicaoDTO converter(Instituicao i) {
+
+        Integer periodo = i.getPeriodoAtual() != null ? i.getPeriodoAtual().getId() : null;
+
+        return InstituicaoDTO.builder()
+                .id(i.getId())
+                .nome(i.getNome())
+                .sigla(i.getSigla())
+                .fone(i.getFone())
+                .alunos(Estudante.converterEstudanteDTO(i.getAlunos()))
+                .periodoAtual(periodo)
+                .build();
+
     }
 
 }

@@ -74,11 +74,11 @@ public class EstudanteController {
         if (estudante.isPresent()) {
             model.setViewName("estudantes/form");
             model.addObject("method", "PUT");
-            model.addObject("estudante", this.converterEstudanteDTO(estudante.get()));
+            model.addObject("estudante", Estudante.converterEstudanteDTO(estudante.get()));
             model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
         } else {
             model.setViewName("estudantes/form");
-            model.addObject("estudante", this.converterEstudanteDTO(new Estudante()));
+            model.addObject("estudante", Estudante.converterEstudanteDTO(new Estudante()));
             model.addObject("method", "POST");
             model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
 
@@ -90,31 +90,6 @@ public class EstudanteController {
         return model;
     }
 
-    // LocalDate dataInicio = LocalDate.parse(p.getDataInicio(),
-    // DateTimeFormatter.ISO_LOCAL_DATE);
-    private DeclaracaoDTO converterDeclaracaoDTO(Declaracao declaracao) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
-
-        return DeclaracaoDTO
-                .builder()
-                .id(declaracao.getId())
-                .observacao(declaracao.getObservacao())
-                .dataRecebimento(declaracao.getDataRecebimento().format(formatter))
-                .estudante(declaracao.getEstudante().getMatricula())
-                .periodo(declaracao.getPeriodo().getId())
-                .build();
-    }
-
-    private EstudanteDTO converterEstudanteDTO(Estudante i) {
-        Integer instituicao = i.getInstituicaoAtual() != null ? i.getInstituicaoAtual().getId() : null;
-        Integer declaracao = i.getDeclaracaoAtual() != null ? i.getDeclaracaoAtual().getId() : null;
-        return EstudanteDTO.builder()
-                .matricula(i.getMatricula())
-                .nome(i.getNome())
-                .instituicaoAtual(instituicao)
-                .declaracaoAtual(declaracao)
-                .build();
-    }
 
     @GetMapping(value = "/create")
     public ModelAndView create(EstudanteDTO estudante, ModelAndView model) {

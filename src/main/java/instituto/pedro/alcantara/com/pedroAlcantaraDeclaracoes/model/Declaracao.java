@@ -1,9 +1,7 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import javax.persistence.CascadeType;
+import java.time.format.DateTimeFormatter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,11 +9,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.DeclaracaoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -61,6 +59,19 @@ public class Declaracao {
 
     public String toString() {
         return this.id.toString();
+    }
+
+    public static DeclaracaoDTO converterDeclaracaoDTO(Declaracao declaracao) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
+
+        return DeclaracaoDTO
+                .builder()
+                .id(declaracao.getId())
+                .observacao(declaracao.getObservacao())
+                .dataRecebimento(declaracao.getDataRecebimento().format(formatter))
+                .estudante(declaracao.getEstudante().getMatricula())
+                .periodo(declaracao.getPeriodo().getId())
+                .build();
     }
 
 }

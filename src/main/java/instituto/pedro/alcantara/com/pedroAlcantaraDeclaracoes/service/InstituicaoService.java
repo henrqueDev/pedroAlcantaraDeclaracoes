@@ -9,6 +9,8 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,22 @@ public class InstituicaoService {
 
     public Page<Instituicao> getAll(Pageable pageable) {
         return this.instituicaoRepository.findAll(pageable);
+    }
+
+    
+
+    public Page<InstituicaoDTO> getAllPaginated(Integer page, int PAGE_SIZE) {
+
+        Pageable pageable = PageRequest.of(page != null ? page : 0, PAGE_SIZE);
+        List<InstituicaoDTO> instituicoesDTO = this.instituicaoRepository.findAll()
+            .stream().map(i -> {
+                return Instituicao.converter(i);
+            }).collect(Collectors.toList());
+            
+        int start = (int)pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), instituicoesDTO.size());
+        Page<InstituicaoDTO> pagina = new PageImpl<>(instituicoesDTO.subList(start, end), pageable, instituicoesDTO.size());
+        return pagina;
     }
 
     public List<Instituicao> getAllWithoutPagination() {
