@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,22 +36,22 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 
 public class EstudanteController {
-    //Value to set pagination quantity
-    private static final int PAGE_SIZE = 10;
+    // Value to set pagination quantity
+    private static final int PAGE_SIZE = 2;
 
     private final EstudanteService estudanteService;
     private final InstituicaoService instituicaoService;
 
     @GetMapping(value = "/list")
     public ModelAndView list(ModelAndView model, Integer page) {
-        Pageable pageable = PageRequest.of(page != null ? page : 0, PAGE_SIZE);
+        page = page != null ? page : 0;
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
         Page<Estudante> entityPage = estudanteService.getAll(pageable);
-
         model.addObject("estudantes", entityPage.getContent());
         model.addObject("currentPage", entityPage.getNumber());
         model.addObject("totalPages", entityPage.getTotalPages());
         model.addObject("pagePath", "/estudantes/list");
-
+        model.addObject("pageNum", page);
         model.setViewName("estudantes/list");
         model.addObject("menu", "estudantes");
 
@@ -89,7 +88,6 @@ public class EstudanteController {
 
         return model;
     }
-
 
     @GetMapping(value = "/create")
     public ModelAndView create(EstudanteDTO estudante, ModelAndView model) {

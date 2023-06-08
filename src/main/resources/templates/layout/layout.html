@@ -17,8 +17,12 @@
                 <!-- Pagination -->
         <div th:if="${totalPages > 1}">
             <ul class="pagination">
-                <li th:each="pageNum : ${#numbers.sequence(0, totalPages-1)}" th:classappend="${pageNum == currentPage} ? 'active'">
-                    <a class="btn btn-primary m-1 text-white" style="text-decoration: none;" th:href="@{${pagePath}(page=${pageNum})}" th:text="${pageNum}+1"></a>
+                
+                <li>
+                    <a class="btn btn-primary m-1 text-white" th:classappend="${pageNum > 0} ? '' : disabled" style="text-decoration: none;" th:href="@{${pagePath}(page=${pageNum - 1})}"><</a>
+                </li>
+                <li>
+                    <a class="btn btn-primary m-1 text-white" style="text-decoration: none;" th:classappend="${pageNum < totalPages - 1} ? '' : disabled" th:href="@{${pagePath}(page=${pageNum + 1})}">></a>
                 </li>
             </ul>
         </div>

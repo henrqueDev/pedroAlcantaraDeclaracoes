@@ -54,22 +54,10 @@ public class EstudanteService {
                         .orElseThrow(() -> new InstituicaoNotFoundException())
                 : null;
 
-        /*
-         * Instituicao instituicao2 = student.getInstituicaoAtual() != null
-         * ? this.instituicaoRepository.findById(estudante.getInstituicaoAtual())
-         * .orElseThrow(() -> new InstituicaoNotFoundException())
-         * : null;
-         */
-
         if (instituicao != null && student != null) {
-            // List<Estudante> alunos = instituicao.getAlunos();
-            // List<Estudante> alunosAntigo = student.getInstituicaoAtual().getAlunos();
-            // slunosAntigo.remove(student);
             student.setInstituicaoAtual(instituicao);
             student.setNome(estudante.getNome());
             student.setDeclaracaoAtual(null);
-            // alunos.add(student);
-            // instituicao.setAlunos(alunos);
 
         } else {
             student.setInstituicaoAtual(null);
@@ -89,8 +77,6 @@ public class EstudanteService {
 
             List<Estudante> alunos = instituicao.getAlunos();
             student.setInstituicaoAtual(instituicao);
-            // alunos.add(student);
-            // instituicao.setAlunos(alunos);
         }
         student.setNome(estudante.getNome());
         return this.estudanteRepository.save(student);
