@@ -35,7 +35,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 
 public class PeriodoLetivoController {
-    //Value to set pagination quantity
+    // Value to set pagination quantity
     private static final int PAGE_SIZE = 10;
 
     private final PeriodoLetivoService periodoLetivoService;
@@ -45,7 +45,8 @@ public class PeriodoLetivoController {
 
     @GetMapping(value = "/list")
     public ModelAndView index(ModelAndView model, Integer page) {
-        Pageable pageable = PageRequest.of(page != null ? page : 0, PAGE_SIZE);
+        page = page != null ? page : 0;
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
         Page<PeriodoLetivo> entityPage = periodoLetivoService.getAll(pageable);
 
         model.setViewName("periodoLetivo/list");
@@ -53,6 +54,7 @@ public class PeriodoLetivoController {
         model.addObject("currentPage", entityPage.getNumber());
         model.addObject("totalPages", entityPage.getTotalPages());
         model.addObject("pagePath", "/instituicoes/list");
+        model.addObject("pageNum", page);
         return model;
     }
 
@@ -85,17 +87,6 @@ public class PeriodoLetivoController {
         }
         return model;
     }
-
-    /*
-     * @GetMapping
-     * public List<PeriodoLetivoDTO> getAll(){
-     *
-     * return this.PeriodoLetivoService.getAll()
-     * .stream().map(i -> {
-     * return this.converter(i);
-     * }).collect(Collectors.toList());
-     * }
-     */
 
     @PostMapping(value = "/create")
     public ModelAndView salvar(@Valid @ModelAttribute("periodoLetivo") PeriodoLetivoDTO p, BindingResult validation,

@@ -23,13 +23,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 
 public class InstituicaoController {
-    //Value to set pagination quantity
+    // Value to set pagination quantity
     private static final int PAGE_SIZE = 2;
 
     private final InstituicaoService instituicaoService;
 
     @GetMapping(value = "/list")
     public ModelAndView index(ModelAndView model, Integer page) {
+        page = page != null ? page : 0;
         Page<InstituicaoDTO> entityPage = this.instituicaoService.getAllPaginated(page, PAGE_SIZE);
 
         model.setViewName("instituicoes/list");
@@ -38,6 +39,7 @@ public class InstituicaoController {
         model.addObject("currentPage", entityPage.getNumber());
         model.addObject("totalPages", entityPage.getTotalPages());
         model.addObject("pagePath", "/instituicoes/list");
+        model.addObject("pageNum", page);
 
         return model;
     }
