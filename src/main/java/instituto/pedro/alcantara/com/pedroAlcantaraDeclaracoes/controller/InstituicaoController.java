@@ -13,6 +13,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.data.domain.Page;
+
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.builder.InstituicaoBuilder;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.InstituicaoService;
@@ -58,7 +60,7 @@ public class InstituicaoController {
         try {
             Instituicao instituicao = instituicaoService.getById(id);
             model.setViewName("instituicoes/form");
-            model.addObject("instituicao", Instituicao.converter(instituicao));
+            model.addObject("instituicao", InstituicaoBuilder.convertToDTO(instituicao));
             model.addObject("method", "PUT");
             model.addObject("periodos", instituicao.getPeriodos());
         } catch (Exception e) {

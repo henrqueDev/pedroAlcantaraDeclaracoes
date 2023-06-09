@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.builder.PeriodoLetivoBuilder;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.PeriodoLetivoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoNotFoundException;
@@ -76,7 +77,7 @@ public class PeriodoLetivoController {
                     .orElseThrow(() -> new PeriodoNotFoundException());
             Instituicao i = this.instituicaoService.getById(p.getInstituicao().getId());
             model.addObject("title", "Atualizar Periodo Letivo");
-            model.addObject("periodoLetivo", this.converter(p));
+            model.addObject("periodoLetivo", PeriodoLetivoBuilder.convertToDTO(p));
             model.addObject("instituicoes", i);
             model.addObject("method", "PUT");
             model.setViewName("periodoLetivo/form");
@@ -165,18 +166,6 @@ public class PeriodoLetivoController {
         model.setViewName("redirect:/periodos/list");
         ra.addFlashAttribute("mensagem", "Periodo removido com Sucesso!");
         return model;
-    }
-
-    private PeriodoLetivoDTO converter(PeriodoLetivo p) {
-        Integer i = p.getInstituicao() != null ? p.getInstituicao().getId() : null;
-        return PeriodoLetivoDTO.builder()
-                .id(p.getId())
-                .ano(p.getAno())
-                .periodo(p.getPeriodo())
-                .dataInicio(p.getDataInicio().toString())
-                .dataFinal(p.getDataFinal().toString())
-                .instituicao(i)
-                .build();
     }
 
 }

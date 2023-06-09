@@ -67,19 +67,4 @@ public class Instituicao {
         return this.nome;
     }
 
-    public static InstituicaoDTO converter(Instituicao i) {
-
-        Integer periodo = i.getPeriodoAtual() != null ? i.getPeriodoAtual().getId() : null;
-
-        return InstituicaoDTO.builder()
-                .id(i.getId())
-                .nome(i.getNome())
-                .sigla(i.getSigla())
-                .fone(i.getFone())
-                .alunos(Estudante.converterEstudanteDTO(i.getAlunos()))
-                .periodoAtual(periodo)
-                .build();
-
-    }
-
 }

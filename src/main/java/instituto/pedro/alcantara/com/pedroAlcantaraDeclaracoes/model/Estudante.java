@@ -1,5 +1,6 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,28 +64,5 @@ public class Estudante {
     @ManyToOne
     @JoinColumn(name = "instituicao_id")
     private Instituicao instituicaoAtual;
-
-    public static EstudanteDTO converterEstudanteDTO(Estudante i) {
-        Integer instituicao = i.getInstituicaoAtual() != null ? i.getInstituicaoAtual().getId() : null;
-        Integer declaracao = i.getDeclaracaoAtual() != null ? i.getDeclaracaoAtual().getId() : null;
-        return EstudanteDTO.builder()
-                .matricula(i.getMatricula())
-                .nome(i.getNome())
-                .instituicaoAtual(instituicao)
-                .declaracaoAtual(declaracao)
-                .build();
-    }
-
-    public static List<EstudanteDTO> converterEstudanteDTO(List<Estudante> e) {
-        return e.stream().map(estudante -> {
-            return EstudanteDTO
-                    .builder()
-                    .matricula(estudante.getMatricula())
-                    .nome(estudante.getNome())
-                    .instituicaoAtual(estudante.getInstituicaoAtual().getId())
-                    .build();
-        }).collect(Collectors.toList());
-
-    }
 
 }

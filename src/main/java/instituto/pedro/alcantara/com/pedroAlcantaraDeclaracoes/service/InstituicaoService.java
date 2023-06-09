@@ -14,6 +14,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.builder.EstudanteBuilder;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.builder.InstituicaoBuilder;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoNotFoundException;
@@ -38,19 +40,18 @@ public class InstituicaoService {
         return this.instituicaoRepository.findAll(pageable);
     }
 
-    
-
     public Page<InstituicaoDTO> getAllPaginated(Integer page, int PAGE_SIZE) {
 
         Pageable pageable = PageRequest.of(page != null ? page : 0, PAGE_SIZE);
         List<InstituicaoDTO> instituicoesDTO = this.instituicaoRepository.findAll()
-            .stream().map(i -> {
-                return Instituicao.converter(i);
-            }).collect(Collectors.toList());
-            
-        int start = (int)pageable.getOffset();
+                .stream().map(i -> {
+                    return InstituicaoBuilder.convertToDTO(i);
+                }).collect(Collectors.toList());
+
+        int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), instituicoesDTO.size());
-        Page<InstituicaoDTO> pagina = new PageImpl<>(instituicoesDTO.subList(start, end), pageable, instituicoesDTO.size());
+        Page<InstituicaoDTO> pagina = new PageImpl<>(instituicoesDTO.subList(start, end), pageable,
+                instituicoesDTO.size());
         return pagina;
     }
 
@@ -73,7 +74,7 @@ public class InstituicaoService {
         novaInstituicao.setNome(i.getNome());
         novaInstituicao.setSigla(i.getSigla());
         novaInstituicao.setFone(i.getFone());
-        novaInstituicao.setAlunos(this.converterA(i.getAlunos()));
+        novaInstituicao.setAlunos(EstudanteBuilder.desconstructToDTOList(i.getAlunos(), this.instituicaoRepository));
 
         return this.instituicaoRepository.save(novaInstituicao);
     }
@@ -86,13 +87,7 @@ public class InstituicaoService {
                 ? this.periodoLetivoRepository.findById(i.getPeriodoAtual())
                         .orElseThrow(() -> new PeriodoNotFoundException())
                 : null;
-        /*
-         * if (newPeriodo == null) {
-         * for (Estudante e : instituicaoAtualizada.getAlunos()) {
-         * e.setDeclaracaoAtual(null);
-         * }
-         * }
-         */
+
         instituicaoAtualizada.setNome(i.getNome());
         instituicaoAtualizada.setSigla(i.getSigla());
         instituicaoAtualizada.setFone(i.getFone());
@@ -112,28 +107,6 @@ public class InstituicaoService {
             estudante.setDeclaracaoAtual(null);
         }
         this.instituicaoRepository.delete(i);
-    }
-
-    private List<Estudante> converterA(List<EstudanteDTO> alunos) {
-        return alunos == null ? new ArrayList<Estudante>()
-                : alunos.stream().map(
-                        item -> {
-                            Estudante e = new Estudante();
-                            Instituicao i = null;
-                            try {
-                                i = this.instituicaoRepository
-                                        .findById(item.getInstituicaoAtual())
-                                        .orElseThrow(() -> new InstituicaoNotFoundException());
-                            } catch (Exception e1) {
-                                e1.printStackTrace();
-                            }
-                            e.setMatricula(item.getMatricula());
-                            e.setNome(item.getNome());
-                            e.setInstituicaoAtual(i);
-
-                            return e;
-
-                        }).collect(Collectors.toList());
     }
 
 }

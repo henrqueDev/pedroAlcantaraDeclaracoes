@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.builder.EstudanteBuilder;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.DeclaracaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.estudante.EstudanteNotFoundException;
@@ -73,11 +74,11 @@ public class EstudanteController {
         if (estudante.isPresent()) {
             model.setViewName("estudantes/form");
             model.addObject("method", "PUT");
-            model.addObject("estudante", Estudante.converterEstudanteDTO(estudante.get()));
+            model.addObject("estudante", EstudanteBuilder.convertToDTO(estudante.get()));
             model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
         } else {
             model.setViewName("estudantes/form");
-            model.addObject("estudante", Estudante.converterEstudanteDTO(new Estudante()));
+            model.addObject("estudante", EstudanteBuilder.convertToDTO(new Estudante()));
             model.addObject("method", "POST");
             model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
 
