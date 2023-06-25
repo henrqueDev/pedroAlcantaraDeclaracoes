@@ -61,17 +61,4 @@ public class Declaracao {
         return this.id.toString();
     }
 
-    public static DeclaracaoDTO converterDeclaracaoDTO(Declaracao declaracao) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
-
-        return DeclaracaoDTO
-                .builder()
-                .id(declaracao.getId())
-                .observacao(declaracao.getObservacao())
-                .dataRecebimento(declaracao.getDataRecebimento().format(formatter))
-                .estudante(declaracao.getEstudante().getMatricula())
-                .periodo(declaracao.getPeriodo().getId())
-                .build();
-    }
-
 }
