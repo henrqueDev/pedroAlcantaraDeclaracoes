@@ -2,6 +2,8 @@ package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.build
 
 import java.time.format.DateTimeFormatter;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.DeclaracaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Declaracao;
 

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.DeclaracaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
@@ -23,9 +24,11 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Declaracao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.PeriodoLetivo;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.documentos.PdfFile;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.DeclaracaoRepository;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.EstudanteRepository;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.InstituicaoRepository;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.PdfFileRepository;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.PeriodoLetivoRepository;
 
 @Service
@@ -40,6 +43,9 @@ public class EstudanteService {
 
     @Autowired
     private DeclaracaoRepository declaracaoRepository;
+
+    @Autowired
+    private PdfFileRepository pdfFileRepository;
 
     @Autowired
     private PeriodoLetivoRepository periodoLetivoRepository;
@@ -94,7 +100,7 @@ public class EstudanteService {
     }
 
     @Transactional
-    public void emitirDeclaracao(@Valid DeclaracaoDTO d) throws Exception {
+    public void emitirDeclaracao(@Valid DeclaracaoDTO d, MultipartFile arquivoPDF) throws Exception {
         LocalDate dataRecebimento = LocalDate.now();
 
         Estudante e = this.estudanteRepository.findById(d.getEstudante())
@@ -105,7 +111,12 @@ public class EstudanteService {
 
         if (e.getInstituicaoAtual() != null) {
             if (e.getInstituicaoAtual().getPeriodos() != null) {
-                Declaracao declaracao = new Declaracao(d.getObservacao(), dataRecebimento, e, p);
+
+                PdfFile pdf = new PdfFile(e.getNome() + e.getMatricula() + p.getAno() + p.getPeriodo() + ".pdf",
+                        arquivoPDF.getBytes());
+
+                Declaracao declaracao = new Declaracao(d.getObservacao(), dataRecebimento, e, p,
+                        pdf);
                 e.setDeclaracaoAtual(declaracao);
                 this.declaracaoRepository.save(declaracao);
             } else {
@@ -122,6 +133,10 @@ public class EstudanteService {
 
     public Optional<Declaracao> getDeclaracaoById(Integer id) {
         return this.declaracaoRepository.findById(id);
+    }
+
+    public PdfFile getDeclaracaoPDF(Integer id) {
+        return this.pdfFileRepository.findById(id).get();
     }
 
     public Optional<Estudante> getById(Integer id) {

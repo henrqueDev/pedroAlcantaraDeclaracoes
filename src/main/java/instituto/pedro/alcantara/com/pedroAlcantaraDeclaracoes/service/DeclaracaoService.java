@@ -19,7 +19,7 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.Instit
 @Service
 
 public class DeclaracaoService {
-    
+
     @Autowired
     private DeclaracaoRepository DeclaracaoRepository;
 
@@ -27,12 +27,12 @@ public class DeclaracaoService {
     private InstituicaoRepository instituicaoRepository;
 
     @Transactional
-    public Declaracao cadastrar( Declaracao declaracao) throws Exception{
+    public Declaracao cadastrar(Declaracao declaracao) throws Exception {
         return this.DeclaracaoRepository.save(declaracao);
     }
 
-    public List<Declaracao> getAll(){
+    public List<Declaracao> getAll() {
         return this.DeclaracaoRepository.findAll();
     }
-    
+
 }

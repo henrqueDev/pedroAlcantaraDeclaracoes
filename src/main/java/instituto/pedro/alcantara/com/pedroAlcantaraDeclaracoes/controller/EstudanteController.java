@@ -1,6 +1,5 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -11,12 +10,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 
@@ -28,6 +31,7 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.institu
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Declaracao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.documentos.PdfFile;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.EstudanteService;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.InstituicaoService;
 import lombok.RequiredArgsConstructor;
@@ -132,6 +136,7 @@ public class EstudanteController {
 
     @PostMapping(value = "/createDeclaracao")
     public ModelAndView saveDeclaracao(@Valid @ModelAttribute("declaracao") DeclaracaoDTO declaracao,
+            @RequestParam("arquivoPDF") MultipartFile arquivoPDF,
             BindingResult validation,
             ModelAndView model,
             RedirectAttributes ra) throws Exception {
@@ -150,7 +155,7 @@ public class EstudanteController {
                 return model;
             }
 
-            this.estudanteService.emitirDeclaracao(declaracao);
+            this.estudanteService.emitirDeclaracao(declaracao, arquivoPDF);
         } catch (Exception e) {
             model.addObject("declaracao", declaracao);
             model.addObject("exception", e.getMessage());
@@ -163,6 +168,15 @@ public class EstudanteController {
         ra.addFlashAttribute("mensagem", "Declaração gerada com Sucesso!");
         ra.addFlashAttribute("success", true);
         return model;
+    }
+
+    @GetMapping("/download/declaracao/{id}")
+    public ResponseEntity<byte[]> getFile(@PathVariable(name = "id") Integer id) {
+        PdfFile file = estudanteService.getDeclaracaoPDF(id);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getNome() + "\"")
+                .body(file.getBytes());
     }
 
     @PostMapping(value = "/create")

@@ -51,6 +51,11 @@ public class PeriodoLetivoService {
                 .orElseThrow(() -> new InstituicaoNotFoundException());
         List<PeriodoLetivo> periodosInstituicao = i.getPeriodos();
 
+        /* Perguntar pro professor */
+        for (Estudante estudante : i.getAlunos()) {
+            estudante.setDeclaracaoAtual(null);
+        }
+
         LocalDate dataInicio = LocalDate.parse(p.getDataInicio(), DateTimeFormatter.ISO_LOCAL_DATE);
         LocalDate dataFinal = LocalDate.parse(p.getDataFinal(), DateTimeFormatter.ISO_LOCAL_DATE);
         periodo.setPeriodo(p.getPeriodo());

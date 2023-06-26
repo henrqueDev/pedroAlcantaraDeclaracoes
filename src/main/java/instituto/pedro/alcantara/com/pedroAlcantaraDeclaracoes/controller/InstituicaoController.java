@@ -33,7 +33,7 @@ public class InstituicaoController {
     @GetMapping(value = "/list")
     public ModelAndView index(ModelAndView model, Integer page) {
         page = page != null ? page : 0;
-        Page<InstituicaoDTO> entityPage = this.instituicaoService.getAllPaginated(page, PAGE_SIZE);
+        Page<Instituicao> entityPage = this.instituicaoService.getAllPaginated(page, PAGE_SIZE);
 
         model.setViewName("instituicoes/list");
         model.addObject("menu", "instituicoes");

@@ -40,17 +40,14 @@ public class InstituicaoService {
         return this.instituicaoRepository.findAll(pageable);
     }
 
-    public Page<InstituicaoDTO> getAllPaginated(Integer page, int PAGE_SIZE) {
+    public Page<Instituicao> getAllPaginated(Integer page, int PAGE_SIZE) {
 
         Pageable pageable = PageRequest.of(page != null ? page : 0, PAGE_SIZE);
-        List<InstituicaoDTO> instituicoesDTO = this.instituicaoRepository.findAll()
-                .stream().map(i -> {
-                    return InstituicaoBuilder.convertToDTO(i);
-                }).collect(Collectors.toList());
+        List<Instituicao> instituicoesDTO = this.instituicaoRepository.findAll();
 
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), instituicoesDTO.size());
-        Page<InstituicaoDTO> pagina = new PageImpl<>(instituicoesDTO.subList(start, end), pageable,
+        Page<Instituicao> pagina = new PageImpl<>(instituicoesDTO.subList(start, end), pageable,
                 instituicoesDTO.size());
         return pagina;
     }
