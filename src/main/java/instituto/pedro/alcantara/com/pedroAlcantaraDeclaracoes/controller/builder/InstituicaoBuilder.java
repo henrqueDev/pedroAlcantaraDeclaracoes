@@ -1,7 +1,6 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.builder;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
-import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
 
 public final class InstituicaoBuilder {

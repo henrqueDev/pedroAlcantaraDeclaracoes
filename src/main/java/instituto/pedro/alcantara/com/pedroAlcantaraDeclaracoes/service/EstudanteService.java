@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.DeclaracaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
@@ -80,8 +79,6 @@ public class EstudanteService {
         if (estudante.getInstituicaoAtual() != null) {
             Instituicao instituicao = this.instituicaoRepository.findById(estudante.getInstituicaoAtual())
                     .orElseThrow(() -> new InstituicaoNotFoundException());
-
-            List<Estudante> alunos = instituicao.getAlunos();
             student.setInstituicaoAtual(instituicao);
         }
         student.setNome(estudante.getNome());
