@@ -67,7 +67,7 @@ public class PeriodoLetivoService {
             throw new PeriodoInvalidoException();
         }
 
-        periodo.setAno(p.getAno());
+        periodo.setAno(dataFinal.getYear());
         periodo.setInstituicao(i);
         periodosInstituicao.add(periodo);
         i.setPeriodos(periodosInstituicao);
@@ -97,7 +97,7 @@ public class PeriodoLetivoService {
         periodo.setPeriodo(p.getPeriodo());
         periodo.setDataInicio(dataInicio);
         periodo.setDataFinal(dataFinal);
-        periodo.setAno(p.getAno());
+        periodo.setAno(dataFinal.getYear());
         i.setPeriodos(periodosInstituicao);
         this.periodoLetivoRepository.update(periodo.getId(), periodo.getAno(), periodo.getPeriodo(),
                 periodo.getDataInicio(),

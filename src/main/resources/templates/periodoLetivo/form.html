@@ -17,22 +17,17 @@
             style="border-radius: 16px;">
             <input type="hidden" th:field="*{id}"/>
                 <div class="form-group m-2">
-                    <label for="Nome">Ano</label>
-                    <input type="number" id="Ano" class="form-control" th:field="*{ano}" />
-                    <div th:if="${#fields.hasErrors('ano')}" th:errorclass="error"  th:errors="*{ano}" class="alert alert-danger"></div>
-                </div>
-                <div class="form-group m-2">
                     <label for="periodo">Periodo</label>
                     <input type="number" id="periodo" class="form-control" th:field="*{periodo}" />
                     <div th:if="${#fields.hasErrors('periodo')}"  th:errors="*{periodo}" class="alert alert-danger"></div>
                 </div>
                 <div class="form-group m-2">
-                    <label for="dataInicio">dataInicio</label>
+                    <label for="dataInicio">Início do Periodo</label>
                     <input type="date" id="dataInicio" class="form-control" th:field="*{dataInicio}" />
                     <div th:if="${#fields.hasErrors('dataInicio')}"  th:errors="*{dataInicio}" class="alert alert-danger"></div>
                 </div>
                 <div class="form-group m-2">
-                    <label for="Nome">dataFinal</label>
+                    <label for="Nome">Fim do Período</label>
                     <input type="date" id="dataFinal" class="form-control" th:field="*{dataFinal}" />
                     <div th:if="${#fields.hasErrors('dataFinal')}"  th:errors="*{dataFinal}" class="alert alert-danger"></div>
                 </div>
