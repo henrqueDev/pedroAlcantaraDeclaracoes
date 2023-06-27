@@ -21,7 +21,7 @@ public interface DeclaracaoRepository extends JpaRepository<Declaracao, Integer>
         public Page<Declaracao> getAllDeclaracoesVencidas(Pageable pageable,
                         @Param("endDate") LocalDate endDate);
 
-        @Query(value = "select d from Declaracao d where d.periodo.dataFinal between :startDate and :endDate", countQuery = "select count(*) from Declaracao d where d.periodo.dataFinal < :endDate ")
+        @Query(value = "select d from Declaracao d where d.periodo.dataFinal between :startDate and :endDate", countQuery = "select count(*) from Declaracao d where d.periodo.dataFinal between :startDate and :endDate")
         public Page<Declaracao> getAllDeclaracoesVencerDias(Pageable pageable,
                         @Param("startDate") LocalDate startDate,
                         @Param("endDate") LocalDate endDate);
