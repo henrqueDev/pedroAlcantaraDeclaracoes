@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,18 +30,35 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.documentos.PdfFile;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.EstudanteService;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.InstituicaoService;
-import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/estudantes")
-@RequiredArgsConstructor
 
 public class EstudanteController {
     // Value to set pagination quantity
     private static final int PAGE_SIZE = 2;
 
-    private final EstudanteService estudanteService;
-    private final InstituicaoService instituicaoService;
+    @Autowired
+    private EstudanteService estudanteService;
+
+    @Autowired
+    private InstituicaoService instituicaoService;
+
+    @GetMapping(value = "/listEstudantesWithoutDeclaracao")
+    public ModelAndView listEstudantesWithoutDeclaracao(ModelAndView model, Integer page) {
+        page = page != null ? page : 0;
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        Page<Estudante> entityPage = estudanteService.getAllWithoutDeclaracao(pageable);
+        model.addObject("estudantes", entityPage.getContent());
+        model.addObject("currentPage", entityPage.getNumber());
+        model.addObject("totalPages", entityPage.getTotalPages());
+        model.addObject("pagePath", "/estudantes/listEstudantesWithoutDeclaracao");
+        model.addObject("pageNum", page);
+        model.setViewName("estudantes/listEstudantesWithoutDeclaracao");
+        model.addObject("menu", "estudantes");
+
+        return model;
+    }
 
     @GetMapping(value = "/list")
     public ModelAndView list(ModelAndView model, Integer page) {

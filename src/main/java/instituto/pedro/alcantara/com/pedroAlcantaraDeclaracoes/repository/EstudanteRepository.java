@@ -25,6 +25,9 @@ public interface EstudanteRepository extends JpaRepository<Estudante, Integer> {
     @Query("select e from Estudante e where e.declaracaoAtual.periodo = :periodo ")
     List<Estudante> findAllEstudantesByPeriodo(@Param(value = "periodo") PeriodoLetivo periodo);
 
+    @Query(value = "select e from Estudante e where e.declaracaoAtual = NULL ", countQuery = "select count(*) from Estudante e where e.declaracaoAtual = null ")
+    Page<Estudante> findAllEstudantesWithoutDeclaracao(Pageable pageable);
+
     @Modifying
     @Query("update Estudante e set e.nome = :nome, e.instituicaoAtual = :instituicaoAtual where e.matricula = :matricula")
     void updateEstudante(@Param(value = "matricula") Integer matricula, @Param(value = "nome") String nome,

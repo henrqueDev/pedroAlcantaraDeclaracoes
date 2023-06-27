@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -20,17 +21,16 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.In
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.InstituicaoService;
-import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/instituicoes")
-@RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
 public class InstituicaoController {
     // Value to set pagination quantity
     private static final int PAGE_SIZE = 2;
 
-    private final InstituicaoService instituicaoService;
+    @Autowired
+    private InstituicaoService instituicaoService;
 
     @GetMapping(value = "/list")
     public ModelAndView index(ModelAndView model, Integer page) {

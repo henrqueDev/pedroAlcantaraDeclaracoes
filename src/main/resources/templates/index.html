@@ -15,18 +15,18 @@
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Adicionar uma Declaração</h5>
-                            <p class="card-text">Adicionar uma nova Declaração ao Sistema.</p>
-                            <a th:href="@{/estudantes/list}" class="btn btn-primary">Adicionar</a>
+                            <h5 class="card-title">Visualizar Declarações a vencer em 1 mês</h5>
+                            <p class="card-text">Veja todas as declarações a vencer em 1 mês</p>
+                            <a th:href="@{/declaracoes/listAVencer}" class="btn btn-primary">Visualizar</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Visualizar Declarações</h5>
+                            <h5 class="card-title">Visualizar Declarações vencidas</h5>
                             <p class="card-text">Veja todas as declarações do sistema.</p>
-                            <a href="#" class="btn btn-primary" id="onDevelopment">Visualizar</a>
+                            <a th:href="@{/declaracoes/listVencidas}" class="btn btn-primary">Visualizar</a>
                         </div>
                     </div>
                 </div>

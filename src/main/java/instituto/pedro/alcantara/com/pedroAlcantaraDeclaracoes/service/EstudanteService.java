@@ -128,6 +128,10 @@ public class EstudanteService {
         return this.estudanteRepository.findAll(pageable);
     }
 
+    public Page<Estudante> getAllWithoutDeclaracao(Pageable pageable) {
+        return this.estudanteRepository.findAllEstudantesWithoutDeclaracao(pageable);
+    }
+
     public Optional<Declaracao> getDeclaracaoById(Integer id) {
         return this.declaracaoRepository.findById(id);
     }

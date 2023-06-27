@@ -35,7 +35,7 @@ public class SecurityConfig {
 	@Bean
 	UserDetailsManager users() {
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		UserDetails user = User.withUsername("MARX")
+		UserDetails user = User.withUsername("Marx")
 				.password(encoder.encode("12345"))
 				.roles("USER")
 				.build();

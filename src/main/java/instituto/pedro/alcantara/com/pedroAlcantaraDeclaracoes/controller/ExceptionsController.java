@@ -13,7 +13,7 @@ public class ExceptionsController {
         ModelAndView model = new ModelAndView();
         model.setViewName("error");
         System.out.println(e.getLocalizedMessage());
-        model.addObject("mensagem", e.getLocalizedMessage());
+        model.addObject("mensagem", e.getMessage());
         return model;
     }
 

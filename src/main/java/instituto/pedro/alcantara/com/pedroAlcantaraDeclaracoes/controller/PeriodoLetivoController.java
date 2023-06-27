@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 
@@ -24,19 +26,19 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.PeriodoLetivo;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.InstituicaoService;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.PeriodoLetivoService;
-import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/periodos")
-@RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 public class PeriodoLetivoController {
     // Value to set pagination quantity
     private static final int PAGE_SIZE = 10;
 
-    private final PeriodoLetivoService periodoLetivoService;
+    @Autowired
+    private PeriodoLetivoService periodoLetivoService;
 
-    private final InstituicaoService instituicaoService;
-    // private final EstudanteService estudanteService;
+    @Autowired
+    private InstituicaoService instituicaoService;
 
     @GetMapping(value = "/list")
     public ModelAndView index(ModelAndView model, Integer page) {
