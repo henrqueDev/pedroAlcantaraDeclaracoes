@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.builder.InstituicaoBuilder;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
@@ -31,6 +32,7 @@ public class InstituicaoController {
     private final InstituicaoService instituicaoService;
 
     @GetMapping(value = "/list")
+    @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView index(ModelAndView model, Integer page) {
         page = page != null ? page : 0;
         Page<Instituicao> entityPage = this.instituicaoService.getAllPaginated(page, PAGE_SIZE);

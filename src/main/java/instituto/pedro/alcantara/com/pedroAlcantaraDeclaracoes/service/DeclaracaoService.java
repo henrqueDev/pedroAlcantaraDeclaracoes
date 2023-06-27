@@ -1,6 +1,7 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -36,6 +37,15 @@ public class DeclaracaoService {
 
     public List<Declaracao> getAll() {
         return this.DeclaracaoRepository.findAll();
+    }
+
+    public Page<Declaracao> getAllVencidas(Pageable pageable) {
+        return this.DeclaracaoRepository.getAllDeclaracoesVencidas(pageable, LocalDate.now());
+    }
+
+    public Page<Declaracao> getAllVencerDias(Integer numLimite, Pageable pageable) {
+        LocalDate data = LocalDate.now();
+        return this.DeclaracaoRepository.getAllDeclaracoesVencerDias(pageable, data, data.plusDays(numLimite));
     }
 
     public Page<Declaracao> getAllToList(Pageable pageable) {
