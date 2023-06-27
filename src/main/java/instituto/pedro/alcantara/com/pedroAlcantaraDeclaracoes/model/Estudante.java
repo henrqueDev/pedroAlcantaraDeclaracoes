@@ -66,4 +66,7 @@ public class Estudante {
     @JoinColumn(name = "instituicao_id")
     private Instituicao instituicaoAtual;
 
+    public String toString() {
+        return this.getNome() + " - " + this.getMatricula();
+    }
 }
