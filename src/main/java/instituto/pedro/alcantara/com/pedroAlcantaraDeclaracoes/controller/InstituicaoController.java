@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.builder.InstituicaoBuilder;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.InstituicaoService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequestMapping("/instituicoes")
 @RequiredArgsConstructor
-
+@PreAuthorize("hasRole('ADMIN')")
 public class InstituicaoController {
     // Value to set pagination quantity
     private static final int PAGE_SIZE = 2;
@@ -32,7 +33,6 @@ public class InstituicaoController {
     private final InstituicaoService instituicaoService;
 
     @GetMapping(value = "/list")
-    @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView index(ModelAndView model, Integer page) {
         page = page != null ? page : 0;
         Page<Instituicao> entityPage = this.instituicaoService.getAllPaginated(page, PAGE_SIZE);
@@ -59,18 +59,12 @@ public class InstituicaoController {
 
     @GetMapping(value = "/create/{id}")
     public ModelAndView updateInstituicaoForm(@PathVariable(value = "id") Integer id, ModelAndView model) {
-        try {
-            Instituicao instituicao = instituicaoService.getById(id);
-            model.setViewName("instituicoes/form");
-            model.addObject("instituicao", InstituicaoBuilder.convertToDTO(instituicao));
-            model.addObject("method", "PUT");
-            model.addObject("periodos", instituicao.getPeriodos());
-        } catch (Exception e) {
-            model.setViewName("instituicoes/form");
-            model.addObject("exception", e.getMessage());
-            model.addObject("instituicao", new Instituicao());
-            model.addObject("method", "POST");
-        }
+        Instituicao instituicao = instituicaoService.getById(id).orElseThrow(() -> new InstituicaoNotFoundException());
+        model.setViewName("instituicoes/form");
+        model.addObject("instituicao", InstituicaoBuilder.convertToDTO(instituicao));
+        model.addObject("method", "PUT");
+        model.addObject("periodos", instituicao.getPeriodos());
+
         return model;
     }
 

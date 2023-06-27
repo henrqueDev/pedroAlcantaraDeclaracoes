@@ -1,7 +1,5 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller;
 
-import java.util.Optional;
-
 import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -72,24 +70,14 @@ public class EstudanteController {
 
     @GetMapping(value = "/create/{id}")
     public ModelAndView updateEstudanteForm(@PathVariable(value = "id") Integer id, ModelAndView model, Integer page) {
-        Optional<Estudante> estudante = estudanteService.getById(id);
-        if (estudante.isPresent()) {
-            model.setViewName("estudantes/form");
-            model.addObject("method", "PUT");
-            model.addObject("estudante", EstudanteBuilder.convertToDTO(estudante.get()));
-            model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
-        } else {
-            model.setViewName("estudantes/form");
-            model.addObject("estudante", EstudanteBuilder.convertToDTO(new Estudante()));
-            model.addObject("method", "POST");
-            model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
-
-            Pageable pageable = PageRequest.of(page != null ? page : 0, PAGE_SIZE);
-            Page<Estudante> entityPage = estudanteService.getAll(pageable);
-            model.addObject("estudantes", entityPage.getContent());
-        }
+        Estudante estudante = estudanteService.getById(id).orElseThrow(() -> new EstudanteNotFoundException());
+        model.setViewName("estudantes/form");
+        model.addObject("method", "PUT");
+        model.addObject("estudante", EstudanteBuilder.convertToDTO(estudante));
+        model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
 
         return model;
+
     }
 
     @GetMapping(value = "/create")
@@ -113,22 +101,18 @@ public class EstudanteController {
     @GetMapping(value = "/createDeclaracao/{id}")
     public ModelAndView createDeclaracao(@PathVariable(name = "id") Integer id, DeclaracaoDTO declaracao,
             ModelAndView model) {
-        try {
-            Estudante e = this.estudanteService.getById(id).orElseThrow(() -> new EstudanteNotFoundException());
-            declaracao.setEstudante(e.getMatricula());
-            Instituicao i = e.getInstituicaoAtual();
-            if (i == null) {
-                throw new InstituicaoNotFoundException();
-            }
-
-            model.setViewName("estudantes/formDeclaracao");
-            model.addObject("nome", e.getNome());
-            model.addObject("periodos", i != null ? i.getPeriodos() : null);
-            model.addObject("declaracao", declaracao);
-        } catch (Exception e) {
-            model.setViewName("estudantes/formDeclaracao");
-            model.addObject("exception", e.getMessage());
+        Estudante e = this.estudanteService.getById(id).orElseThrow(() -> new EstudanteNotFoundException());
+        declaracao.setEstudante(e.getMatricula());
+        Instituicao i = e.getInstituicaoAtual();
+        if (i == null) {
+            throw new InstituicaoNotFoundException();
         }
+
+        model.setViewName("estudantes/formDeclaracao");
+        model.addObject("nome", e.getNome());
+        model.addObject("periodos", i != null ? i.getPeriodos() : null);
+        model.addObject("declaracao", declaracao);
+
         return model;
     }
 

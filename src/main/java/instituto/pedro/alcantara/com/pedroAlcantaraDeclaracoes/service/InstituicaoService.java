@@ -1,6 +1,7 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -51,8 +52,8 @@ public class InstituicaoService {
         return this.instituicaoRepository.findAll();
     }
 
-    public Instituicao getById(Integer id) throws Exception {
-        return this.instituicaoRepository.findById(id).orElseThrow(() -> new InstituicaoNotFoundException());
+    public Optional<Instituicao> getById(Integer id) {
+        return this.instituicaoRepository.findById(id);
     }
 
     public List<Estudante> getAllEstudantesById(Integer id) {

@@ -18,6 +18,7 @@ import org.springframework.validation.BindingResult;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.builder.PeriodoLetivoBuilder;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.PeriodoLetivoDTO;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.periodo.PeriodoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.PeriodoLetivo;
@@ -28,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequestMapping("/periodos")
 @RequiredArgsConstructor
-
 public class PeriodoLetivoController {
     // Value to set pagination quantity
     private static final int PAGE_SIZE = 10;
@@ -66,20 +66,16 @@ public class PeriodoLetivoController {
     @GetMapping(value = "/create/{id}")
     public ModelAndView updatePeriodoForm(@PathVariable(name = "id") Integer id, PeriodoLetivoDTO periodoLetivo,
             ModelAndView model) {
-        try {
-            PeriodoLetivo p = this.periodoLetivoService.getById(id)
-                    .orElseThrow(() -> new PeriodoNotFoundException());
-            Instituicao i = this.instituicaoService.getById(p.getInstituicao().getId());
-            model.addObject("title", "Atualizar Periodo Letivo");
-            model.addObject("periodoLetivo", PeriodoLetivoBuilder.convertToDTO(p));
-            model.addObject("instituicoes", i);
-            model.addObject("method", "PUT");
-            model.setViewName("periodoLetivo/form");
-        } catch (Exception e) {
-            model.setViewName("periodoLetivo/form");
-            model.addObject("exception", e.getMessage());
-            model.addObject("periodoLetivo", periodoLetivo);
-        }
+        PeriodoLetivo p = this.periodoLetivoService.getById(id)
+                .orElseThrow(() -> new PeriodoNotFoundException());
+        Instituicao i = this.instituicaoService.getById(p.getInstituicao().getId())
+                .orElseThrow(() -> new InstituicaoNotFoundException());
+        model.addObject("title", "Atualizar Periodo Letivo");
+        model.addObject("periodoLetivo", PeriodoLetivoBuilder.convertToDTO(p));
+        model.addObject("instituicoes", i);
+        model.addObject("method", "PUT");
+        model.setViewName("periodoLetivo/form");
+
         return model;
     }
 

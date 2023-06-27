@@ -9,9 +9,11 @@ public class ExceptionsController {
 
     // For UI Pages
     @ExceptionHandler(Exception.class)
-    public ModelAndView Exception(Exception e, ModelAndView model) {
+    public ModelAndView Exception(Exception e) {
+        ModelAndView model = new ModelAndView();
         model.setViewName("error");
-        model.addObject("mensagem", e.getMessage());
+        System.out.println(e.getLocalizedMessage());
+        model.addObject("mensagem", e.getLocalizedMessage());
         return model;
     }
 

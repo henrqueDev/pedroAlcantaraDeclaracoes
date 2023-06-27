@@ -35,7 +35,7 @@ public class SecurityConfig {
 	@Bean
 	UserDetailsManager users() {
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		UserDetails user = User.withUsername("usuarioAstronauta")
+		UserDetails user = User.withUsername("MARX")
 				.password(encoder.encode("12345"))
 				.roles("USER")
 				.build();
@@ -61,7 +61,8 @@ public class SecurityConfig {
 				.formLogin(form -> form
 						.loginPage("/auth")
 						.defaultSuccessUrl("/", true).permitAll())
-				.logout(logout -> logout.logoutUrl("/auth/logout"));
+				.logout(logout -> logout.logoutUrl("/auth/logout")
+						.permitAll());
 	}
 
 }
