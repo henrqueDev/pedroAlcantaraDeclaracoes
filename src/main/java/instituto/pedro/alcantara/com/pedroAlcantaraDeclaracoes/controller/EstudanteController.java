@@ -136,13 +136,13 @@ public class EstudanteController {
 
     @PostMapping(value = "/createDeclaracao")
     public ModelAndView saveDeclaracao(@Valid @ModelAttribute("declaracao") DeclaracaoDTO declaracao,
-            @RequestParam("arquivoPDF") MultipartFile arquivoPDF,
             BindingResult validation,
             ModelAndView model,
             RedirectAttributes ra) throws Exception {
 
         try {
-            if (validation.hasErrors()) {
+            boolean noArquivo = declaracao.getArquivoPDF().getSize() == 0 ? true : false;
+            if (validation.hasErrors() || noArquivo) {
                 model.addObject("declaracao", declaracao);
                 Estudante e = this.estudanteService.getById(declaracao.getEstudante())
                         .orElseThrow(() -> new EstudanteNotFoundException());
@@ -151,11 +151,12 @@ public class EstudanteController {
                 model.addObject("periodos", i != null ? i.getPeriodos() : null);
                 model.addObject("method", "POST");
                 model.addObject("hasErrors", true);
+                model.addObject("noFileError", noArquivo);
                 model.setViewName("estudantes/formDeclaracao");
                 return model;
             }
 
-            this.estudanteService.emitirDeclaracao(declaracao, arquivoPDF);
+            this.estudanteService.emitirDeclaracao(declaracao);
         } catch (Exception e) {
             model.addObject("declaracao", declaracao);
             model.addObject("exception", e.getMessage());

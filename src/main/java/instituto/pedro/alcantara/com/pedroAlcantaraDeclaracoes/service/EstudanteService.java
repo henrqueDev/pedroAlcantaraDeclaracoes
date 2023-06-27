@@ -100,7 +100,7 @@ public class EstudanteService {
     }
 
     @Transactional
-    public void emitirDeclaracao(@Valid DeclaracaoDTO d, MultipartFile arquivoPDF) throws Exception {
+    public void emitirDeclaracao(@Valid DeclaracaoDTO d) throws Exception {
         LocalDate dataRecebimento = LocalDate.now();
 
         Estudante e = this.estudanteRepository.findById(d.getEstudante())
@@ -113,7 +113,7 @@ public class EstudanteService {
             if (e.getInstituicaoAtual().getPeriodos() != null) {
 
                 PdfFile pdf = new PdfFile(e.getNome() + e.getMatricula() + p.getAno() + p.getPeriodo() + ".pdf",
-                        arquivoPDF.getBytes());
+                        d.getArquivoPDF().getBytes());
 
                 Declaracao declaracao = new Declaracao(d.getObservacao(), dataRecebimento, e, p,
                         pdf);

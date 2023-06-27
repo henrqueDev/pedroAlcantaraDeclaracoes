@@ -1,7 +1,10 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,4 +29,7 @@ public class DeclaracaoDTO {
 
     @NotNull(message = "Campo obrigatório!")
     private Integer periodo;
+
+    @NotNull(message = "Precisa do documento!")
+    private MultipartFile arquivoPDF;
 }
