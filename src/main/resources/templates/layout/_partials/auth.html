@@ -1,0 +1,9 @@
+<div th:fragment="auth">
+    <nav class="navbar navbar-expand navbar-light d-flex justify-content-between nav-font">
+        <div class="navbar-nav">
+            <span sec:authorize="isAuthenticated()" sec:authentication="name" class="nav-item nav-link"></span>
+            <span class="nav-item nav-link"> - </span>
+            <a class="nav-item nav-link" th:href="@{/auth/logout}">Sair</a>
+        </div>
+    </nav>
+</div>
