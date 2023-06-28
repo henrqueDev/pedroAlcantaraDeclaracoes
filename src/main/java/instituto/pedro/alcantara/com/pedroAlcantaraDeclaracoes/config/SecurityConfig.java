@@ -59,7 +59,7 @@ public class SecurityConfig {
 				.authorizeHttpRequests()
 				.and()
 				.formLogin(form -> form
-						.loginPage("/auth")
+						.loginPage("/login")
 						.defaultSuccessUrl("/", true).permitAll())
 				.logout(logout -> logout.logoutUrl("/auth/logout")
 						.permitAll());
