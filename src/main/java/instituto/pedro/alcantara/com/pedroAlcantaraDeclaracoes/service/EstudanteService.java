@@ -59,10 +59,11 @@ public class EstudanteService {
                         .orElseThrow(() -> new InstituicaoNotFoundException())
                 : null;
 
-        if (instituicao != null && student != null) {
+        Optional<Declaracao> declaracao = this.declaracaoRepository.findById(estudante.getDeclaracaoAtual());
+        if (instituicao != null && student != null && declaracao.get() != null) {
             student.setInstituicaoAtual(instituicao);
             student.setNome(estudante.getNome());
-            student.setDeclaracaoAtual(null);
+            student.setDeclaracaoAtual(declaracao.get());
 
         } else {
             student.setInstituicaoAtual(null);

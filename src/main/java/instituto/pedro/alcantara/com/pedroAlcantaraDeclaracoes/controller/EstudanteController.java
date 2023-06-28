@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -92,7 +93,7 @@ public class EstudanteController {
         model.addObject("method", "PUT");
         model.addObject("estudante", EstudanteBuilder.convertToDTO(estudante));
         model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
-
+        model.addObject("declaracoes", estudante.getDeclaracoes());
         return model;
 
     }
@@ -184,8 +185,11 @@ public class EstudanteController {
             BindingResult validation, ModelAndView model,
             RedirectAttributes ra) throws Exception {
         if (validation.hasErrors()) {
+            Estudante student = estudanteService.getById(estudante.getMatricula())
+                    .orElseThrow(() -> new EstudanteNotFoundException());
             model.addObject("estudante", estudante);
             model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
+            model.addObject("declaracoes", student.getDeclaracoes());
             model.addObject("method", "POST");
             model.addObject("hasErrors", true);
             model.setViewName("estudantes/form");
