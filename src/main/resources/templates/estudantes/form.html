@@ -28,7 +28,7 @@
                     </select>
                 </div>
 
-                <div class="form-group m-2" th:if="${method == 'PUT'}">
+                <div class="form-group m-2" th:if="${declaracoes != null}">
                     <label for="declaracao">Declaração:</label>
                     <select class="form-control" id="instituicao" name="declaracao" th:field="*{declaracaoAtual}">
                         <option value="">Selecione</option>

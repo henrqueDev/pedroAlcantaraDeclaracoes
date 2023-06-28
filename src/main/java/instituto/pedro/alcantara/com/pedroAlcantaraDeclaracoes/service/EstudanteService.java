@@ -58,17 +58,19 @@ public class EstudanteService {
                 ? this.instituicaoRepository.findById(estudante.getInstituicaoAtual())
                         .orElseThrow(() -> new InstituicaoNotFoundException())
                 : null;
-
-        Optional<Declaracao> declaracao = this.declaracaoRepository.findById(estudante.getDeclaracaoAtual());
-        if (instituicao != null && student != null && declaracao.get() != null) {
+        if (estudante.getDeclaracaoAtual() != null) {
+            Optional<Declaracao> declaracao = this.declaracaoRepository.findById(estudante.getDeclaracaoAtual());
+            student.setDeclaracaoAtual(declaracao.get());
+        } else {
+            student.setDeclaracaoAtual(null);
+        }
+        if (instituicao != null && student != null) {
             student.setInstituicaoAtual(instituicao);
             student.setNome(estudante.getNome());
-            student.setDeclaracaoAtual(declaracao.get());
 
         } else {
             student.setInstituicaoAtual(null);
             student.setNome(estudante.getNome());
-            student.setDeclaracaoAtual(null);
         }
         this.estudanteRepository.updateEstudante(student.getMatricula(), student.getNome(),
                 student.getInstituicaoAtual());

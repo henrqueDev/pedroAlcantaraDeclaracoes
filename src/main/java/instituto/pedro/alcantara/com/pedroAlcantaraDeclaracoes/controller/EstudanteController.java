@@ -93,7 +93,9 @@ public class EstudanteController {
         model.addObject("method", "PUT");
         model.addObject("estudante", EstudanteBuilder.convertToDTO(estudante));
         model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
-        model.addObject("declaracoes", estudante.getDeclaracoes());
+        if (estudante.getDeclaracoes().size() > 0) {
+            model.addObject("declaracoes", estudante.getDeclaracoes());
+        }
         return model;
 
     }
@@ -218,7 +220,9 @@ public class EstudanteController {
                     .orElseThrow(() -> new EstudanteNotFoundException());
             model.addObject("estudante", estudante);
             model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
-            model.addObject("declaracoes", student.getDeclaracoes());
+            if (student.getDeclaracoes().size() > 0) {
+                model.addObject("declaracoes", student.getDeclaracoes());
+            }
             model.addObject("method", "PUT");
             model.addObject("hasErrors", true);
             model.setViewName("estudantes/form");
@@ -232,7 +236,9 @@ public class EstudanteController {
             model.addObject("estudante", estudante);
             model.addObject("exception", e.getMessage());
             model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
-            model.addObject("declaracoes", student.getDeclaracoes());
+            if (student.getDeclaracoes().size() > 0) {
+                model.addObject("declaracoes", student.getDeclaracoes());
+            }
             model.addObject("method", "PUT");
             model.setViewName("estudantes/form");
             return model;
