@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:insert="~{layout/layout}" th:with="titulo='Instituições'">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:insert="~{layout/layout}" th:with="titulo='Estudantes'">
 
 <body>
   <section id="instituicoes-table" layout:fragment="content">
@@ -7,10 +7,7 @@
     <div class="container mt-4">
 
         <div style="display: flex; justify-content: space-between;">
-            <h1>Lista de Estudantes</h1>
-            <a th:href="@{create}" style="margin: 6px;">
-                <button type="button" class="btn btn-info text-light" style="padding: 8px;">Cadastrar</button>
-            </a>
+            <h1>Lista de Estudantes sem Declaração</h1>
         </div>
 
         <div th:if="${mensagem}" th:text="${mensagem}" class="alert alert-success"></div>

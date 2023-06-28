@@ -14,11 +14,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -62,4 +57,7 @@ public class Estudante {
     @JoinColumn(name = "instituicao_id")
     private Instituicao instituicaoAtual;
 
+    public String toString() {
+        return this.getNome() + " - " + this.getMatricula();
+    }
 }

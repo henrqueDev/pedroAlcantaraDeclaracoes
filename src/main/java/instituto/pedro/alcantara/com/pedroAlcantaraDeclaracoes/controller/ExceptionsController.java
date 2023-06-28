@@ -4,15 +4,15 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
-import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.estudante.EstudanteNotFoundException;
-
 @ControllerAdvice
 public class ExceptionsController {
 
     // For UI Pages
     @ExceptionHandler(Exception.class)
-    public ModelAndView Exception(Exception e, ModelAndView model) {
+    public ModelAndView Exception(Exception e) {
+        ModelAndView model = new ModelAndView();
         model.setViewName("error");
+        System.out.println(e.getLocalizedMessage());
         model.addObject("mensagem", e.getMessage());
         return model;
     }

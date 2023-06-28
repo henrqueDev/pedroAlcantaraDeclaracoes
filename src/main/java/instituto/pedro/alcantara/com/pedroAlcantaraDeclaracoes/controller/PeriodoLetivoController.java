@@ -1,8 +1,5 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,11 +10,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
-import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.builder.PeriodoLetivoBuilder;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.PeriodoLetivoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.periodo.PeriodoNotFoundException;
@@ -25,31 +26,40 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.PeriodoLetivo;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.InstituicaoService;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.PeriodoLetivoService;
-import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/periodos")
-@RequiredArgsConstructor
-
+@PreAuthorize("hasRole('ADMIN')")
 public class PeriodoLetivoController {
+    // Value to set pagination quantity
+    private static final int PAGE_SIZE = 10;
 
-    private final PeriodoLetivoService periodoLetivoService;
+    @Autowired
+    private PeriodoLetivoService periodoLetivoService;
 
-    private final InstituicaoService instituicaoService;
-    // private final EstudanteService estudanteService;
+    @Autowired
+    private InstituicaoService instituicaoService;
 
     @GetMapping(value = "/list")
-    public String index(Model model) {
+    public ModelAndView index(ModelAndView model, Integer page) {
+        page = page != null ? page : 0;
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        Page<PeriodoLetivo> entityPage = periodoLetivoService.getAll(pageable);
 
-        model.addAttribute("periodosLetivos", this.periodoLetivoService.getAll());
-        return "periodoLetivo/list";
+        model.setViewName("periodoLetivo/list");
+        model.addObject("periodosLetivos", entityPage.getContent());
+        model.addObject("currentPage", entityPage.getNumber());
+        model.addObject("totalPages", entityPage.getTotalPages());
+        model.addObject("pagePath", "/instituicoes/list");
+        model.addObject("pageNum", page);
+        return model;
     }
 
     @GetMapping(value = "/create")
     public ModelAndView create(PeriodoLetivoDTO periodoLetivo, ModelAndView model) {
         model.addObject("title", "Cadastrar Periodo Letivo");
         model.addObject("periodoLetivo", periodoLetivo);
-        model.addObject("instituicoes", instituicaoService.getAll());
+        model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
         model.addObject("method", "POST");
         model.setViewName("periodoLetivo/form");
         return model;
@@ -58,33 +68,18 @@ public class PeriodoLetivoController {
     @GetMapping(value = "/create/{id}")
     public ModelAndView updatePeriodoForm(@PathVariable(name = "id") Integer id, PeriodoLetivoDTO periodoLetivo,
             ModelAndView model) {
-        try {
-            PeriodoLetivo p = this.periodoLetivoService.getById(id)
-                    .orElseThrow(() -> new PeriodoNotFoundException());
-            Instituicao i = this.instituicaoService.getById(p.getInstituicao().getId());
-            model.addObject("title", "Atualizar Periodo Letivo");
-            model.addObject("periodoLetivo", this.converter(p));
-            model.addObject("instituicoes", i);
-            model.addObject("method", "PUT");
-            model.setViewName("periodoLetivo/form");
-        } catch (Exception e) {
-            model.setViewName("periodoLetivo/form");
-            model.addObject("exception", e.getMessage());
-            model.addObject("periodoLetivo", periodoLetivo);
-        }
+        PeriodoLetivo p = this.periodoLetivoService.getById(id)
+                .orElseThrow(() -> new PeriodoNotFoundException());
+        Instituicao i = this.instituicaoService.getById(p.getInstituicao().getId())
+                .orElseThrow(() -> new InstituicaoNotFoundException());
+        model.addObject("title", "Atualizar Periodo Letivo");
+        model.addObject("periodoLetivo", PeriodoLetivoBuilder.convertToDTO(p));
+        model.addObject("instituicoes", i);
+        model.addObject("method", "PUT");
+        model.setViewName("periodoLetivo/form");
+
         return model;
     }
-
-    /*
-     * @GetMapping
-     * public List<PeriodoLetivoDTO> getAll(){
-     *
-     * return this.PeriodoLetivoService.getAll()
-     * .stream().map(i -> {
-     * return this.converter(i);
-     * }).collect(Collectors.toList());
-     * }
-     */
 
     @PostMapping(value = "/create")
     public ModelAndView salvar(@Valid @ModelAttribute("periodoLetivo") PeriodoLetivoDTO p, BindingResult validation,
@@ -94,7 +89,7 @@ public class PeriodoLetivoController {
         if (validation.hasErrors()) {
             model.addObject("title", "Cadastrar Periodo Letivo");
             model.addObject("periodoLetivo", p);
-            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
             model.addObject("hasErrors", true);
             model.addObject("method", "POST");
             model.setViewName("periodoLetivo/form");
@@ -106,13 +101,12 @@ public class PeriodoLetivoController {
             model.addObject("title", "Cadastrar Periodo Letivo");
             model.addObject("periodoLetivo", p);
             model.addObject("exception", e.getMessage());
-            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
             model.addObject("method", "POST");
             model.setViewName("periodoLetivo/form");
             return model;
         }
 
-        model.addObject("periodos", periodoLetivoService.getAll());
         model.setViewName("redirect:list");
         ra.addFlashAttribute("mensagem", "Periodo Cadastrado com Sucesso!");
         ra.addFlashAttribute("success", true);
@@ -127,7 +121,7 @@ public class PeriodoLetivoController {
         if (validation.hasErrors()) {
             model.addObject("title", "Cadastrar Periodo Letivo");
             model.addObject("periodoLetivo", p);
-            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
             model.addObject("hasErrors", true);
             model.addObject("method", "POST");
             model.setViewName("periodoLetivo/form");
@@ -139,13 +133,12 @@ public class PeriodoLetivoController {
             model.addObject("title", "Cadastrar Periodo Letivo");
             model.addObject("periodoLetivo", p);
             model.addObject("exception", e.getMessage());
-            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
             model.addObject("method", "POST");
             model.setViewName("periodoLetivo/form");
             return model;
         }
 
-        model.addObject("periodos", periodoLetivoService.getAll());
         model.setViewName("redirect:list");
         ra.addFlashAttribute("mensagem", "Periodo atualizado com Sucesso!");
         ra.addFlashAttribute("success", true);
@@ -158,7 +151,6 @@ public class PeriodoLetivoController {
         try {
             this.periodoLetivoService.deletePeriodo(id);
         } catch (Exception e) {
-            model.addObject("periodos", periodoLetivoService.getAll());
             ra.addFlashAttribute("mensagem", e.getMessage());
             model.setViewName("redirect:/periodos/list");
             return model;
@@ -166,18 +158,6 @@ public class PeriodoLetivoController {
         model.setViewName("redirect:/periodos/list");
         ra.addFlashAttribute("mensagem", "Periodo removido com Sucesso!");
         return model;
-    }
-
-    private PeriodoLetivoDTO converter(PeriodoLetivo p) {
-        Integer i = p.getInstituicao() != null ? p.getInstituicao().getId() : null;
-        return PeriodoLetivoDTO.builder()
-                .id(p.getId())
-                .ano(p.getAno())
-                .periodo(p.getPeriodo())
-                .dataInicio(p.getDataInicio().toString())
-                .dataFinal(p.getDataFinal().toString())
-                .instituicao(i)
-                .build();
     }
 
 }

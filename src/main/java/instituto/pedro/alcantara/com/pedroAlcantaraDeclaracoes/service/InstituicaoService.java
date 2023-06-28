@@ -1,16 +1,18 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.builder.EstudanteBuilder;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.InstituicaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.instituicao.InstituicaoNotFoundException;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.periodo.PeriodoNotFoundException;
@@ -30,12 +32,28 @@ public class InstituicaoService {
     @Autowired
     private PeriodoLetivoRepository periodoLetivoRepository;
 
-    public List<Instituicao> getAll() {
+    public Page<Instituicao> getAll(Pageable pageable) {
+        return this.instituicaoRepository.findAll(pageable);
+    }
+
+    public Page<Instituicao> getAllPaginated(Integer page, int PAGE_SIZE) {
+
+        Pageable pageable = PageRequest.of(page != null ? page : 0, PAGE_SIZE);
+        List<Instituicao> instituicoesDTO = this.instituicaoRepository.findAll();
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), instituicoesDTO.size());
+        Page<Instituicao> pagina = new PageImpl<>(instituicoesDTO.subList(start, end), pageable,
+                instituicoesDTO.size());
+        return pagina;
+    }
+
+    public List<Instituicao> getAllWithoutPagination() {
         return this.instituicaoRepository.findAll();
     }
 
-    public Instituicao getById(Integer id) throws Exception {
-        return this.instituicaoRepository.findById(id).orElseThrow(() -> new InstituicaoNotFoundException());
+    public Optional<Instituicao> getById(Integer id) {
+        return this.instituicaoRepository.findById(id);
     }
 
     public List<Estudante> getAllEstudantesById(Integer id) {
@@ -49,7 +67,7 @@ public class InstituicaoService {
         novaInstituicao.setNome(i.getNome());
         novaInstituicao.setSigla(i.getSigla());
         novaInstituicao.setFone(i.getFone());
-        novaInstituicao.setAlunos(this.converterA(i.getAlunos()));
+        novaInstituicao.setAlunos(EstudanteBuilder.desconstructToDTOList(i.getAlunos(), this.instituicaoRepository));
 
         return this.instituicaoRepository.save(novaInstituicao);
     }
@@ -62,13 +80,7 @@ public class InstituicaoService {
                 ? this.periodoLetivoRepository.findById(i.getPeriodoAtual())
                         .orElseThrow(() -> new PeriodoNotFoundException())
                 : null;
-        /*
-         * if (newPeriodo == null) {
-         * for (Estudante e : instituicaoAtualizada.getAlunos()) {
-         * e.setDeclaracaoAtual(null);
-         * }
-         * }
-         */
+
         instituicaoAtualizada.setNome(i.getNome());
         instituicaoAtualizada.setSigla(i.getSigla());
         instituicaoAtualizada.setFone(i.getFone());
@@ -88,28 +100,6 @@ public class InstituicaoService {
             estudante.setDeclaracaoAtual(null);
         }
         this.instituicaoRepository.delete(i);
-    }
-
-    private List<Estudante> converterA(List<EstudanteDTO> alunos) {
-        return alunos == null ? new ArrayList<Estudante>()
-                : alunos.stream().map(
-                        item -> {
-                            Estudante e = new Estudante();
-                            Instituicao i = null;
-                            try {
-                                i = this.instituicaoRepository
-                                        .findById(item.getInstituicaoAtual())
-                                        .orElseThrow(() -> new InstituicaoNotFoundException());
-                            } catch (Exception e1) {
-                                e1.printStackTrace();
-                            }
-                            e.setMatricula(item.getMatricula());
-                            e.setNome(item.getNome());
-                            e.setInstituicaoAtual(i);
-
-                            return e;
-
-                        }).collect(Collectors.toList());
     }
 
 }

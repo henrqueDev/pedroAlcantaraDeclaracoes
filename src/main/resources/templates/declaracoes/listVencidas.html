@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:insert="~{layout/layout}" th:with="titulo='Declarações'">
+
+<body>
+  <section id="declaracoes-table" layout:fragment="content">
+
+    <div class="container mt-4">
+
+        <div style="display: flex; justify-content: space-between;">
+            <h1>Lista de declarações vencidas</h1>
+        </div>
+
+        <div th:if="${mensagem}" th:text="${mensagem}" class="alert alert-success"></div>
+
+        <table class="table">
+            <thead class="bg-info">
+              <tr>
+                <th scope="col"><span class="text-light">ID</span></th>
+                <th scope="col"><span class="text-light">Observação</span></th>
+                <th scope="col"><span class="text-light mx-1">Data de Recebimento</span><i class="bi bi-question-circle text-light"></i></th>
+                <th scope="col"><span class="text-light mx-1">Estudante</span><i class="bi bi-question-circle text-light"></i></th>
+                <th scope="col"><span class="text-light mx-1">Periodo</span><i class="bi bi-question-circle text-light"></i></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="declaracao : ${declaracoes}">
+                <td th:text="${declaracao.id}"></td>
+                <td th:text="${declaracao.observacao}"></td>
+                <td th:text="${declaracao.dataRecebimento}"></td>
+                <td th:text="${declaracao.estudante}"></td>
+                <td th:text="${declaracao.periodo}"></td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+
+    <div th:replace="~{/Validation/validation :: submitSuccess}"></div>
+  </section>
+</body>
+
+<script>
+    $(function () {
+    $('[data-toggle="popover"]').popover()
+    })
+</script>
+
+</html>

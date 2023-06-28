@@ -1,15 +1,10 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Declaracao;
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,4 +29,6 @@ public class DeclaracaoDTO {
     @NotNull(message = "Campo obrigatório!")
     private Integer periodo;
 
+    @NotNull(message = "Precisa do documento!")
+    private MultipartFile arquivoPDF;
 }

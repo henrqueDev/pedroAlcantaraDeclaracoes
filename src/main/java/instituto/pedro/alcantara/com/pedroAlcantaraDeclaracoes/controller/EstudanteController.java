@@ -1,11 +1,7 @@
 package instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller;
 
-import java.time.format.DateTimeFormatter;
-import java.util.Optional;
-
 import javax.validation.Valid;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,12 +10,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.fasterxml.jackson.annotation.JsonCreator.Mode;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.builder.EstudanteBuilder;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.DeclaracaoDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.EstudanteDTO;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.estudante.EstudanteNotFoundException;
@@ -27,24 +27,51 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.exception.institu
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Declaracao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.documentos.PdfFile;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.EstudanteService;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.InstituicaoService;
-import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/estudantes")
-@RequiredArgsConstructor
 
 public class EstudanteController {
+    // Value to set pagination quantity
+    private static final int PAGE_SIZE = 10;
 
-    private final EstudanteService estudanteService;
-    private final InstituicaoService instituicaoService;
+    @Autowired
+    private EstudanteService estudanteService;
+
+    @Autowired
+    private InstituicaoService instituicaoService;
+
+    @GetMapping(value = "/listEstudantesWithoutDeclaracao")
+    public ModelAndView listEstudantesWithoutDeclaracao(ModelAndView model, Integer page) {
+        page = page != null ? page : 0;
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        Page<Estudante> entityPage = estudanteService.getAllWithoutDeclaracao(pageable);
+        model.addObject("estudantes", entityPage.getContent());
+        model.addObject("currentPage", entityPage.getNumber());
+        model.addObject("totalPages", entityPage.getTotalPages());
+        model.addObject("pagePath", "/estudantes/listEstudantesWithoutDeclaracao");
+        model.addObject("pageNum", page);
+        model.setViewName("estudantes/listEstudantesWithoutDeclaracao");
+        model.addObject("menu", "estudantes");
+
+        return model;
+    }
 
     @GetMapping(value = "/list")
-    public ModelAndView list(ModelAndView model) {
+    public ModelAndView list(ModelAndView model, Integer page) {
+        page = page != null ? page : 0;
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        Page<Estudante> entityPage = estudanteService.getAll(pageable);
+        model.addObject("estudantes", entityPage.getContent());
+        model.addObject("currentPage", entityPage.getNumber());
+        model.addObject("totalPages", entityPage.getTotalPages());
+        model.addObject("pagePath", "/estudantes/list");
+        model.addObject("pageNum", page);
         model.setViewName("estudantes/list");
         model.addObject("menu", "estudantes");
-        model.addObject("estudantes", estudanteService.getAll());
 
         return model;
     }
@@ -59,55 +86,22 @@ public class EstudanteController {
     }
 
     @GetMapping(value = "/create/{id}")
-    public ModelAndView updateEstudanteForm(@PathVariable(value = "id") Integer id, ModelAndView model) {
-        Optional<Estudante> estudante = estudanteService.getById(id);
-        if (estudante.isPresent()) {
-            model.setViewName("estudantes/form");
-            model.addObject("method", "PUT");
-            model.addObject("estudante", this.converterEstudanteDTO(estudante.get()));
-            model.addObject("instituicoes", instituicaoService.getAll());
-        } else {
-            model.setViewName("estudantes/form");
-            model.addObject("estudante", this.converterEstudanteDTO(new Estudante()));
-            model.addObject("method", "POST");
-            model.addObject("instituicoes", instituicaoService.getAll());
-            model.addObject("estudantes", estudanteService.getAll());
-        }
+    public ModelAndView updateEstudanteForm(@PathVariable(value = "id") Integer id, ModelAndView model, Integer page) {
+        Estudante estudante = estudanteService.getById(id).orElseThrow(() -> new EstudanteNotFoundException());
+        model.setViewName("estudantes/form");
+        model.addObject("method", "PUT");
+        model.addObject("estudante", EstudanteBuilder.convertToDTO(estudante));
+        model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
 
         return model;
-    }
 
-    // LocalDate dataInicio = LocalDate.parse(p.getDataInicio(),
-    // DateTimeFormatter.ISO_LOCAL_DATE);
-    private DeclaracaoDTO converterDeclaracaoDTO(Declaracao declaracao) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
-
-        return DeclaracaoDTO
-                .builder()
-                .id(declaracao.getId())
-                .observacao(declaracao.getObservacao())
-                .dataRecebimento(declaracao.getDataRecebimento().format(formatter))
-                .estudante(declaracao.getEstudante().getMatricula())
-                .periodo(declaracao.getPeriodo().getId())
-                .build();
-    }
-
-    private EstudanteDTO converterEstudanteDTO(Estudante i) {
-        Integer instituicao = i.getInstituicaoAtual() != null ? i.getInstituicaoAtual().getId() : null;
-        Integer declaracao = i.getDeclaracaoAtual() != null ? i.getDeclaracaoAtual().getId() : null;
-        return EstudanteDTO.builder()
-                .matricula(i.getMatricula())
-                .nome(i.getNome())
-                .instituicaoAtual(instituicao)
-                .declaracaoAtual(declaracao)
-                .build();
     }
 
     @GetMapping(value = "/create")
     public ModelAndView create(EstudanteDTO estudante, ModelAndView model) {
         model.setViewName("estudantes/form");
         model.addObject("estudante", estudante);
-        model.addObject("instituicoes", instituicaoService.getAll());
+        model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
         model.addObject("method", "POST");
         return model;
     }
@@ -124,22 +118,18 @@ public class EstudanteController {
     @GetMapping(value = "/createDeclaracao/{id}")
     public ModelAndView createDeclaracao(@PathVariable(name = "id") Integer id, DeclaracaoDTO declaracao,
             ModelAndView model) {
-        try {
-            Estudante e = this.estudanteService.getById(id).orElseThrow(() -> new EstudanteNotFoundException());
-            declaracao.setEstudante(e.getMatricula());
-            Instituicao i = e.getInstituicaoAtual();
-            if (i == null) {
-                throw new InstituicaoNotFoundException();
-            }
-
-            model.setViewName("estudantes/formDeclaracao");
-            model.addObject("nome", e.getNome());
-            model.addObject("periodos", i != null ? i.getPeriodos() : null);
-            model.addObject("declaracao", declaracao);
-        } catch (Exception e) {
-            model.setViewName("estudantes/formDeclaracao");
-            model.addObject("exception", e.getMessage());
+        Estudante e = this.estudanteService.getById(id).orElseThrow(() -> new EstudanteNotFoundException());
+        declaracao.setEstudante(e.getMatricula());
+        Instituicao i = e.getInstituicaoAtual();
+        if (i == null) {
+            throw new InstituicaoNotFoundException();
         }
+
+        model.setViewName("estudantes/formDeclaracao");
+        model.addObject("nome", e.getNome());
+        model.addObject("periodos", i != null ? i.getPeriodos() : null);
+        model.addObject("declaracao", declaracao);
+
         return model;
     }
 
@@ -150,7 +140,8 @@ public class EstudanteController {
             RedirectAttributes ra) throws Exception {
 
         try {
-            if (validation.hasErrors()) {
+            boolean noArquivo = declaracao.getArquivoPDF().getSize() == 0 ? true : false;
+            if (validation.hasErrors() || noArquivo) {
                 model.addObject("declaracao", declaracao);
                 Estudante e = this.estudanteService.getById(declaracao.getEstudante())
                         .orElseThrow(() -> new EstudanteNotFoundException());
@@ -159,6 +150,7 @@ public class EstudanteController {
                 model.addObject("periodos", i != null ? i.getPeriodos() : null);
                 model.addObject("method", "POST");
                 model.addObject("hasErrors", true);
+                model.addObject("noFileError", noArquivo);
                 model.setViewName("estudantes/formDeclaracao");
                 return model;
             }
@@ -172,11 +164,19 @@ public class EstudanteController {
             return model;
         }
 
-        model.addObject("estudantes", estudanteService.getAll());
         model.setViewName("redirect:list");
         ra.addFlashAttribute("mensagem", "Declaração gerada com Sucesso!");
         ra.addFlashAttribute("success", true);
         return model;
+    }
+
+    @GetMapping("/download/declaracao/{id}")
+    public ResponseEntity<byte[]> getFile(@PathVariable(name = "id") Integer id) {
+        PdfFile file = estudanteService.getDeclaracaoPDF(id);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getNome() + "\"")
+                .body(file.getBytes());
     }
 
     @PostMapping(value = "/create")
@@ -185,7 +185,7 @@ public class EstudanteController {
             RedirectAttributes ra) throws Exception {
         if (validation.hasErrors()) {
             model.addObject("estudante", estudante);
-            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
             model.addObject("method", "POST");
             model.addObject("hasErrors", true);
             model.setViewName("estudantes/form");
@@ -196,7 +196,7 @@ public class EstudanteController {
         } catch (Exception e) {
             model.addObject("estudante", estudante);
             model.addObject("exception", e.getMessage());
-            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
             model.addObject("method", "POST");
             model.setViewName("estudantes/form");
             return model;
@@ -213,7 +213,7 @@ public class EstudanteController {
             RedirectAttributes ra) throws Exception {
         if (validation.hasErrors()) {
             model.addObject("estudante", estudante);
-            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
             model.addObject("method", "PUT");
             model.addObject("hasErrors", true);
             model.setViewName("estudantes/form");
@@ -224,7 +224,7 @@ public class EstudanteController {
         } catch (Exception e) {
             model.addObject("estudante", estudante);
             model.addObject("exception", e.getMessage());
-            model.addObject("instituicoes", instituicaoService.getAll());
+            model.addObject("instituicoes", instituicaoService.getAllWithoutPagination());
             model.addObject("method", "PUT");
             model.setViewName("estudantes/form");
             return model;
@@ -241,7 +241,6 @@ public class EstudanteController {
         try {
             this.estudanteService.deleteEstudante(id);
         } catch (Exception e) {
-            model.addObject("estudantes", estudanteService.getAll());
             ra.addFlashAttribute("mensagem", e.getMessage());
             model.setViewName("redirect:/estudantes/list");
             return model;

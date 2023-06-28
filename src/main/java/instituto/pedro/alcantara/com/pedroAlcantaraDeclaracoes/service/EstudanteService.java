@@ -8,6 +8,8 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.controller.dto.DeclaracaoDTO;
@@ -21,9 +23,11 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Declaracao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Estudante;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.Instituicao;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.PeriodoLetivo;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.model.documentos.PdfFile;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.DeclaracaoRepository;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.EstudanteRepository;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.InstituicaoRepository;
+import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.PdfFileRepository;
 import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.repository.PeriodoLetivoRepository;
 
 @Service
@@ -40,6 +44,9 @@ public class EstudanteService {
     private DeclaracaoRepository declaracaoRepository;
 
     @Autowired
+    private PdfFileRepository pdfFileRepository;
+
+    @Autowired
     private PeriodoLetivoRepository periodoLetivoRepository;
 
     @Transactional
@@ -52,22 +59,10 @@ public class EstudanteService {
                         .orElseThrow(() -> new InstituicaoNotFoundException())
                 : null;
 
-        /*
-         * Instituicao instituicao2 = student.getInstituicaoAtual() != null
-         * ? this.instituicaoRepository.findById(estudante.getInstituicaoAtual())
-         * .orElseThrow(() -> new InstituicaoNotFoundException())
-         * : null;
-         */
-
         if (instituicao != null && student != null) {
-            // List<Estudante> alunos = instituicao.getAlunos();
-            // List<Estudante> alunosAntigo = student.getInstituicaoAtual().getAlunos();
-            // slunosAntigo.remove(student);
             student.setInstituicaoAtual(instituicao);
             student.setNome(estudante.getNome());
             student.setDeclaracaoAtual(null);
-            // alunos.add(student);
-            // instituicao.setAlunos(alunos);
 
         } else {
             student.setInstituicaoAtual(null);
@@ -84,11 +79,7 @@ public class EstudanteService {
         if (estudante.getInstituicaoAtual() != null) {
             Instituicao instituicao = this.instituicaoRepository.findById(estudante.getInstituicaoAtual())
                     .orElseThrow(() -> new InstituicaoNotFoundException());
-
-            List<Estudante> alunos = instituicao.getAlunos();
             student.setInstituicaoAtual(instituicao);
-            // alunos.add(student);
-            // instituicao.setAlunos(alunos);
         }
         student.setNome(estudante.getNome());
         return this.estudanteRepository.save(student);
@@ -117,7 +108,12 @@ public class EstudanteService {
 
         if (e.getInstituicaoAtual() != null) {
             if (e.getInstituicaoAtual().getPeriodos() != null) {
-                Declaracao declaracao = new Declaracao(d.getObservacao(), dataRecebimento, e, p);
+
+                PdfFile pdf = new PdfFile(e.getNome() + e.getMatricula() + p.getAno() + p.getPeriodo() + ".pdf",
+                        d.getArquivoPDF().getBytes());
+
+                Declaracao declaracao = new Declaracao(d.getObservacao(), dataRecebimento, e, p,
+                        pdf);
                 e.setDeclaracaoAtual(declaracao);
                 this.declaracaoRepository.save(declaracao);
             } else {
@@ -128,12 +124,20 @@ public class EstudanteService {
         }
     }
 
-    public List<Estudante> getAll() {
-        return this.estudanteRepository.findAll();
+    public Page<Estudante> getAll(Pageable pageable) {
+        return this.estudanteRepository.findAll(pageable);
+    }
+
+    public Page<Estudante> getAllWithoutDeclaracao(Pageable pageable) {
+        return this.estudanteRepository.findAllEstudantesWithoutDeclaracao(pageable);
     }
 
     public Optional<Declaracao> getDeclaracaoById(Integer id) {
         return this.declaracaoRepository.findById(id);
+    }
+
+    public PdfFile getDeclaracaoPDF(Integer id) {
+        return this.pdfFileRepository.findById(id).get();
     }
 
     public Optional<Estudante> getById(Integer id) {
