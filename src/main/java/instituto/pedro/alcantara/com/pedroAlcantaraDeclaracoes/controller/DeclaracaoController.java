@@ -17,7 +17,7 @@ import instituto.pedro.alcantara.com.pedroAlcantaraDeclaracoes.service.Declaraca
 
 public class DeclaracaoController {
     // Value to set pagination quantity
-    private static final int PAGE_SIZE = 2;
+    private static final int PAGE_SIZE = 10;
 
     @Autowired
     private DeclaracaoService declaracaoService;
