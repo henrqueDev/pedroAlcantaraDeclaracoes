@@ -23,15 +23,17 @@ public class DeclaracaoController {
     private DeclaracaoService declaracaoService;
 
     @GetMapping(value = "/listAVencer")
-    public ModelAndView listAVencer(ModelAndView model, Integer page) {
+    public ModelAndView listAVencer(ModelAndView model, Integer vencerEmDias, Integer page) {
         page = page != null ? page : 0;
         Pageable pageable = PageRequest.of(page, PAGE_SIZE);
-        Page<Declaracao> entityPage = declaracaoService.getAllVencerDias(30, pageable);
+        vencerEmDias = vencerEmDias != null ? vencerEmDias : 30;
+        Page<Declaracao> entityPage = declaracaoService.getAllVencerDias(vencerEmDias, pageable);
         model.addObject("declaracoes", entityPage.getContent());
         model.addObject("currentPage", entityPage.getNumber());
         model.addObject("totalPages", entityPage.getTotalPages());
         model.addObject("pagePath", "/declaracoes/listAVencer");
         model.addObject("pageNum", page);
+        model.addObject("vencerEmDias", vencerEmDias);
         model.setViewName("declaracoes/listAVencer");
         model.addObject("menu", "declaracoes");
 

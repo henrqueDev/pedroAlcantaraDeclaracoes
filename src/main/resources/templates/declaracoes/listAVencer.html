@@ -7,7 +7,14 @@
     <div class="container mt-4">
 
         <div style="display: flex; justify-content: space-between;">
-            <h1>Lista de declarações a vencer em 30 dias</h1>
+            <h1>Lista de declarações a vencer em <span th:text="${vencerEmDias}"></span> dias</h1>
+
+            <form th:action="@{listAVencer}" method="get">
+              <input type="number" name="vencerEmDias" id="vencerEmDias" th:value="${vencerEmDias}">
+              <button>
+                Buscar
+              </button>
+            </form>
         </div>
 
         <table class="table">
